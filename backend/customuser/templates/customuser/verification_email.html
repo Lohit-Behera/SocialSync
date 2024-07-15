@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Verification Email</title>
+    <style>
+      .button {
+        background-color: #3b82f6;
+        border: none;
+        color: white;
+        padding: 8px 25px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      .header {
+        font-size: 18px;
+        font-weight: 600;
+      }
+      h1 {
+        font-size: 26px;
+        text-align: center;
+      }
+      p {
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Verify Email</h1>
+    <p class="header">Hi {{ first_name }},</p>
+    <p class="header">
+      Please click the Verify Email to verify your email address:
+    </p>
+    <a href="{{ verify_link }}" style="text-decoration: none">
+      <button class="button">Verify Email</button>
+    </a>
+    <p>If you didn't create an account with us, please ignore this email.</p>
+  </body>
+</html>

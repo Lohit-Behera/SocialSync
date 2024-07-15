@@ -1,0 +1,52 @@
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.loader-bar {
+  height: 25px;
+  width: 8px;
+  margin: 0 7px;
+  border-radius: 20px;
+  animation: loader 1s ease-in-out infinite;
+}
+
+.bar-1 {
+  background: linear-gradient(to right, #51f58d, #1aed68, #22c55e, #198c44);
+  animation-delay: 0s;
+  box-shadow: 0px 0px 15px 3px #51f58d;
+}
+
+.bar-2 {
+  background: linear-gradient(to right, #1aed68, #22c55e, #198c44, #51f58d);
+  animation-delay: 0.1s;
+  box-shadow: 0px 0px 15px 3px #1aed68;
+}
+
+.bar-3 {
+  background: linear-gradient(to right, #22c55e, #198c44, #51f58d, #1aed68);
+  animation-delay: 0.2s;
+  box-shadow: 0px 0px 15px 3px #22c55e;
+}
+
+.bar-4 {
+  background: linear-gradient(to right, #198c44, #51f58d, #1aed68, #22c55e);
+  animation-delay: 0.3s;
+  box-shadow: 0px 0px 15px 3px #198c44;
+}
+
+@keyframes loader {
+  0% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(2);
+  }
+
+  100% {
+    transform: scaleY(1);
+  }
+}
