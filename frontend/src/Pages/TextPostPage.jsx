@@ -18,6 +18,7 @@ import {
   resetFollow,
 } from "@/features/UserFollowSlice";
 import { Loader2, UserMinus, UserPlus } from "lucide-react";
+import Posts from "@/components/Posts";
 
 function TextPostPage() {
   const dispatch = useDispatch();
@@ -98,7 +99,7 @@ function TextPostPage() {
     const scrollableHeight = document.documentElement.scrollHeight;
     const scrolledFromTop = window.innerHeight + window.scrollY;
 
-    if (Math.round(scrolledFromTop) >= scrollableHeight) {
+    if (Math.ceil(scrolledFromTop) >= scrollableHeight) {
       console.log("User has scrolled to the bottom", currentPage);
       if (currentPage === totalPages) {
         setNoMorePost(true);
@@ -130,59 +131,15 @@ function TextPostPage() {
             {textPosts.length > 0 ? (
               <>
                 {textPosts.map((post) => (
-                  <Card key={post.id}>
-                    <CardHeader>
-                      <CardTitle className="flex justify-between">
-                        <div className="flex space-x-2">
-                          <Link to={`/profile/${post.user}`}>
-                            <Avatar>
-                              <AvatarImage src={post.profile_image} />
-                              <AvatarFallback>P</AvatarFallback>
-                            </Avatar>
-                          </Link>
-                          <Link to={`/profile/${post.user}`}>
-                            <h3 className="text-base md:text-lg font-semibold mt-2">
-                              {post.user_name}
-                            </h3>
-                          </Link>
-                        </div>
-                        {post.user === userInfo.id ? null : (
-                          <Button
-                            className="text-xs md:text-sm"
-                            size="sm"
-                            variant={
-                              following.includes(post.user)
-                                ? "secondary"
-                                : "default"
-                            }
-                            onClick={() => handleFollow(post.user)}
-                            disabled={
-                              loadingUser === post.user &&
-                              followStatus === "loading"
-                            }
-                          >
-                            {following.includes(post.user) ? (
-                              <UserMinus />
-                            ) : loadingUser === post.user &&
-                              followStatus === "loading" ? (
-                              <>
-                                <Loader2 className="animate-spin" />
-                              </>
-                            ) : (
-                              <UserPlus />
-                            )}
-                          </Button>
-                        )}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="min-h-60">
-                      <Link to={`/post/${post.id}`}>
-                        <p className="line-clamp-[8] cursor-pointer">
-                          {post.content}
-                        </p>
-                      </Link>
-                    </CardContent>
-                  </Card>
+                  <Posts
+                    key={post.id}
+                    post={post}
+                    following={following}
+                    handleFollow={handleFollow}
+                    loadingUser={loadingUser}
+                    followStatus={followStatus}
+                    userInfo={userInfo}
+                  />
                 ))}
               </>
             ) : (

@@ -189,6 +189,28 @@ export const fetchGetAllTextPost = createAsyncThunk('get/all/textPost', async (p
     }
 });
 
+export const fetchGetAllFollowingPosts = createAsyncThunk('get/all/followingPosts', async (page=1, { rejectWithValue, getState }) => {
+    try {
+        const { user: { userInfo } = {} } = getState();
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userInfo.token}`,
+            },
+        };
+        const { data } = await axios.get(
+            `/api/post/get/all/following/?page=${page}`,
+            config
+        );
+        return data;
+    } catch (error) {
+        return rejectWithValue(
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        )}
+})
+
 const PostSlice = createSlice({
     name: "post",
     initialState: {
@@ -215,6 +237,10 @@ const PostSlice = createSlice({
         getUserAllTextPost: {},
         getUserAllTextPostStatus: 'idle',
         getUserAllTextPostError: null,
+
+        getAllFollowingPosts: {},
+        getAllFollowingPostsStatus: 'idle',
+        getAllFollowingPostsError: null,
 
         deletePost: null,
         deletePostStatus: 'idle',
@@ -245,6 +271,11 @@ const PostSlice = createSlice({
             state.getAllTextPost = {};
             state.getAllTextPostStatus = 'idle';
             state.getAllTextPostError = null;
+        },
+        resetGetAllFollowingPosts: (state) => {
+            state.getAllFollowingPosts = {};
+            state.getAllFollowingPostsStatus = 'idle';
+            state.getAllFollowingPostsError = null;
         },
         resetDeleteTextPost: (state) => {
             state.deletePost = null;
@@ -338,6 +369,19 @@ const PostSlice = createSlice({
                 state.getUserAllTextPostError = action.payload;
             })
 
+            // Get All following Posts
+            .addCase(fetchGetAllFollowingPosts.pending, (state) => {
+                state.getAllFollowingPostsStatus = 'loading';
+            })
+            .addCase(fetchGetAllFollowingPosts.fulfilled, (state, action) => {
+                state.getAllFollowingPostsStatus = 'succeeded';
+                state.getAllFollowingPosts = action.payload;
+            })
+            .addCase(fetchGetAllFollowingPosts.rejected, (state, action) => {
+                state.getAllFollowingPostsStatus = 'failed';
+                state.getAllFollowingPostsError = action.payload;
+            })
+
             // Delete Text Post
             .addCase(fetchDeletePost.pending, (state) => {
                 state.deletePostStatus = 'loading';
@@ -366,5 +410,5 @@ const PostSlice = createSlice({
     },
 });
 
-export const { resetCreatePost, resetGetAllImagePost, resetGetAllVideoPost, resetGetAllTextPost, resetDeletePost, resetEditTextPost } = PostSlice.actions;
+export const { resetCreatePost, resetGetAllImagePost, resetGetAllVideoPost, resetGetAllTextPost, resetGetAllFollowingPosts, resetDeletePost, resetEditTextPost } = PostSlice.actions;
 export default PostSlice.reducer;

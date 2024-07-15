@@ -260,3 +260,17 @@ def get_all_image_posts(request):
                 'image_posts': serializer.data
             }
     return Response(response_data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_all_following_posts(request):
+    following_posts = Post.objects.filter(user__in=request.user.following.all()).order_by('-created_at')
+    paginator = StandardResultsSetPagination()
+    result_page = paginator.paginate_queryset(following_posts, request)
+    serializer = PostSerializer(result_page, many=True)
+    response_data = {
+                'total_pages': paginator.page.paginator.num_pages,
+                'current_page': paginator.page.number,
+                'following_posts': serializer.data
+            }
+    return Response(response_data)

@@ -1,19 +1,17 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchGetAllImagePost,
   resetGetAllImagePost,
 } from "@/features/PostSlice";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   fetchFollowUser,
   fetchGetFollow,
   resetFollow,
 } from "@/features/UserFollowSlice";
-import { Factory, Loader2, UserMinus, UserPlus } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import Posts from "@/components/Posts";
 
 function ImagePostPage() {
   const dispatch = useDispatch();
@@ -94,7 +92,7 @@ function ImagePostPage() {
     const scrollableHeight = document.documentElement.scrollHeight;
     const scrolledFromTop = window.innerHeight + window.scrollY;
 
-    if (Math.round(scrolledFromTop) >= scrollableHeight) {
+    if (Math.ceil(scrolledFromTop) >= scrollableHeight) {
       console.log("User has scrolled to the bottom", currentPage);
       if (currentPage === totalPages) {
         setNoMorePost(true);
@@ -124,60 +122,15 @@ function ImagePostPage() {
           <h1 className="text-3xl font-bold text-center my-4">Image Posts</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {imagePosts.map((post) => (
-              <Card key={post.id}>
-                <CardHeader>
-                  <CardTitle className="flex justify-between">
-                    <div className="flex space-x-2">
-                      <Link to={`/profile/${post.user}`}>
-                        <Avatar>
-                          <AvatarImage src={post.profile_image} />
-                          <AvatarFallback>P</AvatarFallback>
-                        </Avatar>
-                      </Link>
-                      <Link to={`/profile/${post.user}`}>
-                        <h3 className="text-base md:text-lg font-semibold mt-2 md:mt-0.5 lg:mt-1">
-                          {post.user_name}
-                        </h3>
-                      </Link>
-                    </div>
-                    {post.user === userInfo.id ? null : (
-                      <Button
-                        className="text-xs md:text-sm"
-                        size="sm"
-                        variant={
-                          following.includes(post.user)
-                            ? "secondary"
-                            : "default"
-                        }
-                        onClick={() => handleFollow(post.user)}
-                        disabled={
-                          loadingUser === post.user &&
-                          followStatus === "loading"
-                        }
-                      >
-                        {following.includes(post.user) ? (
-                          <UserMinus />
-                        ) : loadingUser === post.user &&
-                          followStatus === "loading" ? (
-                          <>
-                            <Loader2 className="animate-spin" />
-                          </>
-                        ) : (
-                          <UserPlus />
-                        )}
-                      </Button>
-                    )}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Link to={`/post/${post.id}`}>
-                    <img
-                      className="w-full h-auto md:h-60 object-cover"
-                      src={post.image}
-                    />
-                  </Link>
-                </CardContent>
-              </Card>
+              <Posts
+                key={post.id}
+                post={post}
+                following={following}
+                handleFollow={handleFollow}
+                loadingUser={loadingUser}
+                followStatus={followStatus}
+                userInfo={userInfo}
+              />
             ))}
           </div>
           {loading && (

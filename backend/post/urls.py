@@ -6,6 +6,7 @@ urlpatterns = [
     path('get/all/text/', views.get_all_text_posts, name='get_text_posts'),
     path('get/all/video/', views.get_all_video_posts, name='get_all_video_posts'),
     path('get/all/images/', views.get_all_image_posts, name='get_all_image_posts'),
+    path('get/all/following/', views.get_all_following_posts, name='get_all_following_posts'),
     
     path('get/post/<str:pk>/', views.get_post, name='get_posts'),
     path('like/<str:pk>/', views.like_unlike_post, name='like_unlike_post'),

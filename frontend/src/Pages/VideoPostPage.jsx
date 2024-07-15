@@ -22,6 +22,7 @@ import {
   resetFollow,
 } from "@/features/UserFollowSlice";
 import { Loader2, UserMinus, UserPlus } from "lucide-react";
+import Posts from "@/components/Posts";
 
 function VideoPostPage() {
   const dispatch = useDispatch();
@@ -102,7 +103,7 @@ function VideoPostPage() {
     const scrollableHeight = document.documentElement.scrollHeight;
     const scrolledFromTop = window.innerHeight + window.scrollY;
 
-    if (Math.round(scrolledFromTop) >= scrollableHeight) {
+    if (Math.ceil(scrolledFromTop) >= scrollableHeight) {
       console.log("User has scrolled to the bottom", currentPage);
       if (currentPage === totalPages) {
         setNoMorePost(true);
@@ -132,63 +133,15 @@ function VideoPostPage() {
           <h1 className="text-3xl font-bold text-center my-4">Video Posts</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {videoPosts.map((post) => (
-              <Card key={post.id}>
-                <CardHeader>
-                  <CardTitle className="flex justify-between">
-                    <div className="flex space-x-2">
-                      <Link to={`/profile/${post.user}`}>
-                        <Avatar>
-                          <AvatarImage src={post.profile_image} />
-                          <AvatarFallback>P</AvatarFallback>
-                        </Avatar>
-                      </Link>
-                      <Link to={`/profile/${post.user}`}>
-                        <h3 className="text-base md:text-lg font-semibold mt-2">
-                          {post.user_name}
-                        </h3>
-                      </Link>
-                    </div>
-                    {post.user === userInfo.id ? null : (
-                      <Button
-                        className="text-xs md:text-sm"
-                        size="sm"
-                        variant={
-                          following.includes(post.user)
-                            ? "secondary"
-                            : "default"
-                        }
-                        onClick={() => handleFollow(post.user)}
-                        disabled={
-                          loadingUser === post.user &&
-                          followStatus === "loading"
-                        }
-                      >
-                        {following.includes(post.user) ? (
-                          <UserMinus />
-                        ) : loadingUser === post.user &&
-                          followStatus === "loading" ? (
-                          <>
-                            <Loader2 className="animate-spin" />
-                          </>
-                        ) : (
-                          <UserPlus />
-                        )}
-                      </Button>
-                    )}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <VideoPlayer videoSrc={post.video} />
-                </CardContent>
-                <CardFooter className="justify-end">
-                  <Button
-                    size="sm"
-                    onClick={() => navigate(`/post/${post.id}`)}
-                  >
-                    Details
-                  </Button>
-                </CardFooter>
-              </Card>
+              <Posts
+                key={post.id}
+                post={post}
+                following={following}
+                handleFollow={handleFollow}
+                loadingUser={loadingUser}
+                followStatus={followStatus}
+                userInfo={userInfo}
+              />
             ))}
           </div>
           {loading && (
