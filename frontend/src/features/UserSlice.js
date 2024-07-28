@@ -15,17 +15,27 @@ export const fetchLogin = createAsyncThunk('user/login', async (user, { rejectWi
             config
         );
 
-        localStorage.setItem('userInfo', JSON.stringify(data));
+        document.cookie = `userInfoSocialSync=${encodeURIComponent(JSON.stringify(data))}; path=/; max-age=${30 * 24 * 60 * 60};`;
         
         return data;
     } catch (error) {
+
         return rejectWithValue(
-            error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.detail
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
         );
     }
 });
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+    return null;
+}
+
+const userInfoCookie = getCookie('userInfoSocialSync');
 
 export const fetchRegister = createAsyncThunk('user/register', async (user, { rejectWithValue }) => {
     try {
@@ -177,9 +187,7 @@ export const fetchOtherProfile = createAsyncThunk('user/other', async (id, { rej
 const userSlice = createSlice({
     name: "user",
     initialState: {
-        userInfo: localStorage.getItem('userInfo')
-        ? JSON.parse(localStorage.getItem('userInfo'))
-        : null,
+        userInfo: userInfoCookie ? JSON.parse(userInfoCookie) : null,
         userInfoStatus: "idle",
         userInfoError: null,
 

@@ -39,9 +39,9 @@ const DragNDrop = ({
       onDragEnter={(e) => handleDragEnter(e)}
       onDragOver={(e) => handleDragOver(e)}
       onDragLeave={(e) => handleDragLeave(e)}
-      className={`${className} w-full h-80 border-4 ${
+      className={`${className} w-full h-80 border-4 border-primary/50 ${
         isDragging &&
-        "bg-muted border-dashed border-gray-300 dark:border-gray-700 border-8 "
+        "bg-muted border-dashed border-primary/50 dark:border-primary/50 border-8 "
       } flex-col justify-center items-center rounded-md text-sm md:text-lg cursor-pointer`}
     >
       <div

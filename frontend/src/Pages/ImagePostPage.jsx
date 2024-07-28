@@ -93,7 +93,6 @@ function ImagePostPage() {
     const scrolledFromTop = window.innerHeight + window.scrollY;
 
     if (Math.ceil(scrolledFromTop) >= scrollableHeight) {
-      console.log("User has scrolled to the bottom", currentPage);
       if (currentPage === totalPages) {
         setNoMorePost(true);
       } else if (currentPage < totalPages) {

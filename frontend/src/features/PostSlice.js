@@ -95,18 +95,18 @@ export const fetchDeletePost = createAsyncThunk('delete/post', async (id, { reje
     }
 })
 
-export const fetchEditTextPost = createAsyncThunk('edit/textPost', async (textPost, { rejectWithValue, getState }) => {
+export const fetchEditPost = createAsyncThunk('edit/post', async (post, { rejectWithValue, getState }) => {
     try {
         const { user: { userInfo } = {} } = getState();
         const config = {
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${userInfo.token}`,
             },
         };
         const { data } = await axios.put(
-            `/api/post/edit/text/${textPost.id}/`,
-            textPost,
+            `/api/post/edit/text/${post.id}/`,
+            post,
             config
         );
         return data;
@@ -396,14 +396,14 @@ const PostSlice = createSlice({
             })
 
             // Edit Text Post
-            .addCase(fetchEditTextPost.pending, (state) => {
+            .addCase(fetchEditPost.pending, (state) => {
                 state.editTextPostStatus = 'loading';
             })
-            .addCase(fetchEditTextPost.fulfilled, (state, action) => {
+            .addCase(fetchEditPost.fulfilled, (state, action) => {
                 state.editTextPostStatus = 'succeeded';
                 state.editTextPost = action.payload;
             })
-            .addCase(fetchEditTextPost.rejected, (state, action) => {
+            .addCase(fetchEditPost.rejected, (state, action) => {
                 state.editTextPostStatus = 'failed';
                 state.editTextPostError = action.payload;
             })

@@ -125,9 +125,7 @@ function PostDetails() {
                       <Button
                         size="icon"
                         variant="outline"
-                        onClick={() =>
-                          navigate(`/edit-post/${getPost.id}/text`)
-                        }
+                        onClick={() => navigate(`/edit-post/${getPost.id}`)}
                       >
                         <Pencil />
                       </Button>

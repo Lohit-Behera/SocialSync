@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -20,6 +20,8 @@ function Posts({
   followStatus,
   userInfo,
 }) {
+  const navigate = useNavigate();
+  const [activeVideoId, setActiveVideoId] = useState(null);
   return (
     <Card key={post.id}>
       <CardHeader>
@@ -63,6 +65,9 @@ function Posts({
           <VideoPlayer
             videoSrc={post.video}
             hight="h-auto md:h-60 rounded-lg"
+            videoId={post.id}
+            isActive={activeVideoId === post.id}
+            setActiveVideoId={setActiveVideoId}
           />
         )}
         {post.type === "image" && (

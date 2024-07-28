@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchAllMassage,
@@ -16,18 +16,20 @@ const Chat = ({ roomName }) => {
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [isAtTop, setIsAtTop] = useState(false);
   const [totalPages, setTotalPages] = useState(2);
   const [currentPage, setCurrentPage] = useState(1);
   const [scroll, setScroll] = useState(false);
   const [complete, setComplete] = useState(false);
+  const [noMorePost, setNoMorePost] = useState(false);
 
   const bottom = useRef(null);
 
   const scrollToBottom = () => {
-    if (bottom.current) {
-      bottom.current.scrollIntoView({ block: "end" });
-    }
+    const scrollableHeight = document.documentElement.scrollHeight;
+    window.scrollTo({
+      top: scrollableHeight,
+      behavior: "smooth",
+    });
   };
 
   const websocket = useRef(null);
@@ -42,8 +44,11 @@ const Chat = ({ roomName }) => {
   const allMessageError = useSelector((state) => state.chat.allMessageError);
 
   useEffect(() => {
+    const scrollableHeight = document.documentElement.scrollHeight;
+    window.scrollTo({
+      top: scrollableHeight,
+    });
     setMessages([]);
-    scrollToBottom();
     dispatch(resetInitialMessage());
     dispatch(resetAllMessage());
   }, []);
@@ -79,25 +84,12 @@ const Chat = ({ roomName }) => {
     scrollToBottom();
   }, [scroll]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY === 0) {
-        setIsAtTop(true);
-      } else {
-        setIsAtTop(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isAtTop) {
-      if (currentPage < totalPages && !complete) {
+  const handleScroll = useCallback(() => {
+    const scrollY = window.scrollY;
+    if (scrollY === 0) {
+      if (currentPage === totalPages) {
+        setNoMorePost(true);
+      } else if (currentPage < totalPages) {
         dispatch(
           fetchAllMassage({
             roomName: roomName,
@@ -106,7 +98,14 @@ const Chat = ({ roomName }) => {
         );
       }
     }
-  }, [isAtTop]);
+  }, [currentPage, totalPages, dispatch]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   useEffect(() => {
     websocket.current = new WebSocket(
@@ -164,7 +163,9 @@ const Chat = ({ roomName }) => {
           {allMessageStatus === "loading" && (
             <Loader2 className="animate-spin mx-auto my-4 w-12 h-12" />
           )}
-          {complete && <p className="text-center">No more messages</p>}
+          {(complete || noMorePost) && (
+            <p className="text-center">No more messages</p>
+          )}
           <div className="space-y-4 min-h-[80vh] mb-4">
             {messages.map((msg, index) => (
               <div

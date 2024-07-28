@@ -34,7 +34,7 @@ const router = createBrowserRouter(
       <Route path="/profile/:id" element={<OtherProfile />} />
       <Route path="/update-profile" element={<UpdateProfilePage />} />
       <Route path="/text-post" element={<TextPostPage />} />
-      <Route path="/edit-post/:id/:type" element={<EditPost />} />
+      <Route path="/edit-post/:id" element={<EditPost />} />
       <Route path="/inbox" element={<InboxPage />} />
       <Route path="/chat/:id" element={<ChatPage />} />
       <Route path="/video-post" element={<VideoPostPage />} />

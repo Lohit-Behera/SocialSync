@@ -132,10 +132,18 @@ def get_user_posts(request, pk):
     
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
-def edit_text_post(request, pk):
+def edit_post(request, pk):
     try:
         post = Post.objects.get(id=pk)
         data = request.data
+        if data['type'] == 'image':
+            post.image.delete(save=False)
+            post.image = data['image']
+            
+        elif data['type'] == 'video':
+            post.video.delete(save=False)
+            post.video = data['video']
+            
         post.content = data['content']
         post.updated_at = timezone.now()
         post.edited = True
