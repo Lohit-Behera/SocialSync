@@ -21,6 +21,7 @@ import InboxPage from "./Pages/InboxPage";
 import ChatPage from "./Pages/ChatPage";
 import VideoPostPage from "./Pages/VideoPostPage";
 import ImagePostPage from "./Pages/ImagePostPage";
+import ResetPassword from "./Pages/ResetPassword";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -39,6 +40,7 @@ const router = createBrowserRouter(
       <Route path="/chat/:id" element={<ChatPage />} />
       <Route path="/video-post" element={<VideoPostPage />} />
       <Route path="/image-post" element={<ImagePostPage />} />
+      <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
     </Route>
   )
 );

@@ -15,7 +15,7 @@ export const fetchLogin = createAsyncThunk('user/login', async (user, { rejectWi
             config
         );
 
-        document.cookie = `userInfoSocialSync=${encodeURIComponent(JSON.stringify(data))}; path=/; max-age=${30 * 24 * 60 * 60};`;
+        document.cookie = `userInfoSocialSync=${encodeURIComponent(JSON.stringify(data))}; path=/; max-age=${30 * 24 * 60 * 60}; secure;`;
         
         return data;
     } catch (error) {
@@ -183,6 +183,50 @@ export const fetchOtherProfile = createAsyncThunk('user/other', async (id, { rej
     }
 })
 
+export const fetchForgetPasswordSubmit = createAsyncThunk('user/forget', async (email, { rejectWithValue }) => {
+    try {
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+        const { data } = await axios.post(
+            `/api/user/forget/`,
+            email,
+            config
+        );
+        return data;
+    } catch (error) {
+        return rejectWithValue(
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        );
+    }
+})
+
+export const fetchForgetPasswordVerify = createAsyncThunk('user/forget/verify', async (userData, { rejectWithValue }) => {
+    try {
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+        const { data } = await axios.post(
+            `/api/user/reset-password/verify/`,
+            userData,
+            config
+        );
+        return data;
+    } catch (error) {
+        return rejectWithValue(
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        );
+    }
+})
+
 
 const userSlice = createSlice({
     name: "user",
@@ -214,10 +258,18 @@ const userSlice = createSlice({
         otherProfile: null,
         otherProfileStatus: "idle",
         otherProfileError: null,
+
+        forgetPasswordSubmit: null,
+        forgetPasswordSubmitStatus: "idle",
+        forgetPasswordSubmitError: null,
+
+        forgetPasswordVerify: null,
+        forgetPasswordVerifyStatus: "idle",
+        forgetPasswordVerifyError: null,
     },
     reducers: {
         logout: (state) => {
-            localStorage.removeItem("userInfo");
+            document.cookie = "userInfoSocialSync=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
             state.userInfo = null;
             state.userInfoStatus = "idle";
             state.userInfoError = null;
@@ -236,10 +288,21 @@ const userSlice = createSlice({
             state.followingList = null;
             state.followingListStatus = "idle";
             state.followingListError = null;
+        },
+        resetForgetPasswordSubmit: (state) => {
+            state.forgetPasswordSubmit = null;
+            state.forgetPasswordSubmitStatus = "idle";
+            state.forgetPasswordSubmitError = null;
+        },
+        resetForgetPasswordVerify: (state) => {
+            state.forgetPasswordVerify = null;
+            state.forgetPasswordVerifyStatus = "idle";
+            state.forgetPasswordVerifyError = null;
         }
     },
     extraReducers: (builder) => {
         builder
+            // Login
             .addCase(fetchLogin.pending, (state) => {
                 state.userInfoStatus = "loading";
             })
@@ -252,6 +315,7 @@ const userSlice = createSlice({
                 state.userInfoError = action.payload;
             })
 
+            // Register
             .addCase(fetchRegister.pending, (state) => {
                 state.registerStatus = "loading";
             })
@@ -264,6 +328,7 @@ const userSlice = createSlice({
                 state.registerError = action.payload;
             })
 
+            // User Details
             .addCase(fetchUserDetails.pending, (state) => {
                 state.userDetailsStatus = "loading";
             })
@@ -276,6 +341,7 @@ const userSlice = createSlice({
                 state.userDetailsError = action.payload;
             })
 
+            // User Update
             .addCase(fetchUserUpdate.pending, (state) => {
                 state.userUpdateStatus = "loading";
             })
@@ -288,6 +354,7 @@ const userSlice = createSlice({
                 state.userUpdateError = action.payload;
             })
 
+            // User Details Unknown
             .addCase(fetchUserDetailsUnknown.pending, (state) => {
                 state.userDetailsUnknownStatus = "loading";
             })
@@ -300,6 +367,7 @@ const userSlice = createSlice({
                 state.userDetailsUnknownError = action.payload;
             })
 
+            // Following List
             .addCase(fetchFollowingList.pending, (state) => {
                 state.followingListStatus = "loading";
             })
@@ -312,6 +380,7 @@ const userSlice = createSlice({
                 state.followingListError = action.payload;
             })
 
+            // Other Profile
             .addCase(fetchOtherProfile.pending, (state) => {
                 state.otherProfileStatus = "loading";
             })
@@ -323,10 +392,36 @@ const userSlice = createSlice({
                 state.otherProfileStatus = "failed";
                 state.otherProfileError = action.payload;
             })
+
+            // Forget Password Submit
+            .addCase(fetchForgetPasswordSubmit.pending, (state) => {
+                state.forgetPasswordSubmitStatus = "loading";
+            })
+            .addCase(fetchForgetPasswordSubmit.fulfilled, (state, action) => {
+                state.forgetPasswordSubmitStatus = "succeeded";
+                state.forgetPasswordSubmit = action.payload;
+            })
+            .addCase(fetchForgetPasswordSubmit.rejected, (state, action) => {
+                state.forgetPasswordSubmitStatus = "failed";
+                state.forgetPasswordSubmitError = action.payload;
+            })
+
+            // Forget Password Verify
+            .addCase(fetchForgetPasswordVerify.pending, (state) => {
+                state.forgetPasswordVerifyStatus = "loading";
+            })
+            .addCase(fetchForgetPasswordVerify.fulfilled, (state, action) => {
+                state.forgetPasswordVerifyStatus = "succeeded";
+                state.forgetPasswordVerify = action.payload;
+            })
+            .addCase(fetchForgetPasswordVerify.rejected, (state, action) => {
+                state.forgetPasswordVerifyStatus = "failed";
+                state.forgetPasswordVerifyError = action.payload;
+            })
     },
 });
 
 
-export const { logout, resetRegister, resetUserUpdate, resetFollowingList } = userSlice.actions
+export const { logout, resetRegister, resetUserUpdate, resetFollowingList, resetForgetPasswordSubmit, resetForgetPasswordVerify } = userSlice.actions
 
 export default userSlice.reducer

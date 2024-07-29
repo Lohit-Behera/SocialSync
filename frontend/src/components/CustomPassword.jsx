@@ -5,7 +5,7 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Eye, EyeOff } from "lucide-react";
 
-function CustomPassword({ id, label, placeholder, change, forget }) {
+function CustomPassword({ id, label, placeholder, change, forget, onClick }) {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="grid gap-2">
@@ -14,15 +14,15 @@ function CustomPassword({ id, label, placeholder, change, forget }) {
           {label}
         </Label>
         {forget && (
-          <Link
-            href="/forgot-password"
-            className="ml-auto inline-block text-sm underline"
+          <span
+            onClick={onClick}
+            className="ml-auto inline-block text-sm hover:underline hover:cursor-pointer"
           >
             Forgot your password?
-          </Link>
+          </span>
         )}
       </div>
-      <div className="flex h-9 w-full rounded-md border border-input bg-transparent shadow-sm transition-colors placeholder:text-muted-foreground focus-within:ring-1 ring-ring">
+      <div className="flex h-9 w-full rounded-md border border-input bg-background shadow-sm transition-colors placeholder:text-muted-foreground focus-within:ring-1 ring-ring">
         <Input
           className=" h-auto border-0 focus-visible:outline-none focus-visible:ring-0 bg-background w-full"
           id={id}
@@ -33,7 +33,7 @@ function CustomPassword({ id, label, placeholder, change, forget }) {
         />
         <span
           onClick={() => setShowPassword(!showPassword)}
-          className="px-1 py-1 cursor-pointer"
+          className="px-1 py-1 cursor-pointer "
         >
           {showPassword ? <EyeOff /> : <Eye />}
         </span>

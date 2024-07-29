@@ -155,7 +155,13 @@ function Profile({ user = {} }) {
                           </Link>
                         )}
                         <Link to={`/post/${post.id}`}>
-                          <p className="line-clamp-1 text-xs md:text-sm lg:text-base mt-2">
+                          <p
+                            className={`${
+                              post.type === "text"
+                                ? "line-clamp-[7]"
+                                : "line-clamp-1"
+                            } text-xs md:text-sm lg:text-base mt-2`}
+                          >
                             {post.content}
                           </p>
                         </Link>

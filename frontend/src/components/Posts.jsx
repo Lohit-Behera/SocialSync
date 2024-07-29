@@ -13,8 +13,8 @@ import { Button } from "@/components/ui/button";
 import VideoPlayer from "./VideoPlayer";
 
 function Posts({
-  post,
-  following,
+  post = {},
+  following = {},
   handleFollow,
   loadingUser,
   followStatus,
@@ -22,6 +22,11 @@ function Posts({
 }) {
   const navigate = useNavigate();
   const [activeVideoId, setActiveVideoId] = useState(null);
+
+  if (!post || !post.id || userInfo === null) {
+    return <p className="text-center">No posts</p>;
+  }
+
   return (
     <Card key={post.id}>
       <CardHeader>
@@ -34,7 +39,7 @@ function Posts({
               </Avatar>
             </Link>
             <Link to={`/profile/${post.user}`}>
-              <h3 className="text-base md:text-lg font-semibold mt-2 md:mt-0.5 lg:mt-1">
+              <h3 className="text-base md:text-lg font-semibold mt-2 md:mt-0.5 lg:mt-1 hover:underline">
                 {post.user_name}
               </h3>
             </Link>

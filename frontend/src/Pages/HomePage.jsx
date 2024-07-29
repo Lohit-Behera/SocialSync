@@ -123,17 +123,21 @@ function HomePage() {
         <div className="w-[95%] md:w-[90%] lg:w-[85%] mx-auto mb-6">
           <h1 className="text-3xl font-bold text-center my-4">Image Posts</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {posts.map((post) => (
-              <Posts
-                key={post.id}
-                post={post}
-                following={following}
-                handleFollow={handleFollow}
-                loadingUser={loadingUser}
-                followStatus={followStatus}
-                userInfo={userInfo}
-              />
-            ))}
+            {posts.length > 0 && (
+              <>
+                {posts.map((post) => (
+                  <Posts
+                    key={post.id}
+                    post={post}
+                    following={following}
+                    handleFollow={handleFollow}
+                    loadingUser={loadingUser}
+                    followStatus={followStatus}
+                    userInfo={userInfo}
+                  />
+                ))}
+              </>
+            )}
           </div>
           {loading && (
             <Loader2 className="animate-spin mx-auto my-4 w-12 h-12" />

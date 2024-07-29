@@ -8,6 +8,8 @@ from django.contrib.auth.tokens import default_token_generator
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.shortcuts import get_object_or_404
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
 from backend.settings import EMAIL_HOST_USER, MEDIA_ROOT, BASE_DIR
 
 from rest_framework import status
@@ -366,3 +368,53 @@ def other_user_profile(request, user_id):
     user = CustomUser.objects.get(id=user_id)
     serializer = UserFollowingListSerializer(user, many=False)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+def password_reset_request(request):
+    try:
+        data = request.data
+        
+        if CustomUser.objects.filter(email=data['email']).exists():
+            user = CustomUser.objects.get(email=data['email'])
+        else:
+            return Response({'message': 'User with this email does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        token = default_token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+
+        frontend_url = 'http://localhost:5173/reset-password'
+        reset_link = f'{frontend_url}/{uid}/{token}'
+
+        subject = 'Password Reset Requested'
+        message = f'Click the link below to reset your password:\n\n{reset_link}'
+
+        send_mail(subject, message, EMAIL_HOST_USER, [user.email])
+
+        return Response({'message': 'Password reset link sent.'}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return Response({'message': 'An error occurred while processing your request.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def password_reset_confirm(request):
+    print(request.data)
+    uid = request.data.get('uid')
+    token = request.data.get('token')
+    try:
+        uid = force_str(urlsafe_base64_decode(uid))
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        return Response({'message': 'Invalid token or user ID'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if user is not None and default_token_generator.check_token(user, token):
+        user.set_password(request.data['password'])
+        user.save()
+
+        default_token_generator.make_token(user)
+
+        return Response({'message': 'Password has been reset.'}, status=status.HTTP_200_OK)
+    return Response({'message': 'Invalid token or user ID'}, status=status.HTTP_400_BAD_REQUEST)
+
