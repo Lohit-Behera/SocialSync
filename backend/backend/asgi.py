@@ -14,18 +14,21 @@ from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
 from django.urls import path
 from chat.consumers import ChatConsumer
+from chat.notification_consumers import NotificationConsumer
+from .middleware import JWTAuthMiddleware
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'your_project_name.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AllowedHostsOriginValidator(
         AuthMiddlewareStack(
-            URLRouter([
-                path("ws/chat/<str:room_name>/", ChatConsumer.as_asgi()),
-            ])
+            JWTAuthMiddleware(
+                URLRouter([
+                    path("ws/chat/<str:room_name>/", ChatConsumer.as_asgi()),
+                    path("ws/notifications/", NotificationConsumer.as_asgi()),
+                ])
+            )
         ),
     ),
 })
-
-

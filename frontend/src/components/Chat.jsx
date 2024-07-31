@@ -22,8 +22,6 @@ const Chat = ({ roomName }) => {
   const [complete, setComplete] = useState(false);
   const [noMorePost, setNoMorePost] = useState(false);
 
-  const bottom = useRef(null);
-
   const scrollToBottom = () => {
     const scrollableHeight = document.documentElement.scrollHeight;
     window.scrollTo({
@@ -166,7 +164,7 @@ const Chat = ({ roomName }) => {
           {(complete || noMorePost) && (
             <p className="text-center">No more messages</p>
           )}
-          <div className="space-y-4 min-h-[80vh] mb-4">
+          <div className="space-y-4 min-h-[80vh] mb-10">
             {messages.map((msg, index) => (
               <div
                 key={index}
@@ -196,10 +194,11 @@ const Chat = ({ roomName }) => {
               </div>
             ))}
           </div>
-          <div className="flex justify-center bottom-0 my-4 gap-3 p-3">
+          <div className="flex sticky mx-auto bg-background/50 backdrop-blur bottom-0 gap-3 p-3 rounded-full">
             <Input
               className="w-[80%] md:w-full mt-0.5 bg-secondary rounded-full"
               type="text"
+              placeholder="Type a message"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
             />
@@ -211,7 +210,6 @@ const Chat = ({ roomName }) => {
               <Send className="mr-1 w-5 h-5 md:w-auto md:h-auto" />
             </Button>
           </div>
-          <div ref={bottom}></div>
         </>
       )}
     </>

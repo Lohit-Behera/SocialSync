@@ -95,6 +95,29 @@ export const fetchUserList = createAsyncThunk('user/list', async (_, { rejectWit
     }
 })
 
+export const fetchOnlineStatus = createAsyncThunk('user/status', async (_, { rejectWithValue, getState }) => {
+    try {
+        const { user: { userInfo } = {} } = getState();
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userInfo.token}`,
+            },
+        };
+        const { data } = await axios.get(
+            `/api/chat/user/online-status/`,
+            config
+        );
+        return data;
+    } catch (error) {
+        return rejectWithValue(
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        );
+    }
+})
+
 const chatSlice = createSlice({
     name: 'chat',
     initialState: {
@@ -112,7 +135,11 @@ const chatSlice = createSlice({
 
         userList: null,
         userListStatus: "idle",
-        userListError: null
+        userListError: null,
+
+        onlineStatus: null,
+        onlineStatusStatus: "idle",
+        onlineStatusError: null,
     },
     reducers: {
         resetInitialMessage: (state) => {
@@ -128,6 +155,7 @@ const chatSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            //chat room
             .addCase(fetchChatRoom.pending, (state) => {
                 state.chatRoomStatus = "loading";
             })
@@ -140,6 +168,7 @@ const chatSlice = createSlice({
                 state.chatRoomError = action.payload;
             })
 
+            //initial message
             .addCase(fetchInitialMessage.pending, (state) => {
                 state.initialMessageStatus = "loading";
             })
@@ -152,6 +181,7 @@ const chatSlice = createSlice({
                 state.initialMessageError = action.payload;
             })
 
+            //all message
             .addCase(fetchAllMassage.pending, (state) => {
                 state.allMessageStatus = "loading";
             })
@@ -164,6 +194,7 @@ const chatSlice = createSlice({
                 state.allMessageError = action.payload;
             })
 
+            //user list
             .addCase(fetchUserList.pending, (state) => {
                 state.userListStatus = "loading";
             })
@@ -174,6 +205,19 @@ const chatSlice = createSlice({
             .addCase(fetchUserList.rejected, (state, action) => {
                 state.userListStatus = "failed";
                 state.userListError = action.payload;
+            })
+
+            //online status
+            .addCase(fetchOnlineStatus.pending, (state) => {
+                state.onlineStatusStatus = "loading";
+            })
+            .addCase(fetchOnlineStatus.fulfilled, (state, action) => {
+                state.onlineStatusStatus = "succeeded";
+                state.onlineStatus = action.payload;
+            })
+            .addCase(fetchOnlineStatus.rejected, (state, action) => {
+                state.onlineStatusStatus = "failed";
+                state.onlineStatusError = action.payload;
             })
     },
 });
