@@ -42,7 +42,7 @@ def create_post(request):
             
         if data['type'] == 'image':
             image = request.FILES.get('image')
-            pil_image = Image.open(image)
+            pil_image = Image.open(image).convert('RGB')
             
             original_width, original_height = pil_image.size
             aspect_ratio = original_width / original_height
@@ -69,9 +69,30 @@ def create_post(request):
             )
             
         if data['type'] == 'video':
+            image = request.FILES.get('thumbnail')
+            pil_image = Image.open(image)
+            
+            original_width, original_height = pil_image.size
+            aspect_ratio = original_width / original_height
+            new_width = min(1440, original_width)
+            new_height = int(new_width / aspect_ratio)
+            
+            if new_height > 1080:
+                new_height = 1080
+                new_width = int(new_height * aspect_ratio)
+            
+            resized_image = pil_image.resize((new_width, new_height), Image.LANCZOS)
+            
+            image_io = BytesIO()
+            resized_image.save(image_io, format='JPEG', quality=70)
+            thumbnail_file = InMemoryUploadedFile(
+                image_io, None, 'resized_thumbnail.jpg', 'image/jpeg', image_io.tell(), None
+            )
+            
             post = Post.objects.create(
                 user=user,
                 video=data['video'],
+                thumbnail=thumbnail_file,
                 content=data['content'],
                 type=data['type']
             )
@@ -133,17 +154,64 @@ def get_user_posts(request, pk):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def edit_post(request, pk):
+    data = request.data
     try:
         post = Post.objects.get(id=pk)
         data = request.data
         if data['type'] == 'image':
             post.image.delete(save=False)
-            post.image = data['image']
+            image = request.FILES.get('image')
+            pil_image = Image.open(image).convert('RGB')
+            
+            original_width, original_height = pil_image.size
+            aspect_ratio = original_width / original_height
+            new_width = min(1440, original_width)
+            new_height = int(new_width / aspect_ratio)
+            
+            if new_height > 1080:
+                new_height = 1080
+                new_width = int(new_height * aspect_ratio)
+            
+            resized_image = pil_image.resize((new_width, new_height), Image.LANCZOS)
+            
+            image_io = BytesIO()
+            resized_image.save(image_io, format='JPEG', quality=70)
+            image_file = InMemoryUploadedFile(
+                image_io, None, 'resized_image.jpg', 'image/jpeg', image_io.tell(), None
+            )
+            post.image = image_file
             
         elif data['type'] == 'video':
-            post.video.delete(save=False)
-            post.video = data['video']
+            if data['video'] != 'null':
+                post.video.delete(save=False)
+                post.video = data['video']
             
+            if data['thumbnail'] != 'null':
+                if post.thumbnail != 'thumbnails/blank.svg':
+                    post.thumbnail.delete(save=False)
+                
+                image = request.FILES.get('thumbnail')
+                pil_image = Image.open(image).convert('RGB')
+                
+                original_width, original_height = pil_image.size
+                aspect_ratio = original_width / original_height
+                new_width = min(1280, original_width)
+                new_height = int(new_width / aspect_ratio)
+                
+                if new_height > 720:
+                    new_height = 720
+                    new_width = int(new_height * aspect_ratio)
+                
+                resized_image = pil_image.resize((new_width, new_height), Image.LANCZOS)
+                
+                image_io = BytesIO()
+                resized_image.save(image_io, format='JPEG', quality=70)
+                thumbnail_file = InMemoryUploadedFile(
+                    image_io, None, 'resized_thumbnail.jpg', 'image/jpeg', image_io.tell(), None
+                )
+                
+                post.thumbnail = thumbnail_file
+                            
         post.content = data['content']
         post.updated_at = timezone.now()
         post.edited = True

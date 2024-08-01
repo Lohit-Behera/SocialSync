@@ -6,6 +6,7 @@ class Post(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
     video = models.FileField(upload_to='videos/', null=True, blank=True)
+    thumbnail = models.ImageField(upload_to='thumbnails/', null=True, blank=True, default='thumbnails/blank.svg')
     content = models.TextField(null=False, blank=False)
     type = models.CharField(max_length=100,default="text", null=False, blank=False)
     total_likes = models.IntegerField(default=0)

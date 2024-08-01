@@ -18,7 +18,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             )
             await self.accept()
             
-            # Notify followers upon connection
             user_list = await self.get_followers()
             if user_list:
                 await self.send_connection_notification(user_list)
@@ -46,10 +45,13 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_followers(self):
-        user = CustomUser.objects.get(id=self.scope['user'].id)
-        receiver_list = Message.objects.filter(receiver=user).values_list('sender', flat=True).distinct()
-        following_list = user.following.all().values_list('id', flat=True)
-        combined_ids = set(receiver_list).union(set(following_list))
+        user = self.scope['user']
+        receiver_list = Message.objects.filter(
+            receiver=user
+        ).values_list('sender__id', flat=True).distinct()
+        following_list = user.following.values_list('id', flat=True)
+        followers_list = user.followers.values_list('id', flat=True)
+        combined_ids = set(receiver_list).union(set(following_list)).union(set(followers_list))
         user_list = CustomUser.objects.filter(id__in=combined_ids).distinct()
         return list(user_list)
     

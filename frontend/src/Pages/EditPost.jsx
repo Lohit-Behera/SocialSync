@@ -28,8 +28,10 @@ function EditPost() {
 
   const [activeVideoId, setActiveVideoId] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isThumbnailDragging, setIsThumbnailDragging] = useState(false);
   const [image, setImage] = useState(null);
   const [video, setVideo] = useState(null);
+  const [thumbnail, setThumbnail] = useState(null);
 
   const userInfo = useSelector((state) => state.user.userInfo);
   const getPost = useSelector((state) => state.post.getPost);
@@ -60,38 +62,34 @@ function EditPost() {
   }, [editTextPostStatus, navigate]);
 
   const handleUpdate = () => {
-    if (getPost.content === textContent) {
-      console.log("run1");
+    if (textContent === "") {
       alert("Nothing to update");
     } else if (getPost.type === "image") {
-      console.log("run2");
-      if (image === null) {
-        console.log("run3");
-        alert("Please select an image");
-      } else {
-        dispatch(
-          fetchEditPost({
-            id: id,
-            type: type,
-            image: image,
-            content: textContent,
-          })
-        );
-      }
+      dispatch(
+        fetchEditPost({
+          id: id,
+          type: type,
+          image: image,
+          content: textContent,
+        })
+      );
     } else if (getPost.type === "video") {
-      console.log("run4");
-      if (video === null) {
-        alert("Please select a video");
-      } else {
-        dispatch(
-          fetchEditPost({
-            id: id,
-            type: type,
-            video: video,
-            content: textContent,
-          })
-        );
-      }
+      console.log({
+        id: id,
+        type: type,
+        video: video || "null",
+        thumbnail: thumbnail || "null",
+        content: textContent,
+      });
+      dispatch(
+        fetchEditPost({
+          id: id,
+          type: type,
+          video: video || "null",
+          thumbnail: thumbnail || "null",
+          content: textContent,
+        })
+      );
     } else {
       dispatch(
         fetchEditPost({
@@ -149,6 +147,27 @@ function EditPost() {
     }
   };
 
+  const handleThumbnailDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    setIsThumbnailDragging(false);
+    if (file.type.startsWith("image/")) {
+      setThumbnail(file);
+    } else {
+      alert("Please select an image file");
+    }
+  };
+
+  const thumbnailHandler = (e) => {
+    e.preventDefault();
+    const file = e.target.files[0];
+    if (file.type.startsWith("image/")) {
+      setThumbnail(file);
+    } else {
+      alert("Please select an image file");
+    }
+  };
+
   const videoElement = useMemo(() => {
     if (video) {
       return (
@@ -185,13 +204,22 @@ function EditPost() {
               <CardHeader>
                 <CardTitle>
                   {getPost.type === "video" && (
-                    <VideoPlayer
-                      videoSrc={getPost.video}
-                      hight="h-auto md:h-60 rounded-lg"
-                      videoId={getPost.id}
-                      isActive={activeVideoId === getPost.id}
-                      setActiveVideoId={setActiveVideoId}
-                    />
+                    <div className="space-y-4">
+                      <VideoPlayer
+                        videoSrc={getPost.video}
+                        hight="h-auto md:h-60 rounded-lg"
+                        videoId={getPost.id}
+                        isActive={activeVideoId === getPost.id}
+                        setActiveVideoId={setActiveVideoId}
+                        thumbnailSrc={getPost.thumbnail}
+                      />
+                      <p className="text-center">Thumbnail</p>
+                      <img
+                        src={getPost.thumbnail}
+                        alt="thumbnail"
+                        className="w-full object-cover rounded-lg"
+                      />
+                    </div>
                   )}
                   {getPost.type === "image" && (
                     <img
@@ -237,39 +265,77 @@ function EditPost() {
                   </div>
                 )}
                 {getPost.type === "video" && (
-                  <div className="grid gap-2 w-full">
-                    <Label htmlFor="video-upload">Edit Post</Label>
-                    {videoElement}
-                    {!video ? (
-                      <>
-                        <input
-                          type="file"
-                          name="video"
-                          id="video-upload"
-                          accept="video/*"
-                          label="Upload Video"
-                          onChange={videoHandler}
-                          className="block md:hidden w-full text-primary font-semibold file:me-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground file:hover:cursor-pointer hover:file:bg-primary/90  file:disabled:opacity-50 file:disabled:pointer-events-none cursor-pointer"
-                        />
-                        <DragNDrop
-                          className="hidden md:flex"
-                          handleDrop={handleVideoDrop}
-                          uploadHandler={videoHandler}
-                          isDragging={isDragging}
-                          setIsDragging={setIsDragging}
-                          type={"video"}
-                        />
-                      </>
-                    ) : (
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => setVideo(null)}
-                      >
-                        New Video
-                      </Button>
-                    )}
-                  </div>
+                  <>
+                    <div className="grid gap-2 w-full">
+                      <Label htmlFor="video-upload">Edit Post</Label>
+                      {videoElement}
+                      {!video ? (
+                        <>
+                          <input
+                            type="file"
+                            name="video"
+                            id="video-upload"
+                            accept="video/*"
+                            label="Upload Video"
+                            onChange={videoHandler}
+                            className="block md:hidden w-full text-primary font-semibold file:me-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground file:hover:cursor-pointer hover:file:bg-primary/90  file:disabled:opacity-50 file:disabled:pointer-events-none cursor-pointer"
+                          />
+                          <DragNDrop
+                            className="hidden md:flex"
+                            handleDrop={handleVideoDrop}
+                            uploadHandler={videoHandler}
+                            isDragging={isDragging}
+                            setIsDragging={setIsDragging}
+                            type={"video"}
+                          />
+                        </>
+                      ) : (
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => setVideo(null)}
+                        >
+                          New Video
+                        </Button>
+                      )}
+                    </div>
+
+                    <div className="grid gap-2 w-full">
+                      <Label htmlFor="image-upload">Select Thumbnail</Label>
+                      {thumbnail ? (
+                        <>
+                          <img src={URL.createObjectURL(thumbnail)} />
+                          <Button
+                            variant="default"
+                            size="sm"
+                            onClick={(e) => setThumbnail(null)}
+                          >
+                            New Thumbnail
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <input
+                            type="file"
+                            name="thumbnail"
+                            id="thumbnail-upload"
+                            accept="image/*"
+                            label="Upload Thumbnail"
+                            onChange={(e) => thumbnailHandler(e)}
+                            className="block md:hidden w-full text-primary font-semibold file:me-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground file:hover:cursor-pointer hover:file:bg-primary/90  file:disabled:opacity-50 file:disabled:pointer-events-none cursor-pointer"
+                          />
+                          <DragNDrop
+                            className="hidden md:flex "
+                            handleDrop={handleThumbnailDrop}
+                            uploadHandler={thumbnailHandler}
+                            isDragging={isThumbnailDragging}
+                            setIsDragging={setIsThumbnailDragging}
+                            type={"image"}
+                          />
+                        </>
+                      )}
+                    </div>
+                  </>
                 )}
               </CardHeader>
             )}

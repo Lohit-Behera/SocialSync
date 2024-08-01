@@ -165,7 +165,10 @@ function PostDetails() {
               </CardHeader>
               <CardContent>
                 {getPost.type === "video" && (
-                  <VideoPlayer videoSrc={getPost.video} />
+                  <VideoPlayer
+                    videoSrc={getPost.video}
+                    thumbnailSrc={getPost.thumbnail}
+                  />
                 )}
                 {getPost.type === "image" && (
                   <div className="max-w-[80vh] mx-auto">

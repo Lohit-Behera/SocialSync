@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -17,7 +17,7 @@ import {
   resetFollow,
 } from "@/features/UserFollowSlice";
 import VideoPlayer from "@/components/VideoPlayer";
-import { fetchGetUserAllTextPost } from "@/features/PostSlice";
+import { fetchGetUserAllPost } from "@/features/PostSlice";
 import { Loader2 } from "lucide-react";
 
 function Profile({ user = {} }) {
@@ -39,14 +39,16 @@ function Profile({ user = {} }) {
   const userFollowing =
     useSelector((state) => state.userFollow.getFollow.following) || [];
   const followStatus = useSelector((state) => state.userFollow.followStatus);
-  const getUserAllTextPostStatus = useSelector(
-    (state) => state.post.getUserAllTextPostStatus
+  const getUserAllPostStatus = useSelector(
+    (state) => state.post.getUserAllPostStatus
   );
-  const getUserAllTextPost =
-    useSelector((state) => state.post.getUserAllTextPost) || [];
+  const getUserAllPost =
+    useSelector((state) => state.post.getUserAllPost) || [];
+
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    dispatch(fetchGetUserAllTextPost(id));
+    dispatch(fetchGetUserAllPost(id));
   }, [dispatch]);
 
   useEffect(() => {
@@ -67,9 +69,9 @@ function Profile({ user = {} }) {
 
   return (
     <div className="w-[96%] md:w-[80%] lg:w-[70%] mx-auto mt-4">
-      {getUserAllTextPostStatus === "loading" ? (
+      {getUserAllPostStatus === "loading" ? (
         <p>Loading...</p>
-      ) : getUserAllTextPostStatus === "failed" ? (
+      ) : getUserAllPostStatus === "failed" ? (
         <p>Error</p>
       ) : (
         <Card>
@@ -134,8 +136,8 @@ function Profile({ user = {} }) {
               Posts
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-              {Array.isArray(getUserAllTextPost) &&
-                getUserAllTextPost.map((post) => (
+              {Array.isArray(getUserAllPost) &&
+                getUserAllPost.map((post) => (
                   <Card key={post.id} className="bg-muted">
                     <CardHeader>
                       <CardTitle>

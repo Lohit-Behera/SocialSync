@@ -24,7 +24,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose,
+} from "@/components/ui/sheet";
 import {
   Tooltip,
   TooltipContent,
@@ -285,118 +290,130 @@ function Navigation() {
                 <span className="sr-only">Toggle Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="sm:max-w-xs">
+            <SheetContent side="left" className="w-[180px]">
               <nav className="grid gap-6 text-lg font-medium">
-                <Link href="#" className="">
-                  <Avatar>
-                    <AvatarImage src={Logo} />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                </Link>
+                <SheetClose asChild>
+                  <Link to="/" className="ml-5">
+                    <Avatar>
+                      <AvatarImage src={Logo} />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                  </Link>
+                </SheetClose>
                 {userInfo ? (
                   <>
-                    <NavLink to="/">
-                      {({ isActive }) => (
-                        <Button
-                          variant={`${isActive ? "default" : "ghost"}`}
-                          className={`${
-                            !isActive &&
-                            "text-muted-foreground transition-colors hover:text-foreground"
-                          }`}
-                        >
-                          <Home className="mr-2 h-4 w-4" /> Home
-                        </Button>
-                      )}
-                    </NavLink>
-
-                    <NavLink to="/inbox">
-                      {({ isActive }) => (
-                        <Button
-                          variant={`${isActive ? "default" : "ghost"}`}
-                          className={`${
-                            !isActive &&
-                            "text-muted-foreground transition-colors hover:text-foreground"
-                          }`}
-                        >
-                          <Send className="mr-2 h-4 w-4" />
-                          inbox
-                        </Button>
-                      )}
-                    </NavLink>
-
-                    <NavLink to="/text-post">
-                      {({ isActive }) => (
-                        <Button
-                          variant={`${isActive ? "default" : "ghost"}`}
-                          className={`${
-                            !isActive &&
-                            "text-muted-foreground transition-colors hover:text-foreground"
-                          }`}
-                        >
-                          <NotebookText className="mr-2 h-4 w-4" />
-                          Text
-                        </Button>
-                      )}
-                    </NavLink>
-
-                    <NavLink to="/image-post">
-                      {({ isActive }) => (
-                        <Button
-                          variant={`${isActive ? "default" : "ghost"}`}
-                          className={`${
-                            !isActive &&
-                            "text-muted-foreground transition-colors hover:text-foreground"
-                          }`}
-                        >
-                          <Image className="mr-2 h-4 w-4" />
-                          Image
-                        </Button>
-                      )}
-                    </NavLink>
-
-                    <NavLink to="/video-post">
-                      {({ isActive }) => (
-                        <Button
-                          variant={`${isActive ? "default" : "ghost"}`}
-                          className={`${
-                            !isActive &&
-                            "text-muted-foreground transition-colors hover:text-foreground"
-                          }`}
-                        >
-                          <Clapperboard className="mr-2 h-4 w-4" />
-                          Video
-                        </Button>
-                      )}
-                    </NavLink>
-                    <NavLink to="/create-post">
-                      {({ isActive }) => (
-                        <Button
-                          variant={`${isActive ? "default" : "ghost"}`}
-                          className={`${
-                            !isActive &&
-                            "text-muted-foreground transition-colors hover:text-foreground"
-                          }`}
-                        >
-                          <SquarePlus className="mr-2 h-4 w-4" />
-                          Create Post
-                        </Button>
-                      )}
-                    </NavLink>
+                    <SheetClose asChild>
+                      <NavLink to="/">
+                        {({ isActive }) => (
+                          <Button
+                            variant={`${isActive ? "default" : "ghost"}`}
+                            className={`${
+                              !isActive &&
+                              "text-muted-foreground transition-colors hover:text-foreground"
+                            }`}
+                          >
+                            <Home className="mr-2 h-4 w-4" /> Home
+                          </Button>
+                        )}
+                      </NavLink>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <NavLink to="/inbox">
+                        {({ isActive }) => (
+                          <Button
+                            variant={`${isActive ? "default" : "ghost"}`}
+                            className={`${
+                              !isActive &&
+                              "text-muted-foreground transition-colors hover:text-foreground"
+                            }`}
+                          >
+                            <Send className="mr-2 h-4 w-4" />
+                            inbox
+                          </Button>
+                        )}
+                      </NavLink>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <NavLink to="/text-post">
+                        {({ isActive }) => (
+                          <Button
+                            variant={`${isActive ? "default" : "ghost"}`}
+                            className={`${
+                              !isActive &&
+                              "text-muted-foreground transition-colors hover:text-foreground"
+                            }`}
+                          >
+                            <NotebookText className="mr-2 h-4 w-4" />
+                            Text
+                          </Button>
+                        )}
+                      </NavLink>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <NavLink to="/image-post">
+                        {({ isActive }) => (
+                          <Button
+                            variant={`${isActive ? "default" : "ghost"}`}
+                            className={`${
+                              !isActive &&
+                              "text-muted-foreground transition-colors hover:text-foreground"
+                            }`}
+                          >
+                            <Image className="mr-2 h-4 w-4" />
+                            Image
+                          </Button>
+                        )}
+                      </NavLink>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <NavLink to="/video-post">
+                        {({ isActive }) => (
+                          <Button
+                            variant={`${isActive ? "default" : "ghost"}`}
+                            className={`${
+                              !isActive &&
+                              "text-muted-foreground transition-colors hover:text-foreground"
+                            }`}
+                          >
+                            <Clapperboard className="mr-2 h-4 w-4" />
+                            Video
+                          </Button>
+                        )}
+                      </NavLink>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <NavLink to="/create-post">
+                        {({ isActive }) => (
+                          <Button
+                            variant={`${isActive ? "default" : "ghost"}`}
+                            className={`${
+                              !isActive &&
+                              "text-muted-foreground transition-colors hover:text-foreground"
+                            }`}
+                          >
+                            <SquarePlus className="mr-2 h-4 w-4" />
+                            Create Post
+                          </Button>
+                        )}
+                      </NavLink>
+                    </SheetClose>
                   </>
                 ) : (
-                  <NavLink to="/login">
-                    {({ isActive }) => (
-                      <Button
-                        variant={`${isActive ? "default" : "ghost"}`}
-                        className={`${
-                          !isActive &&
-                          "text-muted-foreground transition-colors hover:text-foreground"
-                        }`}
-                      >
-                        <LogIn className="mr-2 h-4 w-4" /> Login
-                      </Button>
-                    )}
-                  </NavLink>
+                  <SheetClose asChild>
+                    <NavLink to="/login">
+                      {({ isActive }) => (
+                        <Button
+                          variant={`${isActive ? "default" : "ghost"}`}
+                          className={`${
+                            !isActive &&
+                            "text-muted-foreground transition-colors hover:text-foreground"
+                          }`}
+                        >
+                          <LogIn className="mr-2 h-4 w-4" /> Login
+                        </Button>
+                      )}
+                    </NavLink>
+                  </SheetClose>
                 )}
               </nav>
             </SheetContent>

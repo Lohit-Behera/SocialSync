@@ -73,6 +73,7 @@ function Posts({
             videoId={post.id}
             isActive={activeVideoId === post.id}
             setActiveVideoId={setActiveVideoId}
+            thumbnailSrc={post.thumbnail}
           />
         )}
         {post.type === "image" && (

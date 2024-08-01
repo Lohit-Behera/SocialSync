@@ -29,6 +29,7 @@ function CreatePost() {
   const [textContent, setTextContent] = useState("");
   const [image, setImage] = useState(null);
   const [video, setVideo] = useState(null);
+  const [thumbnail, setThumbnail] = useState(null);
 
   useEffect(() => {
     if (!userInfo) {
@@ -71,6 +72,7 @@ function CreatePost() {
       fetchCreatePost({
         content: textContent,
         video: video,
+        thumbnail: thumbnail,
         type: "video",
       })
     );
@@ -119,6 +121,27 @@ function CreatePost() {
       setVideo(file);
     } else {
       alert("Please select an video file");
+    }
+  };
+
+  const handleThumbnailDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    setIsDragging(false);
+    if (file.type.startsWith("image/")) {
+      setThumbnail(file);
+    } else {
+      alert("Please select an image file");
+    }
+  };
+
+  const thumbnailHandler = (e) => {
+    e.preventDefault();
+    const file = e.target.files[0];
+    if (file.type.startsWith("image/")) {
+      setThumbnail(file);
+    } else {
+      alert("Please select an image file");
     }
   };
 
@@ -175,7 +198,7 @@ function CreatePost() {
               </CardContent>
               <CardFooter className="flex flex-col space-y-4">
                 <div className="grid gap-2 w-full">
-                  <Label htmlFor="image-upload">Create Post</Label>
+                  <Label htmlFor="image-upload">Select Image</Label>
                   {image ? (
                     <>
                       <img src={URL.createObjectURL(image)} />
@@ -236,7 +259,7 @@ function CreatePost() {
               </CardContent>
               <CardFooter className="flex flex-col space-y-4">
                 <div className="grid gap-2 w-full">
-                  <Label htmlFor="video-upload">Create Post</Label>
+                  <Label htmlFor="video-upload">Select Video</Label>
                   {videoElement}
                   {!video ? (
                     <>
@@ -266,6 +289,41 @@ function CreatePost() {
                     >
                       New Video
                     </Button>
+                  )}
+                </div>
+                <div className="grid gap-2 w-full">
+                  <Label htmlFor="image-upload">Select Thumbnail</Label>
+                  {thumbnail ? (
+                    <>
+                      <img src={URL.createObjectURL(thumbnail)} />
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={(e) => setThumbnail(null)}
+                      >
+                        New Thumbnail
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <input
+                        type="file"
+                        name="thumbnail"
+                        id="thumbnail-upload"
+                        accept="image/*"
+                        label="Upload Thumbnail"
+                        onChange={(e) => thumbnailHandler(e)}
+                        className="block md:hidden w-full text-primary font-semibold file:me-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground file:hover:cursor-pointer hover:file:bg-primary/90  file:disabled:opacity-50 file:disabled:pointer-events-none cursor-pointer"
+                      />
+                      <DragNDrop
+                        className="hidden md:flex "
+                        handleDrop={handleThumbnailDrop}
+                        uploadHandler={thumbnailHandler}
+                        isDragging={isDragging}
+                        setIsDragging={setIsDragging}
+                        type={"image"}
+                      />
+                    </>
                   )}
                 </div>
                 <div className="grid gap-2 w-full">

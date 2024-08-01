@@ -49,7 +49,7 @@ export const fetchGetPost = createAsyncThunk('get/post', async (id, { rejectWith
     }
 });
 
-export const fetchGetUserAllTextPost = createAsyncThunk('get/user/all/textPost', async (id, { rejectWithValue, getState }) => {
+export const fetchGetUserAllPost = createAsyncThunk('get/user/all/textPost', async (id, { rejectWithValue, getState }) => {
     try {
         const { user: { userInfo } = {} } = getState();
         const config = {
@@ -234,9 +234,9 @@ const PostSlice = createSlice({
         getAllImagePostStatus: 'idle',
         getAllImagePostError: null,
 
-        getUserAllTextPost: {},
-        getUserAllTextPostStatus: 'idle',
-        getUserAllTextPostError: null,
+        getUserAllPost: {},
+        getUserAllPostStatus: 'idle',
+        getUserAllPostError: null,
 
         getAllFollowingPosts: {},
         getAllFollowingPostsStatus: 'idle',
@@ -357,16 +357,16 @@ const PostSlice = createSlice({
             })
 
             // Get User All Text Post
-            .addCase(fetchGetUserAllTextPost.pending, (state) => {
-                state.getUserAllTextPostStatus = 'loading';
+            .addCase(fetchGetUserAllPost.pending, (state) => {
+                state.getUserAllPostStatus = 'loading';
             })
-            .addCase(fetchGetUserAllTextPost.fulfilled, (state, action) => {
-                state.getUserAllTextPostStatus = 'succeeded';
-                state.getUserAllTextPost = action.payload;
+            .addCase(fetchGetUserAllPost.fulfilled, (state, action) => {
+                state.getUserAllPostStatus = 'succeeded';
+                state.getUserAllPost = action.payload;
             })
-            .addCase(fetchGetUserAllTextPost.rejected, (state, action) => {
-                state.getUserAllTextPostStatus = 'failed';
-                state.getUserAllTextPostError = action.payload;
+            .addCase(fetchGetUserAllPost.rejected, (state, action) => {
+                state.getUserAllPostStatus = 'failed';
+                state.getUserAllPostError = action.payload;
             })
 
             // Get All following Posts
