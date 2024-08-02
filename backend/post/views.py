@@ -144,9 +144,16 @@ def like_unlike_post(request, pk):
 @permission_classes([IsAuthenticated])
 def get_user_posts(request, pk):
     try:
-        post = Post.objects.filter(user=pk)
-        serializer = PostSerializer(post, many=True)
-        return Response(serializer.data)
+        posts = Post.objects.filter(user=pk).order_by('-created_at')
+        paginator = StandardResultsSetPagination()
+        result_page = paginator.paginate_queryset(posts, request)
+        serializer = PostSerializer(result_page, many=True)
+        response_data = {
+                    'total_pages': paginator.page.paginator.num_pages,
+                    'current_page': paginator.page.number,
+                    'posts': serializer.data
+                }
+        return Response(response_data)
     except Exception as e:
         print(e)
         return Response({'message': 'An error occurred while processing your request'}, status=status.HTTP_400_BAD_REQUEST)

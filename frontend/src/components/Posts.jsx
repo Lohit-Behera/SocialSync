@@ -14,6 +14,7 @@ import VideoPlayer from "./VideoPlayer";
 
 function Posts({
   post = {},
+  bgColor = "",
   following = {},
   handleFollow,
   loadingUser,
@@ -28,42 +29,48 @@ function Posts({
   }
 
   return (
-    <Card key={post.id}>
+    <Card key={post.id} className={bgColor}>
       <CardHeader>
-        <CardTitle className="flex justify-between">
-          <div className="flex space-x-2">
-            <Link to={`/profile/${post.user}`}>
-              <Avatar>
-                <AvatarImage src={post.profile_image} />
-                <AvatarFallback>P</AvatarFallback>
-              </Avatar>
-            </Link>
-            <Link to={`/profile/${post.user}`}>
-              <h3 className="text-base md:text-lg font-semibold mt-2 md:mt-0.5 lg:mt-1 hover:underline">
-                {post.user_name}
-              </h3>
-            </Link>
-          </div>
-          {post.user === userInfo.id ? null : (
-            <Button
-              className="text-xs md:text-sm"
-              size="sm"
-              variant={following.includes(post.user) ? "secondary" : "default"}
-              onClick={() => handleFollow(post.user)}
-              disabled={loadingUser === post.user && followStatus === "loading"}
-            >
-              {following.includes(post.user) ? (
-                <UserMinus />
-              ) : loadingUser === post.user && followStatus === "loading" ? (
-                <>
-                  <Loader2 className="animate-spin" />
-                </>
-              ) : (
-                <UserPlus />
-              )}
-            </Button>
-          )}
-        </CardTitle>
+        {handleFollow && (
+          <CardTitle className="flex justify-between">
+            <div className="flex space-x-2">
+              <Link to={`/profile/${post.user}`}>
+                <Avatar>
+                  <AvatarImage src={post.profile_image} />
+                  <AvatarFallback>P</AvatarFallback>
+                </Avatar>
+              </Link>
+              <Link to={`/profile/${post.user}`}>
+                <h3 className="text-base md:text-lg font-semibold mt-2 md:mt-0.5 lg:mt-1 hover:underline">
+                  {post.user_name}
+                </h3>
+              </Link>
+            </div>
+            {post.user === userInfo.id ? null : (
+              <Button
+                className="text-xs md:text-sm"
+                size="sm"
+                variant={
+                  following.includes(post.user) ? "secondary" : "default"
+                }
+                onClick={() => handleFollow(post.user)}
+                disabled={
+                  loadingUser === post.user && followStatus === "loading"
+                }
+              >
+                {following.includes(post.user) ? (
+                  <UserMinus />
+                ) : loadingUser === post.user && followStatus === "loading" ? (
+                  <>
+                    <Loader2 className="animate-spin" />
+                  </>
+                ) : (
+                  <UserPlus />
+                )}
+              </Button>
+            )}
+          </CardTitle>
+        )}
       </CardHeader>
       <CardContent>
         {post.type === "video" && (

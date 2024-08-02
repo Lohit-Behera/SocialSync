@@ -120,8 +120,7 @@ function HomePage() {
       ) : getAllFollowingPostsStatus === "failed" ? (
         <p>Error</p>
       ) : (
-        <div className="w-[95%] md:w-[90%] lg:w-[85%] mx-auto mb-6">
-          <h1 className="text-3xl font-bold text-center my-4">Image Posts</h1>
+        <div className="w-[95%] md:w-[90%] lg:w-[85%] mx-auto mb-6 mt-6 md:mt-8">
           {posts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {posts.map((post) => (

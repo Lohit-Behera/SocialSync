@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -16,9 +16,9 @@ import {
   fetchGetFollow,
   resetFollow,
 } from "@/features/UserFollowSlice";
-import VideoPlayer from "@/components/VideoPlayer";
-import { fetchGetUserAllPost } from "@/features/PostSlice";
+import { fetchGetUserAllPost, resetGetUserAllPost } from "@/features/PostSlice";
 import { Loader2 } from "lucide-react";
+import Posts from "@/components/Posts";
 
 function Profile({ user = {} }) {
   const dispatch = useDispatch();
@@ -46,10 +46,37 @@ function Profile({ user = {} }) {
     useSelector((state) => state.post.getUserAllPost) || [];
 
   const [posts, setPosts] = useState([]);
+  const [pageLoading, setPageLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [runOneTime, setRunOneTime] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [noMorePost, setNoMorePost] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchGetUserAllPost(id));
+    setPosts([]);
+    setNoMorePost(false);
+  }, []);
+
+  useEffect(() => {
+    dispatch(fetchGetUserAllPost({ id: id }));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (getUserAllPostStatus === "succeeded" && runOneTime) {
+      setRunOneTime(false);
+      setPosts((prevPosts) => [...prevPosts, ...getUserAllPost.posts]);
+      setCurrentPage(getUserAllPost.current_page);
+      setTotalPages(getUserAllPost.total_pages);
+      setPageLoading(false);
+      dispatch(resetGetUserAllPost());
+      setLoading(false);
+    } else if (getUserAllPostStatus === "failed") {
+      setPageLoading(false);
+      setLoading(false);
+      dispatch(resetGetUserAllPost());
+    }
+  }, [getUserAllPostStatus]);
 
   useEffect(() => {
     if (followStatus === "succeeded") {
@@ -58,6 +85,29 @@ function Profile({ user = {} }) {
       dispatch(resetFollow());
     }
   }, [followStatus, dispatch]);
+
+  const handleScroll = useCallback(() => {
+    const scrollableHeight = document.documentElement.scrollHeight;
+    const scrolledFromTop = window.innerHeight + window.scrollY;
+
+    if (Math.ceil(scrolledFromTop) >= scrollableHeight) {
+      console.log("User has scrolled to the bottom", currentPage);
+      if (currentPage === totalPages) {
+        setNoMorePost(true);
+      } else if (currentPage < totalPages) {
+        dispatch(fetchGetUserAllPost({ id: id, page: currentPage + 1 }));
+        setLoading(true);
+        setRunOneTime(true);
+      }
+    }
+  }, [currentPage, totalPages, dispatch]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   const handleLike = (id) => {
     if (userInfo) {
@@ -69,7 +119,7 @@ function Profile({ user = {} }) {
 
   return (
     <div className="w-[96%] md:w-[80%] lg:w-[70%] mx-auto mt-4">
-      {getUserAllPostStatus === "loading" ? (
+      {pageLoading ? (
         <p>Loading...</p>
       ) : getUserAllPostStatus === "failed" ? (
         <p>Error</p>
@@ -132,46 +182,30 @@ function Profile({ user = {} }) {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col">
-            <p className="text-lg md:text-xl font-semibold text-center my-4">
-              Posts
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-              {Array.isArray(getUserAllPost) &&
-                getUserAllPost.map((post) => (
-                  <Card key={post.id} className="bg-muted">
-                    <CardHeader>
-                      <CardTitle>
-                        {post.type === "video" && (
-                          <VideoPlayer
-                            videoSrc={post.video}
-                            hight="h-auto md:h-40 rounded-lg"
-                          />
-                        )}
-                        {post.type === "image" && (
-                          <Link to={`/post/${post.id}`}>
-                            <img
-                              src={post.image}
-                              alt="image"
-                              className="w-full h-40 object-cover rounded-lg"
-                            />
-                          </Link>
-                        )}
-                        <Link to={`/post/${post.id}`}>
-                          <p
-                            className={`${
-                              post.type === "text"
-                                ? "line-clamp-[7]"
-                                : "line-clamp-1"
-                            } text-xs md:text-sm lg:text-base mt-2`}
-                          >
-                            {post.content}
-                          </p>
-                        </Link>
-                      </CardTitle>
-                    </CardHeader>
-                  </Card>
-                ))}
-            </div>
+            {posts.length > 0 ? (
+              <>
+                <p className="text-lg md:text-xl font-semibold text-center my-4">
+                  Posts
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {posts.map((post) => (
+                    <Posts key={post.id} post={post} bgColor="bg-muted" />
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p className="text-base md:text-lg font-semibold text-center my-6">
+                User Has No Post.
+              </p>
+            )}
+            {loading && (
+              <Loader2 className="animate-spin mx-auto my-4 w-12 h-12" />
+            )}
+            {noMorePost && (
+              <p className="text-base md:text-lg font-semibold text-center my-6">
+                No More Post
+              </p>
+            )}
           </CardFooter>
         </Card>
       )}
