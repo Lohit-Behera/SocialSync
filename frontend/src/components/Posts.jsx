@@ -81,6 +81,7 @@ function Posts({
             isActive={activeVideoId === post.id}
             setActiveVideoId={setActiveVideoId}
             thumbnailSrc={post.thumbnail}
+            glow="20"
           />
         )}
         {post.type === "image" && (
@@ -96,7 +97,7 @@ function Posts({
           <p
             className={`${
               post.type === "text" ? "line-clamp-[8]" : "line-clamp-1"
-            } text-xs md:text-sm lg:text-base mt-2`}
+            } text-xs md:text-sm lg:text-base mt-2 hover:underline`}
           >
             {post.content}
           </p>

@@ -6,6 +6,7 @@ import Navigation from "./components/Navigation";
 import { fetchUserDetails } from "./features/UserSlice";
 import { fetchGetFollow } from "./features/UserFollowSlice";
 import { fetchOnlineStatus } from "./features/ChatSlice";
+import { setWebSocketNotificationDisconnected } from "./features/WebSocketSlice";
 
 function Layout() {
   const dispatch = useDispatch();
@@ -13,9 +14,6 @@ function Layout() {
   const userInfo = useSelector((state) => state.user.userInfo);
   const userDetailsStatus = useSelector(
     (state) => state.user.userDetailsStatus
-  );
-  const getFollowStatus = useSelector(
-    (state) => state.userFollow.getFollowStatus
   );
 
   const [onlineStatus, setOnlineStatus] = useState("");
@@ -43,6 +41,7 @@ function Layout() {
       );
       websocket.current.onopen = () => {
         console.log("Connected to websocket to notifications");
+        dispatch(setWebSocketNotificationDisconnected(false));
       };
 
       websocket.current.onmessage = (event) => {
@@ -52,6 +51,7 @@ function Layout() {
 
       websocket.current.onclose = (e) => {
         console.log("WebSocket closed:", e);
+        dispatch(setWebSocketNotificationDisconnected(true));
       };
 
       return () => {

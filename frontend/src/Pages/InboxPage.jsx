@@ -17,9 +17,17 @@ function InboxPage() {
   const onlineStatusStatus = useSelector(
     (state) => state.chat.onlineStatusStatus
   );
+  const webSocketNotificationDisconnected = useSelector(
+    (state) => state.webSocket.webSocketNotificationDisconnected
+  );
 
   const [onlineList, setOnlineList] = useState([]);
   const [lastSeenList, setLastSeenList] = useState([]);
+  const [disconnected, setDisconnected] = useState(false);
+
+  useEffect(() => {
+    setDisconnected(webSocketNotificationDisconnected);
+  }, [webSocketNotificationDisconnected]);
 
   useEffect(() => {
     dispatch(fetchUserList());
@@ -40,6 +48,18 @@ function InboxPage() {
         <p>Error</p>
       ) : (
         <div className="w-[90%] md:w-[85%] lg:w-[80%] mx-auto">
+          {disconnected && (
+            <p className="text-center bg-red-500 text-white rounded-full w-full md:w-[90%] mt-4 mx-auto">
+              Connection failed or disconnected from server try refreshing the
+              page{" "}
+              <span
+                className="cursor-pointer hover:underline font-semibold"
+                onClick={() => window.location.reload()}
+              >
+                Click Here
+              </span>
+            </p>
+          )}
           <Card className="my-10">
             <CardHeader>
               <CardTitle className="text-2xl md:text-3xl font-bold text-center">

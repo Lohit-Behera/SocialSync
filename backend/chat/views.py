@@ -42,9 +42,16 @@ def chat_room(request):
 @permission_classes([IsAuthenticated])
 def get_initial_messages(request, room_name):
     room = get_object_or_404(ChatRoom, name=room_name)
-    messages = Message.objects.filter(room=room).order_by('-timestamp')[:15]
-    serializer = MessageSerializer(messages, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    paginator = StandardResultsSetPagination()
+    messages = Message.objects.filter(room=room).order_by('-timestamp')
+    result_page = paginator.paginate_queryset(messages, request)
+    serializer = MessageSerializer(result_page, many=True)
+    response_data = {
+                'total_pages': paginator.page.paginator.num_pages,
+                'current_page': paginator.page.number,
+                'messages': serializer.data
+            }
+    return Response(response_data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -60,7 +67,7 @@ def get_all_messages(request, room_name):
         response_data = {
                 'total_pages': paginator.page.paginator.num_pages,
                 'current_page': paginator.page.number,
-                'massages': serializer.data
+                'messages': serializer.data
             }
         return Response(response_data, status=status.HTTP_200_OK)
     except Exception as e:

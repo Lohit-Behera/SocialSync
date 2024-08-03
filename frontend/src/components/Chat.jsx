@@ -18,6 +18,8 @@ const Chat = ({ roomName }) => {
   const [newMessage, setNewMessage] = useState("");
   const [totalPages, setTotalPages] = useState(2);
   const [currentPage, setCurrentPage] = useState(1);
+  console.log(`currentPage: ${currentPage}, totalPages: ${totalPages}`);
+
   const [scroll, setScroll] = useState(false);
   const [complete, setComplete] = useState(false);
   const [noMorePost, setNoMorePost] = useState(false);
@@ -33,7 +35,7 @@ const Chat = ({ roomName }) => {
   const websocket = useRef(null);
   const userInfo = useSelector((state) => state.user.userInfo);
   const initialMessage =
-    useSelector((state) => state.chat.initialMessage) || [];
+    useSelector((state) => state.chat.initialMessage) || {};
   const initialMessageStatus = useSelector(
     (state) => state.chat.initialMessageStatus
   );
@@ -53,8 +55,13 @@ const Chat = ({ roomName }) => {
 
   useEffect(() => {
     if (initialMessageStatus === "succeeded") {
-      const chatMassages = [...initialMessage].reverse();
-      setMessages([...chatMassages].concat(messages));
+      const firstMessage = initialMessage.messages || [];
+      console.log(firstMessage);
+
+      const chatMessages = [...firstMessage].reverse();
+      setMessages([...chatMessages].concat(messages));
+      setTotalPages(initialMessage.total_pages);
+      setCurrentPage(initialMessage.current_page);
       setScroll(true);
     } else if (initialMessageStatus === "failed") {
       setMessages([]);
@@ -67,8 +74,8 @@ const Chat = ({ roomName }) => {
     if (allMessageStatus === "succeeded") {
       setTotalPages(allMessagesData.total_pages);
       setCurrentPage(allMessagesData.current_page);
-      const chatMassages = [...allMessagesData.massages].reverse();
-      setMessages([...chatMassages].concat(messages));
+      const chatMessages = [...allMessagesData.messages].reverse();
+      setMessages([...chatMessages].concat(messages));
     } else if (allMessageStatus === "failed") {
       if (allMessageError === "Invalid page.") {
         setComplete(true);

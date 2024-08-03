@@ -6,6 +6,7 @@ import PostSlice from "@/features/PostSlice";
 import PostRelatedSlice from "@/features/PostRelatedSlice";
 import UserFollowSlice from "@/features/UserFollowSlice";
 import ChatSlice from "@/features/ChatSlice";
+import webSocketSlice from "@/features/WebSocketSlice";
 
 
 import DeleteImages from "@/features/DeleteImages";
@@ -13,6 +14,7 @@ import DeleteImages from "@/features/DeleteImages";
 const store = configureStore({
     reducer: {
         mode: ModeSlice,
+        webSocket: webSocketSlice,
         user: UserSlice,
         post: PostSlice,
         postRelated: PostRelatedSlice,
