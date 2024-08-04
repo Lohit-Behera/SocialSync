@@ -20,6 +20,7 @@ import {
 } from "@/features/PostSlice";
 import VideoPlayer from "@/components/VideoPlayer";
 import DragNDrop from "@/components/DragNDrop";
+import Loader from "@/components/Loader/Loader";
 
 function EditPost() {
   const { id } = useParams();
@@ -46,10 +47,14 @@ function EditPost() {
   useEffect(() => {
     if (!userInfo) {
       navigate("/login");
+    } else if (getPostStatus === "succeeded") {
+      if (getPost.user !== userInfo.id) {
+        navigate(`/post/${getPost.id}`);
+      }
     } else {
       dispatch(fetchGetPost(id));
     }
-  }, [userInfo, navigate, dispatch, id]);
+  }, [userInfo, getPostStatus, navigate, dispatch, id]);
 
   useEffect(() => {
     if (editTextPostStatus === "succeeded") {
@@ -193,7 +198,7 @@ function EditPost() {
   return (
     <div className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto">
       {getPostStatus === "loading" || getPostStatus === "idle" ? (
-        <p>Loading...</p>
+        <Loader />
       ) : getPostStatus === "failed" ? (
         <p>Error</p>
       ) : (

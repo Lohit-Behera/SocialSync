@@ -29,6 +29,7 @@ import {
 } from "@/features/PostRelatedSlice";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import CommentLoader from "./Loader/CommentLoader";
 
 function Comments({ id }) {
   const dispatch = useDispatch();
@@ -149,7 +150,7 @@ function Comments({ id }) {
         </CardFooter>
       )}
       {getAllCommentsStatus === "loading" || getAllCommentsStatus === "idle" ? (
-        <p>Loading...</p>
+        <CommentLoader />
       ) : getAllCommentsStatus === "failed" ? (
         <p>Error</p>
       ) : (

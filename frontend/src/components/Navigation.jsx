@@ -231,22 +231,6 @@ function Navigation() {
           </nav>
           <nav className="mt-auto flex flex-col items-center gap-4 px-2 mb-2">
             <DarkModeToggle />
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={deleteImagesHandler}
-                  >
-                    <ImageMinus />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Delete Unused Images</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
             {userInfo && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

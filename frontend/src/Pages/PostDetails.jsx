@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import VideoPlayer from "@/components/VideoPlayer";
@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, Send, Pencil, Trash } from "lucide-react";
 import { fetchLike, resetLike } from "@/features/PostRelatedSlice";
 import Comments from "@/components/Comments";
+import PostDetailsLoader from "@/components/Loader/PostDetailsLoader";
 
 function PostDetails() {
   const dispatch = useDispatch();
@@ -97,7 +98,7 @@ function PostDetails() {
   return (
     <>
       {getPostStatus === "loading" || getPostStatus === "idle" ? (
-        <p>Loading...</p>
+        <PostDetailsLoader />
       ) : getPostStatus === "failed" ? (
         <p>Error</p>
       ) : (

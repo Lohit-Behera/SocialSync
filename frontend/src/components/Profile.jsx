@@ -19,6 +19,7 @@ import {
 import { fetchGetUserAllPost, resetGetUserAllPost } from "@/features/PostSlice";
 import { Loader2 } from "lucide-react";
 import Posts from "@/components/Posts";
+import ProfileLoader from "./Loader/ProfileLoader";
 
 function Profile({ user = {} }) {
   const dispatch = useDispatch();
@@ -56,6 +57,9 @@ function Profile({ user = {} }) {
   useEffect(() => {
     setPosts([]);
     setNoMorePost(false);
+    if (!userInfo) {
+      navigate(`/login`);
+    }
   }, []);
 
   useEffect(() => {
@@ -109,18 +113,14 @@ function Profile({ user = {} }) {
     };
   }, [handleScroll]);
 
-  const handleLike = (id) => {
-    if (userInfo) {
-      dispatch(fetchFollowUser(id));
-    } else {
-      navigate("/login");
-    }
+  const handleFollow = (id) => {
+    dispatch(fetchFollowUser(id));
   };
 
   return (
     <div className="w-[96%] md:w-[80%] lg:w-[70%] mx-auto mt-4">
       {pageLoading ? (
-        <p>Loading...</p>
+        <ProfileLoader />
       ) : getUserAllPostStatus === "failed" ? (
         <p>Error</p>
       ) : (
@@ -141,7 +141,7 @@ function Profile({ user = {} }) {
                   className="text-xs md:text-sm mt-2.5"
                   size="sm"
                   variant={userFollowing.includes(id) ? "secondary" : "default"}
-                  onClick={() => handleLike(id)}
+                  onClick={() => handleFollow(id)}
                 >
                   {userFollowing.includes(id) ? (
                     "Unfollow"

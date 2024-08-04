@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUserDetailsUnknown } from "@/features/UserSlice";
 import Profile from "@/components/Profile";
+import ProfileLoader from "@/components/Loader/ProfileLoader";
 
 function OtherProfile() {
   const dispatch = useDispatch();
   const { id } = useParams();
+
   const userDetailsUnknown =
     useSelector((state) => state.user.userDetailsUnknown) || {};
   const userDetailsUnknownStatus = useSelector(
@@ -26,7 +28,7 @@ function OtherProfile() {
     <>
       {userDetailsUnknownStatus === "loading" ||
       userDetailsUnknownStatus === "idle" ? (
-        <p>Loading...</p>
+        <ProfileLoader />
       ) : userDetailsUnknownStatus === "failed" ? (
         <p>Error</p>
       ) : (

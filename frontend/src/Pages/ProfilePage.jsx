@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Profile from "@/components/Profile";
+import ProfileLoader from "@/components/Loader/ProfileLoader";
 
 function ProfilePage() {
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ function ProfilePage() {
   return (
     <>
       {userDetailsStatus === "loading" || userDetailsStatus === "idle" ? (
-        <div>Loading...</div>
+        <ProfileLoader />
       ) : userDetailsStatus === "failed" ? (
         <div>Error</div>
       ) : (

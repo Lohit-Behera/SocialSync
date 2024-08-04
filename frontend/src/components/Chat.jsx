@@ -10,6 +10,8 @@ import moment from "moment";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Loader2, Send } from "lucide-react";
+import { setWebSocketChatDisconnected } from "@/features/WebSocketSlice";
+import MassageLoader from "./Loader/MassageLoader";
 
 const Chat = ({ roomName }) => {
   const dispatch = useDispatch();
@@ -119,6 +121,7 @@ const Chat = ({ roomName }) => {
 
     websocket.current.onopen = () => {
       console.log("Connected to websocket");
+      dispatch(setWebSocketChatDisconnected(false));
     };
 
     websocket.current.onmessage = (e) => {
@@ -160,7 +163,7 @@ const Chat = ({ roomName }) => {
   return (
     <>
       {initialMessageStatus === "loading" || initialMessageStatus === "idle" ? (
-        <p>Loading...</p>
+        <MassageLoader />
       ) : initialMessageStatus === "failed" ? (
         <p>Something went wrong</p>
       ) : (

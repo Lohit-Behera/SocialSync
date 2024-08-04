@@ -148,7 +148,13 @@ function CreatePost() {
   const videoElement = useMemo(() => {
     if (video) {
       return (
-        <video src={URL.createObjectURL(video)} controls className="w-full" />
+        <div className="flex justify-center">
+          <video
+            src={URL.createObjectURL(video)}
+            controls
+            className="w-full md:w-[40%] lg:w-[30%] max-h-[80vh]"
+          />
+        </div>
       );
     }
     return null;

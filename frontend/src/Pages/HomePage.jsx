@@ -12,6 +12,7 @@ import {
 } from "@/features/UserFollowSlice";
 import { Loader2 } from "lucide-react";
 import Posts from "@/components/Posts";
+import PostLoader from "@/components/Loader/PostLoader";
 
 function HomePage() {
   const dispatch = useDispatch();
@@ -116,7 +117,7 @@ function HomePage() {
   return (
     <>
       {pageLoading ? (
-        <p>Loading...</p>
+        <PostLoader />
       ) : getAllFollowingPostsStatus === "failed" ? (
         <p>Error</p>
       ) : (
