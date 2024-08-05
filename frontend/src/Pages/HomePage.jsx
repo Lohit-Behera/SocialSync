@@ -13,6 +13,8 @@ import {
 import { Loader2 } from "lucide-react";
 import Posts from "@/components/Posts";
 import PostLoader from "@/components/Loader/PostLoader";
+import ServerErrorPage from "./Error/ServerErrorPage";
+import SomethingWentWrong from "./Error/SomethingWentWrong";
 
 function HomePage() {
   const dispatch = useDispatch();
@@ -119,7 +121,7 @@ function HomePage() {
       {pageLoading ? (
         <PostLoader />
       ) : getAllFollowingPostsStatus === "failed" ? (
-        <p>Error</p>
+        <ServerErrorPage />
       ) : (
         <div className="w-[95%] md:w-[90%] lg:w-[85%] mx-auto mb-6 mt-6 md:mt-8">
           {posts.length > 0 ? (

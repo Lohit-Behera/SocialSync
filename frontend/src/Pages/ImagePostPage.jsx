@@ -13,6 +13,7 @@ import {
 import { Loader2 } from "lucide-react";
 import Posts from "@/components/Posts";
 import PostLoader from "@/components/Loader/PostLoader";
+import ServerErrorPage from "./Error/ServerErrorPage";
 
 function ImagePostPage() {
   const dispatch = useDispatch();
@@ -116,7 +117,7 @@ function ImagePostPage() {
       {pageLoading ? (
         <PostLoader />
       ) : getAllImagePostStatus === "failed" ? (
-        <p>Error</p>
+        <ServerErrorPage />
       ) : (
         <div className="w-[95%] md:w-[90%] lg:w-[85%] mx-auto mb-6">
           <h1 className="text-3xl font-bold text-center my-4">Image Posts</h1>

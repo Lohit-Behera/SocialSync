@@ -20,6 +20,7 @@ import { fetchGetUserAllPost, resetGetUserAllPost } from "@/features/PostSlice";
 import { Loader2 } from "lucide-react";
 import Posts from "@/components/Posts";
 import ProfileLoader from "./Loader/ProfileLoader";
+import ServerErrorPage from "@/Pages/Error/ServerErrorPage";
 
 function Profile({ user = {} }) {
   const dispatch = useDispatch();
@@ -122,7 +123,7 @@ function Profile({ user = {} }) {
       {pageLoading ? (
         <ProfileLoader />
       ) : getUserAllPostStatus === "failed" ? (
-        <p>Error</p>
+        <ServerErrorPage />
       ) : (
         <Card>
           <CardHeader>

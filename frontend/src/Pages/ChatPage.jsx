@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import ChatLoader from "@/components/Loader/ChatLoader";
+import ServerErrorPage from "./Error/ServerErrorPage";
 
 function ChatPage() {
   const dispatch = useDispatch();
@@ -42,7 +43,7 @@ function ChatPage() {
       {chatRoomStatus === "loading" || chatRoomStatus === "idle" ? (
         <ChatLoader />
       ) : chatRoomStatus === "failed" ? (
-        <p>Error</p>
+        <ServerErrorPage />
       ) : (
         <>
           <div className="w-full">

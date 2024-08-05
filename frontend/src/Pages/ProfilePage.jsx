@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Profile from "@/components/Profile";
 import ProfileLoader from "@/components/Loader/ProfileLoader";
+import ServerErrorPage from "./Error/ServerErrorPage";
 
 function ProfilePage() {
   const dispatch = useDispatch();
@@ -26,7 +27,7 @@ function ProfilePage() {
       {userDetailsStatus === "loading" || userDetailsStatus === "idle" ? (
         <ProfileLoader />
       ) : userDetailsStatus === "failed" ? (
-        <div>Error</div>
+        <ServerErrorPage />
       ) : (
         <Profile user={userDetails} />
       )}

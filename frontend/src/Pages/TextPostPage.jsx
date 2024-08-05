@@ -20,6 +20,7 @@ import {
 import { Loader2, UserMinus, UserPlus } from "lucide-react";
 import Posts from "@/components/Posts";
 import PostLoader from "@/components/Loader/PostLoader";
+import ServerErrorPage from "./Error/ServerErrorPage";
 
 function TextPostPage() {
   const dispatch = useDispatch();
@@ -124,7 +125,7 @@ function TextPostPage() {
       {pageLoading ? (
         <PostLoader />
       ) : getAllTextPostStatus === "failed" ? (
-        <p>Error</p>
+        <ServerErrorPage />
       ) : (
         <>
           <h1 className="text-3xl text-center font-bold my-4">Text Post</h1>

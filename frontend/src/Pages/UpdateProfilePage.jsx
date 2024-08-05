@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CustomPassword from "@/components/CustomPassword";
 import UpdateProfileLoader from "@/components/Loader/UpdateProfileLoader";
+import ServerErrorPage from "./Error/ServerErrorPage";
 
 function UpdateProfilePage() {
   const dispatch = useDispatch();
@@ -79,7 +80,7 @@ function UpdateProfilePage() {
       {userUpdateStatus === "loading" ? (
         <UpdateProfileLoader />
       ) : userUpdateStatus === "failed" ? (
-        <p>Error</p>
+        <ServerErrorPage />
       ) : (
         <div className="w-[95%] md:w-[85%] lg:w-[70%] my-6 mx-auto  border-2 rounded-lg">
           <div className="flex-col mx-6 my-4 space-y-2">

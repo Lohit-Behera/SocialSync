@@ -30,6 +30,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import CommentLoader from "./Loader/CommentLoader";
+import ServerErrorPage from "@/Pages/Error/ServerErrorPage";
 
 function Comments({ id }) {
   const dispatch = useDispatch();
@@ -152,7 +153,7 @@ function Comments({ id }) {
       {getAllCommentsStatus === "loading" || getAllCommentsStatus === "idle" ? (
         <CommentLoader />
       ) : getAllCommentsStatus === "failed" ? (
-        <p>Error</p>
+        <ServerErrorPage />
       ) : (
         <>
           {getAllComments.length > 0 ? (

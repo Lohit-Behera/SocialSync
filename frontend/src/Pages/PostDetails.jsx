@@ -34,6 +34,7 @@ import { Heart, MessageCircle, Send, Pencil, Trash } from "lucide-react";
 import { fetchLike, resetLike } from "@/features/PostRelatedSlice";
 import Comments from "@/components/Comments";
 import PostDetailsLoader from "@/components/Loader/PostDetailsLoader";
+import ServerErrorPage from "./Error/ServerErrorPage";
 
 function PostDetails() {
   const dispatch = useDispatch();
@@ -100,7 +101,7 @@ function PostDetails() {
       {getPostStatus === "loading" || getPostStatus === "idle" ? (
         <PostDetailsLoader />
       ) : getPostStatus === "failed" ? (
-        <p>Error</p>
+        <ServerErrorPage />
       ) : (
         <>
           <h1 className="text-3xl text-center font-bold my-6">Post Details</h1>

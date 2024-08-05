@@ -20,6 +20,7 @@ import {
 import VideoPlayer from "@/components/VideoPlayer";
 import DragNDrop from "@/components/DragNDrop";
 import EditPostLoader from "@/components/Loader/EditPostLoader";
+import ServerErrorPage from "./Error/ServerErrorPage";
 
 function EditPost() {
   const { id } = useParams();
@@ -199,7 +200,7 @@ function EditPost() {
       {getPostStatus === "loading" || getPostStatus === "idle" ? (
         <EditPostLoader />
       ) : getPostStatus === "failed" ? (
-        <p>Error</p>
+        <ServerErrorPage />
       ) : (
         <div className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto">
           <h1 className="text-3xl font-bold text-center p-2 my-4">Edit Post</h1>

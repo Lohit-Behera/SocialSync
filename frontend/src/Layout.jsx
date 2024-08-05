@@ -7,6 +7,10 @@ import { fetchUserDetails } from "./features/UserSlice";
 import { fetchGetFollow } from "./features/UserFollowSlice";
 import { fetchOnlineStatus } from "./features/ChatSlice";
 import { setWebSocketNotificationDisconnected } from "./features/WebSocketSlice";
+import ServerErrorPage from "./Pages/Error/ServerErrorPage";
+import { ErrorBoundary } from "react-error-boundary";
+import Loader from "./components/Loader/Loader";
+import SomethingWentWrong from "./Pages/Error/SomethingWentWrong";
 
 function Layout() {
   const dispatch = useDispatch();
@@ -64,18 +68,18 @@ function Layout() {
 
   return (
     <>
-      {userDetailsStatus === "loading" ? (
-        <div>Loading...</div>
-      ) : userDetailsStatus === "failed" ? (
-        <div>Error</div>
-      ) : (
-        <>
-          <Navigation />
-          <div className="md:ml-[55px] mt-14 md:mt-0">
+      <Navigation />
+      <div className="md:ml-[55px] mt-14 md:mt-0">
+        {userDetailsStatus === "loading" ? (
+          <Loader />
+        ) : userDetailsStatus === "failed" ? (
+          <ServerErrorPage />
+        ) : (
+          <ErrorBoundary fallback={<SomethingWentWrong />}>
             <Outlet />
-          </div>
-        </>
-      )}
+          </ErrorBoundary>
+        )}
+      </div>
     </>
   );
 }

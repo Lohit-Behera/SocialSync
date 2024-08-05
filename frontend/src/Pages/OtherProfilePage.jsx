@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchUserDetailsUnknown } from "@/features/UserSlice";
 import Profile from "@/components/Profile";
 import ProfileLoader from "@/components/Loader/ProfileLoader";
+import ServerErrorPage from "./Error/ServerErrorPage";
 
 function OtherProfile() {
   const dispatch = useDispatch();
@@ -30,7 +31,7 @@ function OtherProfile() {
       userDetailsUnknownStatus === "idle" ? (
         <ProfileLoader />
       ) : userDetailsUnknownStatus === "failed" ? (
-        <p>Error</p>
+        <ServerErrorPage />
       ) : (
         <Profile user={userDetailsUnknown} />
       )}

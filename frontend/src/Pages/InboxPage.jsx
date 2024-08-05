@@ -8,6 +8,7 @@ import moment from "moment";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchUserList, fetchOnlineStatus } from "@/features/ChatSlice";
 import InboxLoader from "@/components/Loader/InboxLoader";
+import ServerErrorPage from "./Error/ServerErrorPage";
 
 function InboxPage() {
   const dispatch = useDispatch();
@@ -52,7 +53,7 @@ function InboxPage() {
       {userListStatus === "loading" || userListStatus === "idle" ? (
         <InboxLoader />
       ) : userListStatus === "failed" || onlineStatusStatus === "failed" ? (
-        <p>Error</p>
+        <ServerErrorPage />
       ) : (
         <>
           <div className="w-[90%] md:w-[85%] lg:w-[80%] mx-auto">

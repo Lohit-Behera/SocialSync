@@ -22,10 +22,12 @@ import ChatPage from "./Pages/ChatPage";
 import VideoPostPage from "./Pages/VideoPostPage";
 import ImagePostPage from "./Pages/ImagePostPage";
 import ResetPassword from "./Pages/ResetPassword";
+import PageNotFound from "./Pages/Error/PageNotFound";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
+      <Route path="*" element={<PageNotFound />} />
       <Route index element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />

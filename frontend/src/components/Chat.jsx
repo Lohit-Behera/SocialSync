@@ -12,6 +12,7 @@ import { Button } from "./ui/button";
 import { Loader2, Send } from "lucide-react";
 import { setWebSocketChatDisconnected } from "@/features/WebSocketSlice";
 import MassageLoader from "./Loader/MassageLoader";
+import ServerErrorPage from "@/Pages/Error/ServerErrorPage";
 
 const Chat = ({ roomName }) => {
   const dispatch = useDispatch();
@@ -165,7 +166,7 @@ const Chat = ({ roomName }) => {
       {initialMessageStatus === "loading" || initialMessageStatus === "idle" ? (
         <MassageLoader />
       ) : initialMessageStatus === "failed" ? (
-        <p>Something went wrong</p>
+        <ServerErrorPage />
       ) : (
         <>
           {allMessageStatus === "loading" && (
