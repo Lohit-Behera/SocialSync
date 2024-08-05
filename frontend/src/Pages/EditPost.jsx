@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -20,7 +19,7 @@ import {
 } from "@/features/PostSlice";
 import VideoPlayer from "@/components/VideoPlayer";
 import DragNDrop from "@/components/DragNDrop";
-import Loader from "@/components/Loader/Loader";
+import EditPostLoader from "@/components/Loader/EditPostLoader";
 
 function EditPost() {
   const { id } = useParams();
@@ -196,13 +195,13 @@ function EditPost() {
   }, [image]);
 
   return (
-    <div className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto">
+    <>
       {getPostStatus === "loading" || getPostStatus === "idle" ? (
-        <Loader />
+        <EditPostLoader />
       ) : getPostStatus === "failed" ? (
         <p>Error</p>
       ) : (
-        <>
+        <div className="w-[95%] md:w-[85%] lg:w-[75%] mx-auto">
           <h1 className="text-3xl font-bold text-center p-2 my-4">Edit Post</h1>
           <Card>
             {(getPost.type === "image" || getPost.type === "video") && (
@@ -236,7 +235,7 @@ function EditPost() {
                 </CardTitle>
                 {getPost.type === "image" && (
                   <div className="grid gap-2 w-full">
-                    <Label htmlFor="image-upload">Edit Post</Label>
+                    <Label htmlFor="image-upload">Change Image</Label>
                     {imageElement}
                     {!image ? (
                       <>
@@ -272,7 +271,7 @@ function EditPost() {
                 {getPost.type === "video" && (
                   <>
                     <div className="grid gap-2 w-full">
-                      <Label htmlFor="video-upload">Edit Post</Label>
+                      <Label htmlFor="video-upload">Change Video</Label>
                       {videoElement}
                       {!video ? (
                         <>
@@ -369,9 +368,9 @@ function EditPost() {
               </Button>
             </CardFooter>
           </Card>
-        </>
+        </div>
       )}
-    </div>
+    </>
   );
 }
 

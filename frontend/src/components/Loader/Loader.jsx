@@ -1,7 +1,7 @@
 import React from "react";
 import "./Loader.css";
 
-// this loader is from here https://uiverse.io/Nawsome/tender-swan-29
+// this loader is from here https://uiverse.io/Nawsome/ugly-skunk-66
 function Loader({ hightfull = false }) {
   return (
     <div

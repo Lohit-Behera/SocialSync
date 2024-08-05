@@ -12,7 +12,7 @@ import {
 } from "@/features/UserFollowSlice";
 import { Loader2 } from "lucide-react";
 import Posts from "@/components/Posts";
-import Loader from "@/components/Loader/Loader";
+import PostLoader from "@/components/Loader/PostLoader";
 
 function ImagePostPage() {
   const dispatch = useDispatch();
@@ -114,7 +114,7 @@ function ImagePostPage() {
   return (
     <>
       {pageLoading ? (
-        <Loader />
+        <PostLoader />
       ) : getAllImagePostStatus === "failed" ? (
         <p>Error</p>
       ) : (

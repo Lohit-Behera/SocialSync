@@ -19,6 +19,7 @@ import {
 } from "@/features/UserFollowSlice";
 import { Loader2, UserMinus, UserPlus } from "lucide-react";
 import Posts from "@/components/Posts";
+import PostLoader from "@/components/Loader/PostLoader";
 
 function TextPostPage() {
   const dispatch = useDispatch();
@@ -121,7 +122,7 @@ function TextPostPage() {
   return (
     <>
       {pageLoading ? (
-        <div>Loading...</div>
+        <PostLoader />
       ) : getAllTextPostStatus === "failed" ? (
         <p>Error</p>
       ) : (

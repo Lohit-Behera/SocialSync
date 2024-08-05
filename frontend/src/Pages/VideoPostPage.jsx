@@ -1,28 +1,18 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchGetAllVideoPost,
   resetGetAllVideoPost,
 } from "@/features/PostSlice";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import VideoPlayer from "@/components/VideoPlayer";
 import {
   fetchFollowUser,
   fetchGetFollow,
   resetFollow,
 } from "@/features/UserFollowSlice";
-import { Loader2, UserMinus, UserPlus } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Posts from "@/components/Posts";
+import PostLoader from "@/components/Loader/PostLoader";
 
 function VideoPostPage() {
   const dispatch = useDispatch();
@@ -125,7 +115,7 @@ function VideoPostPage() {
   return (
     <>
       {pageLoading ? (
-        <p>Loading...</p>
+        <PostLoader />
       ) : getAllVideoPostStatus === "failed" ? (
         <p>Error</p>
       ) : (

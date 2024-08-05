@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CustomPassword from "@/components/CustomPassword";
+import UpdateProfileLoader from "@/components/Loader/UpdateProfileLoader";
+
 function UpdateProfilePage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -75,7 +77,7 @@ function UpdateProfilePage() {
   return (
     <>
       {userUpdateStatus === "loading" ? (
-        <p>Loading...</p>
+        <UpdateProfileLoader />
       ) : userUpdateStatus === "failed" ? (
         <p>Error</p>
       ) : (
