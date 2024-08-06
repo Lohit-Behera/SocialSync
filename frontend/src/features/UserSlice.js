@@ -76,11 +76,8 @@ export const fetchUserDetails = createAsyncThunk('user/details', async (id, { re
             `/api/user/details/${id}/`,
             config
         );
-
         return data;
-
     } catch (error) {
-
         return rejectWithValue(
             error.response && error.response.data.message
                 ? error.response.data.message
@@ -227,6 +224,29 @@ export const fetchForgetPasswordVerify = createAsyncThunk('user/forget/verify', 
     }
 })
 
+export const fetchReSendVerifyEmail = createAsyncThunk('user/resend', async (_, { rejectWithValue, getState }) => {
+    try {
+        const { user: { userInfo } = {} } = getState();
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userInfo.token}`,
+            },
+        };
+        const { data } = await axios.post(
+            `/api/user/resend/verify/`,
+            {},
+            config
+        );
+        return data;
+    } catch (error) {
+        return rejectWithValue(
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        );
+    }
+});
 
 const userSlice = createSlice({
     name: "user",
@@ -266,6 +286,10 @@ const userSlice = createSlice({
         forgetPasswordVerify: null,
         forgetPasswordVerifyStatus: "idle",
         forgetPasswordVerifyError: null,
+
+        reSendVerifyEmail: null,
+        reSendVerifyEmailStatus: "idle",
+        reSendVerifyEmailError: null
     },
     reducers: {
         logout: (state) => {
@@ -298,6 +322,11 @@ const userSlice = createSlice({
             state.forgetPasswordVerify = null;
             state.forgetPasswordVerifyStatus = "idle";
             state.forgetPasswordVerifyError = null;
+        },
+        resetReSendVerifyEmail: (state) => {
+            state.reSendVerifyEmail = null;
+            state.reSendVerifyEmailStatus = "idle";
+            state.reSendVerifyEmailError = null;
         }
     },
     extraReducers: (builder) => {
@@ -418,10 +447,23 @@ const userSlice = createSlice({
                 state.forgetPasswordVerifyStatus = "failed";
                 state.forgetPasswordVerifyError = action.payload;
             })
+
+            // ReSend Verify Email
+            .addCase(fetchReSendVerifyEmail.pending, (state) => {
+                state.reSendVerifyEmailStatus = "loading";
+            })
+            .addCase(fetchReSendVerifyEmail.fulfilled, (state, action) => {
+                state.reSendVerifyEmailStatus = "succeeded";
+                state.reSendVerifyEmail = action.payload;
+            })
+            .addCase(fetchReSendVerifyEmail.rejected, (state, action) => {
+                state.reSendVerifyEmailStatus = "failed";
+                state.reSendVerifyEmailError = action.payload;
+            })
     },
 });
 
 
-export const { logout, resetRegister, resetUserUpdate, resetFollowingList, resetForgetPasswordSubmit, resetForgetPasswordVerify } = userSlice.actions
+export const { logout, resetRegister, resetUserUpdate, resetFollowingList, resetForgetPasswordSubmit, resetForgetPasswordVerify, resetReSendVerifyEmail } = userSlice.actions
 
 export default userSlice.reducer

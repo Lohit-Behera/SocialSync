@@ -25,7 +25,6 @@ from .serializers import UserSerializerWithToken, UserSerializer, ContactUsSeria
 
 from .models import CustomUser, EmailVerificationToken, ContactUs
 
-# Create your views here.
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
@@ -122,9 +121,25 @@ def verify_email(request, token):
         user.is_verified = True
         user.save()
         email_verification_token.delete()
-        return redirect('/login')
+        return redirect('http://localhost:5173/login')
     except EmailVerificationToken.DoesNotExist:
-        return redirect('/verify-expired')
+        return redirect('http://localhost:5173/verify-expired')
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def resend_verification_email(request):
+    try:
+        user = request.user
+        if user.is_verified:
+            return Response({'message': 'This account is already verified'}, status=status.HTTP_400_BAD_REQUEST)
+
+        send_verification_email(request, user)
+        return Response({'message': 'Verification email sent successfully'})
+    except CustomUser.DoesNotExist:
+        return Response({'message': 'User with this email does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        print(e)
+        return Response({'message': 'An error occurred while processing your request'}, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

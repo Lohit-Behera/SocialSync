@@ -23,8 +23,10 @@ function CreatePost() {
   const navigate = useNavigate();
 
   const userInfo = useSelector((state) => state.user.userInfo);
+  const userDetails = useSelector((state) => state.user.userDetails) || {};
   const createPost = useSelector((state) => state.post.createPost);
   const createPostStatus = useSelector((state) => state.post.createPostStatus);
+  console.log(!userInfo);
 
   const [isDragging, setIsDragging] = useState(false);
   const [textContent, setTextContent] = useState("");
@@ -34,9 +36,11 @@ function CreatePost() {
 
   useEffect(() => {
     if (!userInfo) {
-      navigate("/login");
+      navigate("/");
+    } else if (!userDetails.is_verified) {
+      navigate("/update-profile");
     }
-  }, [userInfo, navigate]);
+  }, [userInfo]);
 
   useEffect(() => {
     if (createPostStatus === "succeeded") {

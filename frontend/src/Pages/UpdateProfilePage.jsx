@@ -2,7 +2,11 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchUserUpdate, resetUserUpdate } from "@/features/UserSlice";
+import {
+  fetchReSendVerifyEmail,
+  fetchUserUpdate,
+  resetUserUpdate,
+} from "@/features/UserSlice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +22,9 @@ function UpdateProfilePage() {
   const userInfo = useSelector((state) => state.user.userInfo);
   const userDetails = useSelector((state) => state.user.userDetails) || {};
   const userUpdateStatus = useSelector((state) => state.user.userUpdateStatus);
+  const reSendVerifyEmailStatus = useSelector(
+    (state) => state.user.reSendVerifyEmailStatus
+  );
 
   const [userName, setUserName] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -48,6 +55,16 @@ function UpdateProfilePage() {
       setUserName(userDetails.user_name);
     }
   }, [userInfo, userDetails, userUpdateStatus]);
+
+  useEffect(() => {
+    if (reSendVerifyEmailStatus === "succeeded") {
+      alert("Verification email sent successfully");
+      dispatch(resetUserUpdate());
+    } else if (reSendVerifyEmailStatus === "failed") {
+      alert("Something went wrong");
+      dispatch(resetUserUpdate());
+    }
+  }, [reSendVerifyEmailStatus]);
 
   const imageHandler = (e) => {
     const file = e.target.files[0];
@@ -82,7 +99,7 @@ function UpdateProfilePage() {
       ) : userUpdateStatus === "failed" ? (
         <ServerErrorPage />
       ) : (
-        <div className="w-[95%] md:w-[85%] lg:w-[70%] my-6 mx-auto  border-2 rounded-lg">
+        <div className="w-[95%] md:w-[85%] lg:w-[70%] my-6 mx-auto  border-2 rounded-lg bg-card">
           <div className="flex-col mx-6 my-4 space-y-2">
             <Avatar className="w-24 h-24 mx-auto">
               <AvatarImage src={userDetails.profile_image} />
@@ -95,7 +112,15 @@ function UpdateProfilePage() {
               Email: {userDetails.email}
             </p>
             <p className="text-base lg:text-lg text-center">
-              Verified: {userDetails.is_verified ? "Yes" : "No"}
+              Verified: {userDetails.is_verified ? "Yes" : "No"}{" "}
+              {!userDetails.is_verified && (
+                <Button
+                  onClick={() => dispatch(fetchReSendVerifyEmail())}
+                  size="sx"
+                >
+                  Verify
+                </Button>
+              )}
             </p>
           </div>
           <div className="mx-6 my-4 space-y-4">
