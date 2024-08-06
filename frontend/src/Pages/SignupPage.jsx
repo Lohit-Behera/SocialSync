@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import CustomPassword from "@/components/CustomPassword";
 import WaterFall from "../assets/waterfalls.jpg";
+import CustomImage from "@/components/CustomImage";
 
 function SignupPage() {
   const dispatch = useDispatch();
@@ -162,7 +163,7 @@ function SignupPage() {
           href="https://www.pexels.com/photo/waterfalls-surrounded-by-trees-2743287/"
           target="_blank"
         >
-          <img
+          <CustomImage
             src={WaterFall}
             alt="Image"
             className="h-full w-full object-cover grayscale hover:grayscale-0 duration-700 ease-in-out"

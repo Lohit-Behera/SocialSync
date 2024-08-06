@@ -10,9 +10,9 @@ function Loader({ hightfull = false }) {
       } w-full flex justify-center items-center`}
     >
       <div className="container">
-        <div className="loader"></div>
-        <div className="loader"></div>
-        <div className="loader"></div>
+        <div className="global-Loader"></div>
+        <div className="global-Loader"></div>
+        <div className="global-Loader"></div>
       </div>
     </div>
   );

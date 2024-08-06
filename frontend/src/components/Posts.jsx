@@ -5,6 +5,7 @@ import { Loader2, UserMinus, UserPlus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import VideoPlayer from "./VideoPlayer";
+import CustomImage from "./CustomImage";
 
 function Posts({
   post = {},
@@ -80,11 +81,7 @@ function Posts({
         )}
         {post.type === "image" && (
           <Link to={`/post/${post.id}`}>
-            <img
-              src={post.image}
-              alt="image"
-              className="w-full h-60 object-cover rounded-lg"
-            />
+            <CustomImage src={post.image} alt="image" className="" />
           </Link>
         )}
         <Link to={`/post/${post.id}`}>

@@ -35,6 +35,7 @@ import { fetchLike, resetLike } from "@/features/PostRelatedSlice";
 import Comments from "@/components/Comments";
 import PostDetailsLoader from "@/components/Loader/PostDetailsLoader";
 import ServerErrorPage from "./Error/ServerErrorPage";
+import CustomImage from "@/components/CustomImage";
 
 function PostDetails() {
   const dispatch = useDispatch();
@@ -174,7 +175,7 @@ function PostDetails() {
                 )}
                 {getPost.type === "image" && (
                   <div className="max-w-[80vh] mx-auto">
-                    <img
+                    <CustomImage
                       src={getPost.image}
                       alt="image"
                       className="w-auto h-full object-cover items-center "

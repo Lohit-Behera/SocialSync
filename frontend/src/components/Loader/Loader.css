@@ -1,5 +1,5 @@
 /* From Uiverse.io by Nawsome */ 
-.loader {
+.global-Loader {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -13,7 +13,7 @@
   animation: dot1_ 3s cubic-bezier(0.55,0.3,0.24,0.99) infinite;
 }
 
-.loader:nth-child(2) {
+.global-Loader:nth-child(2) {
   z-index: 11;
   width: 150px;
   height: 90px;
@@ -24,7 +24,7 @@
   animation-name: dot2_;
 }
 
-.loader:nth-child(3) {
+.global-Loader:nth-child(3) {
   z-index: 12;
   width: 40px;
   height: 20px;

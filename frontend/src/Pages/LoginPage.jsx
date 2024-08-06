@@ -14,6 +14,7 @@ import {
 } from "@/features/UserSlice";
 
 import WaterFall from "../assets/waterfalls.jpg";
+import CustomImage from "@/components/CustomImage";
 
 function LoginPage() {
   const dispatch = useDispatch();
@@ -178,7 +179,7 @@ function LoginPage() {
           href="https://www.pexels.com/photo/waterfalls-surrounded-by-trees-2743287/"
           target="_blank"
         >
-          <img
+          <CustomImage
             src={WaterFall}
             alt="Image"
             width="1920"

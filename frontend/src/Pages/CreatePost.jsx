@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import DragNDrop from "@/components/DragNDrop";
+import CustomImage from "@/components/CustomImage";
 
 function CreatePost() {
   const dispatch = useDispatch();
@@ -207,7 +208,7 @@ function CreatePost() {
                   <Label htmlFor="image-upload">Select Image</Label>
                   {image ? (
                     <>
-                      <img src={URL.createObjectURL(image)} />
+                      <CustomImage src={URL.createObjectURL(image)} />
                       <Button
                         variant="default"
                         size="sm"
@@ -301,7 +302,7 @@ function CreatePost() {
                   <Label htmlFor="image-upload">Select Thumbnail</Label>
                   {thumbnail ? (
                     <>
-                      <img src={URL.createObjectURL(thumbnail)} />
+                      <CustomImage src={URL.createObjectURL(thumbnail)} />
                       <Button
                         variant="default"
                         size="sm"

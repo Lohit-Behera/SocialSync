@@ -1,6 +1,7 @@
 import { Play } from "lucide-react";
 import React, { useRef, useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import CustomImage from "./CustomImage";
 
 function VideoPlayer({ videoSrc, thumbnailSrc, height = "", glow = "50" }) {
   const videoRef = useRef(null);
@@ -60,13 +61,14 @@ function VideoPlayer({ videoSrc, thumbnailSrc, height = "", glow = "50" }) {
 
   return (
     <div className="relative hover:cursor-pointer mb-10">
-      <img
+      <CustomImage
         onClick={handleVideoClick}
         src={thumbnailSrc}
         alt="thumbnail"
         className={`w-full object-cover absolute top-0 left-0 z-20 rounded-lg ${
           showThumbnail ? "opacity-100" : "opacity-0"
         }`}
+        absolute
       />
       <div
         className={`w-full ${height} mx-auto rounded-lg relative ${
