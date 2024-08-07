@@ -36,6 +36,7 @@ import Comments from "@/components/Comments";
 import PostDetailsLoader from "@/components/Loader/PostDetailsLoader";
 import ServerErrorPage from "./Error/ServerErrorPage";
 import CustomImage from "@/components/CustomImage";
+import { toast } from "react-toastify";
 
 function PostDetails() {
   const dispatch = useDispatch();
@@ -43,9 +44,9 @@ function PostDetails() {
 
   const { id } = useParams();
   const userInfo = useSelector((state) => state.user.userInfo);
+  const userDetails = useSelector((state) => state.user.userDetails) || {};
   const getPost = useSelector((state) => state.post.getPost) || {};
   const getPostStatus = useSelector((state) => state.post.getPostStatus);
-  const postLike = useSelector((state) => state.postRelated.postLike);
   const postLikeStatus = useSelector(
     (state) => state.postRelated.postLikeStatus
   );
@@ -56,43 +57,56 @@ function PostDetails() {
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (postLike.message === "Post liked") {
+    if (postLikeStatus === "succeeded") {
       dispatch(fetchGetPost(id));
       dispatch(resetLike());
-      alert("post liked successfully");
-    } else if (postLike.message === "Post unliked") {
-      dispatch(fetchGetPost(id));
-      dispatch(resetLike());
-      alert("post unliked successfully");
     } else if (postLikeStatus === "failed") {
       dispatch(resetLike());
-      alert("Something went wrong");
     }
   }, [postLikeStatus]);
 
   useEffect(() => {
     if (deletePostStatus === "succeeded") {
-      navigate("/profile");
+      navigate("/");
       dispatch(resetDeletePost());
-      alert("Post deleted successfully");
     } else if (deletePostStatus === "failed") {
       dispatch(resetDeletePost());
-      alert("Something went wrong");
     }
   }, [deletePostStatus]);
 
   const handleLike = () => {
     if (userInfo) {
-      dispatch(fetchLike(id));
+      if (!userDetails.is_verified) {
+        toast.warning("Please verify your account first");
+        navigate("/update-profile");
+      } else {
+        const likePromise = dispatch(fetchLike(id));
+        toast.promise(likePromise, {
+          pending: "Pending...",
+          success: {
+            render({ data }) {
+              return `${data.payload.message}`;
+            },
+          },
+          error: "Something went wrong",
+        });
+      }
     } else {
+      toast.warning("Please login first");
       navigate("/login");
     }
   };
 
   const handleDelete = () => {
     if (userInfo) {
-      dispatch(fetchDeletePost(id));
+      const deletePromise = dispatch(fetchDeletePost(id)).unwrap();
+      toast.promise(deletePromise, {
+        pending: "Deleting Post...",
+        success: "Post deleted successfully",
+        error: "Something went wrong",
+      });
     } else {
+      toast.warning("Please login first");
       navigate("/login");
     }
   };

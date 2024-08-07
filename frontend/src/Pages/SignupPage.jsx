@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import CustomPassword from "@/components/CustomPassword";
 import WaterFall from "../assets/waterfalls.jpg";
 import CustomImage from "@/components/CustomImage";
+import { toast } from "react-toastify";
 
 function SignupPage() {
   const dispatch = useDispatch();
@@ -25,10 +26,8 @@ function SignupPage() {
   useEffect(() => {
     if (registerStatus === "succeeded") {
       navigate("/login");
-      alert("Registration successful");
       dispatch(resetRegister());
     } else if (registerStatus === "failed") {
-      alert("Something went wrong!");
       dispatch(resetRegister());
     }
   }, [registerStatus, navigate]);
@@ -46,16 +45,16 @@ function SignupPage() {
     if (file.type.startsWith("image/")) {
       setProfileImage(file);
     } else {
-      alert("Please select an image file");
+      toast.warning("Please select an image file");
     }
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      toast.warning("Passwords do not match");
     } else if (!firstName || !lastName || !email || !password) {
-      alert("Please enter all fields");
+      toast.warning("Please enter all fields");
     } else {
       const formData = new FormData();
       formData.append("user_name", userName);
@@ -65,7 +64,18 @@ function SignupPage() {
       formData.append("profile_image", profileImage);
       formData.append("password", password);
 
-      dispatch(fetchRegister(formData));
+      const signupPromise = dispatch(fetchRegister(formData)).unwrap();
+      toast.promise(signupPromise, {
+        pending: "Creating account...",
+        success: "Account created successfully",
+        error: {
+          render({ data }) {
+            return data === "User with this email already exists"
+              ? "User with this email already exists"
+              : "Failed to create account";
+          },
+        },
+      });
     }
   };
 

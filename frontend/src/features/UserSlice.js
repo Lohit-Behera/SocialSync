@@ -8,7 +8,6 @@ export const fetchLogin = createAsyncThunk('user/login', async (user, { rejectWi
                 'Content-Type': 'application/json'
             },
         };
-
         const { data } = await axios.post(
             '/api/user/login/',
             user,
@@ -19,7 +18,6 @@ export const fetchLogin = createAsyncThunk('user/login', async (user, { rejectWi
         
         return data;
     } catch (error) {
-
         return rejectWithValue(
             error.response && error.response.data.message
                 ? error.response.data.message

@@ -48,7 +48,12 @@ function Posts({
                 variant={
                   following.includes(post.user) ? "secondary" : "default"
                 }
-                onClick={() => handleFollow(post.user)}
+                onClick={() =>
+                  handleFollow(
+                    post.user,
+                    following.includes(post.user) ? "Unfollowing" : "Following"
+                  )
+                }
                 disabled={
                   loadingUser === post.user && followStatus === "loading"
                 }

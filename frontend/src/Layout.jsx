@@ -11,6 +11,7 @@ import ServerErrorPage from "./Pages/Error/ServerErrorPage";
 import { ErrorBoundary } from "react-error-boundary";
 import Loader from "./components/Loader/Loader";
 import SomethingWentWrong from "./Pages/Error/SomethingWentWrong";
+import { toast } from "react-toastify";
 
 function Layout() {
   const dispatch = useDispatch();
@@ -44,7 +45,6 @@ function Layout() {
         "ws://localhost:8000/ws/notifications/?token=" + userInfo.token
       );
       websocket.current.onopen = () => {
-        console.log("Connected to websocket to notifications");
         dispatch(setWebSocketNotificationDisconnected(false));
       };
 
@@ -54,7 +54,6 @@ function Layout() {
       };
 
       websocket.current.onclose = (e) => {
-        console.log("WebSocket closed:", e);
         dispatch(setWebSocketNotificationDisconnected(true));
       };
 

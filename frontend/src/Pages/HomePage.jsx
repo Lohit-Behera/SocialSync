@@ -15,6 +15,7 @@ import Posts from "@/components/Posts";
 import PostLoader from "@/components/Loader/PostLoader";
 import ServerErrorPage from "./Error/ServerErrorPage";
 import SomethingWentWrong from "./Error/SomethingWentWrong";
+import { toast } from "react-toastify";
 
 function HomePage() {
   const dispatch = useDispatch();
@@ -59,11 +60,9 @@ function HomePage() {
   useEffect(() => {
     if (followStatus === "succeeded") {
       dispatch(fetchGetFollow(userInfo.id));
-      alert(follow.message);
       setLoadingUser(null);
       dispatch(resetFollow());
     } else if (followStatus === "failed") {
-      alert(follow.message);
       setLoadingUser(null);
       dispatch(resetFollow());
     }
@@ -88,9 +87,25 @@ function HomePage() {
     }
   }, [getAllFollowingPostsStatus]);
 
-  const handleFollow = (id) => {
+  const handleFollow = (id, status) => {
     setLoadingUser(id);
-    dispatch(fetchFollowUser(id));
+    const followPromise = dispatch(fetchFollowUser(id)).unwrap();
+
+    toast.promise(followPromise, {
+      pending: `${status} user...`,
+      success: {
+        render({ data }) {
+          setLoadingUser(null);
+          return `${data.message}`;
+        },
+      },
+      error: {
+        render() {
+          setLoadingUser(null);
+          return "Something went wrong";
+        },
+      },
+    });
   };
 
   const handleScroll = useCallback(() => {
@@ -98,7 +113,6 @@ function HomePage() {
     const scrolledFromTop = window.innerHeight + window.scrollY;
 
     if (Math.ceil(scrolledFromTop) >= scrollableHeight) {
-      console.log("User has scrolled to the bottom", currentPage);
       if (currentPage === totalPages) {
         setNoMorePost(true);
       } else if (currentPage < totalPages) {

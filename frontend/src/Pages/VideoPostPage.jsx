@@ -13,6 +13,7 @@ import {
 import { Loader2 } from "lucide-react";
 import Posts from "@/components/Posts";
 import PostLoader from "@/components/Loader/PostLoader";
+import { toast } from "react-toastify";
 
 function VideoPostPage() {
   const dispatch = useDispatch();
@@ -55,11 +56,9 @@ function VideoPostPage() {
   useEffect(() => {
     if (followStatus === "succeeded") {
       dispatch(fetchGetFollow(userInfo.id));
-      alert(follow.massage);
       setLoadingUser(null);
       dispatch(resetFollow());
     } else if (followStatus === "failed") {
-      alert(follow.massage);
       setLoadingUser(null);
       dispatch(resetFollow());
     }
@@ -84,9 +83,25 @@ function VideoPostPage() {
     }
   }, [getAllVideoPostStatus]);
 
-  const handleFollow = (id) => {
+  const handleFollow = (id, status) => {
     setLoadingUser(id);
-    dispatch(fetchFollowUser(id));
+    const followPromise = dispatch(fetchFollowUser(id)).unwrap();
+
+    toast.promise(followPromise, {
+      pending: `${status} user...`,
+      success: {
+        render({ data }) {
+          setLoadingUser(null);
+          return `${data.message}`;
+        },
+      },
+      error: {
+        render() {
+          setLoadingUser(null);
+          return "Something went wrong";
+        },
+      },
+    });
   };
 
   const handleScroll = useCallback(() => {
@@ -94,7 +109,6 @@ function VideoPostPage() {
     const scrolledFromTop = window.innerHeight + window.scrollY;
 
     if (Math.ceil(scrolledFromTop) >= scrollableHeight) {
-      console.log("User has scrolled to the bottom", currentPage);
       if (currentPage === totalPages) {
         setNoMorePost(true);
       } else if (currentPage < totalPages) {

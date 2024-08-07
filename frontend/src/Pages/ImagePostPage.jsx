@@ -14,6 +14,7 @@ import { Loader2 } from "lucide-react";
 import Posts from "@/components/Posts";
 import PostLoader from "@/components/Loader/PostLoader";
 import ServerErrorPage from "./Error/ServerErrorPage";
+import { toast } from "react-toastify";
 
 function ImagePostPage() {
   const dispatch = useDispatch();
@@ -56,11 +57,9 @@ function ImagePostPage() {
   useEffect(() => {
     if (followStatus === "succeeded") {
       dispatch(fetchGetFollow(userInfo.id));
-      alert(follow.message);
       setLoadingUser(null);
       dispatch(resetFollow());
     } else if (followStatus === "failed") {
-      alert(follow.message);
       setLoadingUser(null);
       dispatch(resetFollow());
     }
@@ -85,9 +84,25 @@ function ImagePostPage() {
     }
   }, [getAllImagePostStatus]);
 
-  const handleFollow = (id) => {
+  const handleFollow = (id, status) => {
     setLoadingUser(id);
-    dispatch(fetchFollowUser(id));
+    const followPromise = dispatch(fetchFollowUser(id)).unwrap();
+
+    toast.promise(followPromise, {
+      pending: `${status} user...`,
+      success: {
+        render({ data }) {
+          setLoadingUser(null);
+          return `${data.message}`;
+        },
+      },
+      error: {
+        render() {
+          setLoadingUser(null);
+          return "Something went wrong";
+        },
+      },
+    });
   };
 
   const handleScroll = useCallback(() => {

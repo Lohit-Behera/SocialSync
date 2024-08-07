@@ -13,6 +13,7 @@ import { Loader2, Send } from "lucide-react";
 import { setWebSocketChatDisconnected } from "@/features/WebSocketSlice";
 import MassageLoader from "./Loader/MassageLoader";
 import ServerErrorPage from "@/Pages/Error/ServerErrorPage";
+import { toast } from "react-toastify";
 
 const Chat = ({ roomName }) => {
   const dispatch = useDispatch();
@@ -21,7 +22,6 @@ const Chat = ({ roomName }) => {
   const [newMessage, setNewMessage] = useState("");
   const [totalPages, setTotalPages] = useState(2);
   const [currentPage, setCurrentPage] = useState(1);
-  console.log(`currentPage: ${currentPage}, totalPages: ${totalPages}`);
 
   const [scroll, setScroll] = useState(false);
   const [complete, setComplete] = useState(false);
@@ -59,8 +59,6 @@ const Chat = ({ roomName }) => {
   useEffect(() => {
     if (initialMessageStatus === "succeeded") {
       const firstMessage = initialMessage.messages || [];
-      console.log(firstMessage);
-
       const chatMessages = [...firstMessage].reverse();
       setMessages([...chatMessages].concat(messages));
       setTotalPages(initialMessage.total_pages);
@@ -121,7 +119,6 @@ const Chat = ({ roomName }) => {
     );
 
     websocket.current.onopen = () => {
-      console.log("Connected to websocket");
       dispatch(setWebSocketChatDisconnected(false));
     };
 
@@ -131,12 +128,10 @@ const Chat = ({ roomName }) => {
       scrollToBottom();
     };
 
-    websocket.current.onerror = (e) => {
-      console.error("WebSocket error:", e);
-    };
+    websocket.current.onerror = (e) => {};
 
     websocket.current.onclose = (e) => {
-      console.log("WebSocket closed:", e);
+      dispatch(setWebSocketChatDisconnected(true));
     };
 
     return () => {
@@ -146,7 +141,7 @@ const Chat = ({ roomName }) => {
 
   const sendMessage = () => {
     if (newMessage === "") {
-      alert("Please enter a message");
+      toast.warn("Please enter a message");
     } else {
       const [senderId, receiverId] = roomName.split("_");
 

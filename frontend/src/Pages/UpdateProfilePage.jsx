@@ -14,6 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CustomPassword from "@/components/CustomPassword";
 import UpdateProfileLoader from "@/components/Loader/UpdateProfileLoader";
 import ServerErrorPage from "./Error/ServerErrorPage";
+import { toast } from "react-toastify";
 
 function UpdateProfilePage() {
   const dispatch = useDispatch();
@@ -36,10 +37,8 @@ function UpdateProfilePage() {
 
   useEffect(() => {
     if (userUpdateStatus === "succeeded") {
-      alert("User updated successfully");
       dispatch(resetUserUpdate());
     } else if (userUpdateStatus === "failed") {
-      alert("User update failed");
       dispatch(resetUserUpdate());
     }
   }, [userUpdateStatus]);
@@ -58,10 +57,8 @@ function UpdateProfilePage() {
 
   useEffect(() => {
     if (reSendVerifyEmailStatus === "succeeded") {
-      alert("Verification email sent successfully");
       dispatch(resetUserUpdate());
     } else if (reSendVerifyEmailStatus === "failed") {
-      alert("Something went wrong");
       dispatch(resetUserUpdate());
     }
   }, [reSendVerifyEmailStatus]);
@@ -71,15 +68,15 @@ function UpdateProfilePage() {
     if (file.type.startsWith("image/")) {
       setProfileImage(file);
     } else {
-      alert("Please select an image file");
+      toast.warning("Please select an image file");
     }
   };
 
   const updateHandler = (e) => {
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      toast.warning("Passwords do not match");
     } else {
-      dispatch(
+      const updatePromise = dispatch(
         fetchUserUpdate({
           id: userDetails.id,
           first_name: firstName,
@@ -88,8 +85,22 @@ function UpdateProfilePage() {
           password: password,
           profile_image: profileImage,
         })
-      );
+      ).unwrap();
+      toast.promise(updatePromise, {
+        pending: "Updating profile...",
+        success: "Profile updated successfully",
+        error: "Failed to update profile",
+      });
     }
+  };
+
+  const sendVerifyEmailHandler = () => {
+    const sendVerifyEmailPromise = dispatch(fetchReSendVerifyEmail()).unwrap();
+    toast.promise(sendVerifyEmailPromise, {
+      pending: "Sending verification email...",
+      success: "Verification email sent successfully",
+      error: "Failed to send verification email",
+    });
   };
 
   return (
@@ -114,10 +125,7 @@ function UpdateProfilePage() {
             <p className="text-base lg:text-lg text-center">
               Verified: {userDetails.is_verified ? "Yes" : "No"}{" "}
               {!userDetails.is_verified && (
-                <Button
-                  onClick={() => dispatch(fetchReSendVerifyEmail())}
-                  size="sx"
-                >
+                <Button onClick={sendVerifyEmailHandler} size="sx">
                   Verify
                 </Button>
               )}

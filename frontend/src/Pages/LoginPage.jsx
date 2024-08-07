@@ -15,18 +15,13 @@ import {
 
 import WaterFall from "../assets/waterfalls.jpg";
 import CustomImage from "@/components/CustomImage";
+import { toast } from "react-toastify";
 
 function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const userInfo = useSelector((state) => state.user.userInfo);
-  const userInfoStatus = useSelector((state) => state.user.userInfoStatus);
-  const userInfoError = useSelector((state) => state.user.userInfoError);
-
-  const forgetPasswordSubmitError = useSelector(
-    (state) => state.user.forgetPasswordSubmitError
-  );
   const forgetPasswordSubmitStatus = useSelector(
     (state) => state.user.forgetPasswordSubmitStatus
   );
@@ -34,7 +29,6 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [forgetPassword, setForgetPassword] = useState(false);
-  console.log(forgetPassword);
 
   useEffect(() => {
     if (userInfo) {
@@ -43,56 +37,60 @@ function LoginPage() {
   }, [userInfo, navigate]);
 
   useEffect(() => {
-    if (userInfoStatus === "failed") {
-      if (
-        userInfoError === "No active account found with the given credentials"
-      ) {
-        alert("Invalid email or password");
-      } else {
-        alert("Something went wrong");
-      }
-    }
-  }, [userInfoStatus, userInfoError]);
-
-  useEffect(() => {
     if (forgetPasswordSubmitStatus === "succeeded") {
-      alert("We have sent a password reset link to your email");
       setForgetPassword(false);
       dispatch(resetForgetPasswordSubmit());
     } else if (forgetPasswordSubmitStatus === "failed") {
-      if (
-        forgetPasswordSubmitError === "User with this email does not exist."
-      ) {
-        alert("User with this email does not exist.");
-      } else {
-        alert("Something went wrong");
-        dispatch(resetForgetPasswordSubmit());
-      }
+      dispatch(resetForgetPasswordSubmit());
     }
   }, [forgetPasswordSubmitStatus]);
 
   const loginHandler = () => {
     if (!email || !password) {
-      alert("Please enter email and password");
+      toast.warning("Please enter email and password");
     } else {
-      dispatch(
+      const loginPromise = dispatch(
         fetchLogin({
           email: email,
           password: password,
         })
-      );
+      ).unwrap();
+      toast.promise(loginPromise, {
+        pending: "Logging in...",
+        success: "Logged in successfully",
+        error: {
+          render({ data }) {
+            return `${
+              data === "Request failed with status code 401"
+                ? "Invalid email or password"
+                : "Something went wrong"
+            }`;
+          },
+        },
+      });
     }
   };
 
   const handleForgetPassword = () => {
     if (!email) {
-      alert("Please enter email");
+      toast.warning("Please enter email");
     } else {
-      dispatch(
+      const forgetPasswordPromise = dispatch(
         fetchForgetPasswordSubmit({
           email: email,
         })
-      );
+      ).unwrap();
+      toast.promise(forgetPasswordPromise, {
+        pending: "Sending password reset link...",
+        success: "Password reset link sent successfully",
+        error: {
+          render({ data }) {
+            return `${
+              data === "Email not found" ? data : "Something went wrong"
+            }`;
+          },
+        },
+      });
     }
   };
 

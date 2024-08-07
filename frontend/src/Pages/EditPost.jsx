@@ -21,6 +21,7 @@ import VideoPlayer from "@/components/VideoPlayer";
 import DragNDrop from "@/components/DragNDrop";
 import EditPostLoader from "@/components/Loader/EditPostLoader";
 import ServerErrorPage from "./Error/ServerErrorPage";
+import { toast } from "react-toastify";
 
 function EditPost() {
   const { id } = useParams();
@@ -58,35 +59,30 @@ function EditPost() {
 
   useEffect(() => {
     if (editTextPostStatus === "succeeded") {
-      alert("Post updated successfully");
       navigate(`/post/${id}`);
       dispatch(resetEditTextPost());
-    } else if (editTextPostStatus === "failed") {
-      alert("Something went wrong");
     }
   }, [editTextPostStatus, navigate]);
 
   const handleUpdate = () => {
     if (textContent === "") {
-      alert("Nothing to update");
+      toast.warning("Nothing to update");
     } else if (getPost.type === "image") {
-      dispatch(
+      const textPostPromise = dispatch(
         fetchEditPost({
           id: id,
           type: type,
           image: image,
           content: textContent,
         })
-      );
-    } else if (getPost.type === "video") {
-      console.log({
-        id: id,
-        type: type,
-        video: video || "null",
-        thumbnail: thumbnail || "null",
-        content: textContent,
+      ).unwrap();
+      toast.promise(textPostPromise, {
+        pending: "Updating post...",
+        success: "Post updated successfully",
+        error: "Something went wrong",
       });
-      dispatch(
+    } else if (getPost.type === "video") {
+      const videoPostPromise = dispatch(
         fetchEditPost({
           id: id,
           type: type,
@@ -94,15 +90,25 @@ function EditPost() {
           thumbnail: thumbnail || "null",
           content: textContent,
         })
-      );
+      ).unwrap();
+      toast.promise(videoPostPromise, {
+        pending: "Updating post...",
+        success: "Post updated successfully",
+        error: "Something went wrong",
+      });
     } else {
-      dispatch(
+      const imagePostPromise = dispatch(
         fetchEditPost({
           id: id,
           type: type,
           content: textContent,
         })
-      );
+      ).unwrap();
+      toast.promise(imagePostPromise, {
+        pending: "Updating post...",
+        success: "Post updated successfully",
+        error: "Something went wrong",
+      });
     }
   };
 
@@ -111,10 +117,9 @@ function EditPost() {
     const file = e.dataTransfer.files[0];
     setIsDragging(false);
     if (file.type.startsWith("image/")) {
-      console.log(file);
       setImage(file);
     } else {
-      alert("Please select an image file");
+      toast.warning("Please select an image file");
     }
   };
 
@@ -122,10 +127,9 @@ function EditPost() {
     e.preventDefault();
     const file = e.target.files[0];
     if (file.type.startsWith("image/")) {
-      console.log(file);
       setImage(file);
     } else {
-      alert("Please select an image file");
+      toast.warning("Please select an image file");
     }
   };
 
@@ -134,10 +138,9 @@ function EditPost() {
     const file = e.dataTransfer.files[0];
     setIsDragging(false);
     if (file.type.startsWith("video/")) {
-      console.log(file);
       setVideo(file);
     } else {
-      alert("Please select an video file");
+      toast.warning("Please select an video file");
     }
   };
 
@@ -145,10 +148,9 @@ function EditPost() {
     e.preventDefault();
     const file = e.target.files[0];
     if (file.type.startsWith("video/")) {
-      console.log(file);
       setVideo(file);
     } else {
-      alert("Please select an video file");
+      toast.warning("Please select an video file");
     }
   };
 
@@ -159,7 +161,7 @@ function EditPost() {
     if (file.type.startsWith("image/")) {
       setThumbnail(file);
     } else {
-      alert("Please select an image file");
+      toast.warning("Please select an image file");
     }
   };
 
@@ -169,7 +171,7 @@ function EditPost() {
     if (file.type.startsWith("image/")) {
       setThumbnail(file);
     } else {
-      alert("Please select an image file");
+      toast.warning("Please select an image file");
     }
   };
 

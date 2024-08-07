@@ -1,26 +1,18 @@
 import React from "react";
 import { useEffect, useState, useCallback, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchGetAllTextPost, resetGetAllTextPost } from "@/features/PostSlice";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   fetchFollowUser,
   fetchGetFollow,
   resetFollow,
 } from "@/features/UserFollowSlice";
-import { Loader2, UserMinus, UserPlus } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Posts from "@/components/Posts";
 import PostLoader from "@/components/Loader/PostLoader";
 import ServerErrorPage from "./Error/ServerErrorPage";
+import { toast } from "react-toastify";
 
 function TextPostPage() {
   const dispatch = useDispatch();
@@ -63,11 +55,9 @@ function TextPostPage() {
   useEffect(() => {
     if (followStatus === "succeeded") {
       dispatch(fetchGetFollow(userInfo.id));
-      alert(follow.massage);
       setLoadingUser(null);
       dispatch(resetFollow());
     } else if (followStatus === "failed") {
-      alert(follow.massage);
       setLoadingUser(null);
       dispatch(resetFollow());
     }
@@ -92,9 +82,25 @@ function TextPostPage() {
     }
   }, [getAllTextPostStatus]);
 
-  const handleFollow = (id) => {
+  const handleFollow = (id, status) => {
     setLoadingUser(id);
-    dispatch(fetchFollowUser(id));
+    const followPromise = dispatch(fetchFollowUser(id)).unwrap();
+
+    toast.promise(followPromise, {
+      pending: `${status} user...`,
+      success: {
+        render({ data }) {
+          setLoadingUser(null);
+          return `${data.message}`;
+        },
+      },
+      error: {
+        render() {
+          setLoadingUser(null);
+          return "Something went wrong";
+        },
+      },
+    });
   };
 
   const handleScroll = useCallback(() => {
@@ -102,7 +108,6 @@ function TextPostPage() {
     const scrolledFromTop = window.innerHeight + window.scrollY;
 
     if (Math.ceil(scrolledFromTop) >= scrollableHeight) {
-      console.log("User has scrolled to the bottom", currentPage);
       if (currentPage === totalPages) {
         setNoMorePost(true);
       } else if (currentPage < totalPages) {

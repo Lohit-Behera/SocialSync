@@ -21,6 +21,7 @@ import { Loader2 } from "lucide-react";
 import Posts from "@/components/Posts";
 import ProfileLoader from "./Loader/ProfileLoader";
 import ServerErrorPage from "@/Pages/Error/ServerErrorPage";
+import { toast } from "react-toastify";
 
 function Profile({ user = {} }) {
   const dispatch = useDispatch();
@@ -86,7 +87,6 @@ function Profile({ user = {} }) {
   useEffect(() => {
     if (followStatus === "succeeded") {
       dispatch(fetchGetFollow(userInfo.id));
-      alert(follow.massage);
       dispatch(resetFollow());
     }
   }, [followStatus, dispatch]);
@@ -96,7 +96,6 @@ function Profile({ user = {} }) {
     const scrolledFromTop = window.innerHeight + window.scrollY;
 
     if (Math.ceil(scrolledFromTop) >= scrollableHeight) {
-      console.log("User has scrolled to the bottom", currentPage);
       if (currentPage === totalPages) {
         setNoMorePost(true);
       } else if (currentPage < totalPages) {
@@ -114,8 +113,17 @@ function Profile({ user = {} }) {
     };
   }, [handleScroll]);
 
-  const handleFollow = (id) => {
-    dispatch(fetchFollowUser(id));
+  const handleFollow = (id, status) => {
+    const followPromise = dispatch(fetchFollowUser(id)).unwrap();
+    toast.promise(followPromise, {
+      pending: `${status} user...`,
+      success: {
+        render({ data }) {
+          return `${data.message}`;
+        },
+      },
+      error: "Something went wrong",
+    });
   };
 
   return (
@@ -142,7 +150,12 @@ function Profile({ user = {} }) {
                   className="text-xs md:text-sm mt-2.5"
                   size="sm"
                   variant={userFollowing.includes(id) ? "secondary" : "default"}
-                  onClick={() => handleFollow(id)}
+                  onClick={() =>
+                    handleFollow(
+                      id,
+                      userFollowing.includes(id) ? "Unfollowing" : "Following"
+                    )
+                  }
                 >
                   {userFollowing.includes(id) ? (
                     "Unfollow"

@@ -102,7 +102,7 @@ def send_verification_email(request, user):
             )
     except Exception as e:
         print(e)
-        return Response({'massage': 'An error occurred while sending verification email'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({'message': 'An error occurred while sending verification email'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 def generate_verification_token(user):
@@ -168,7 +168,7 @@ def update_user(request, pk):
         user.set_password(password)
 
     user.save()
-    return Response({'massage': 'User updated successfully'})
+    return Response({'message': 'User updated successfully'})
 
 @api_view(['PUT'])
 @permission_classes([IsAdminUser])
@@ -222,7 +222,7 @@ def get_users(request):
 def delete_user(request, pk):
     user = CustomUser.objects.get(id=pk)
     user.delete()
-    return Response({'massage': 'User deleted successfully'})
+    return Response({'message': 'User deleted successfully'})
 
 @api_view(['DELETE'])
 @permission_classes([IsAdminUser])
@@ -259,7 +259,7 @@ def create_contact_us(request):
         name = request.data.get('name')
         email = request.data.get('email')
         subject = request.data.get('subject')
-        message = request.data.get('massage')
+        message = request.data.get('message')
         contact = ContactUs.objects.create(
             name = name,
             email = email,
@@ -344,20 +344,20 @@ def follow_user(request, user_id):
     try:
         user_to_follow = get_object_or_404(CustomUser, id=user_id)
         if user_to_follow == request.user:
-            return Response({"massage": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
         
         if user_to_follow in request.user.following.all():
             request.user.following.remove(user_to_follow)
             user_to_follow.followers.remove(request.user)
-            return Response({"massage": f"You are unfollowing {user_to_follow.user_name}."}, status=status.HTTP_200_OK)
+            return Response({"message": f"You are unfollowing {user_to_follow.user_name}."}, status=status.HTTP_200_OK)
         
         request.user.following.add(user_to_follow)
         user_to_follow.followers.add(request.user)
-        return Response({"success": f"You are now following {user_to_follow.user_name}"}, status=status.HTTP_200_OK)
+        return Response({"message": f"You are now following {user_to_follow.user_name}"}, status=status.HTTP_200_OK)
 
     except Exception as e:
         print(f"Error: {e}")
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -393,7 +393,7 @@ def password_reset_request(request):
         if CustomUser.objects.filter(email=data['email']).exists():
             user = CustomUser.objects.get(email=data['email'])
         else:
-            return Response({'message': 'User with this email does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Email not found'}, status=status.HTTP_400_BAD_REQUEST)
         
         token = default_token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))

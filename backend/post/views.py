@@ -101,7 +101,7 @@ def create_post(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     except Exception as e:
         print(e)
-        return Response({'message': 'An error occurred while processing your request'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def get_post(request,pk):

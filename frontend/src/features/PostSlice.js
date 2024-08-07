@@ -282,7 +282,7 @@ const PostSlice = createSlice({
             state.getAllFollowingPostsStatus = 'idle';
             state.getAllFollowingPostsError = null;
         },
-        resetDeleteTextPost: (state) => {
+        resetDeletePost: (state) => {
             state.deletePost = null;
             state.deletePostStatus = 'idle';
             state.deletePostError = null;

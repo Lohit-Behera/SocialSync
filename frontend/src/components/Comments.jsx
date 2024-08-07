@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { CardFooter } from "@/components/ui/card";
 import {
@@ -31,6 +31,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import CommentLoader from "./Loader/CommentLoader";
 import ServerErrorPage from "@/Pages/Error/ServerErrorPage";
+import { toast } from "react-toastify";
 
 function Comments({ id }) {
   const dispatch = useDispatch();
@@ -60,16 +61,12 @@ function Comments({ id }) {
     if (createCommentStatus === "succeeded") {
       dispatch(resetCreateComment());
       dispatch(fetchGetAllComments(id));
-      alert("Comment created successfully");
     } else if (createCommentStatus === "failed") {
-      alert("Something went wrong");
     } else if (editCommentStatus === "succeeded") {
       dispatch(resetEditComment());
       dispatch(fetchGetAllComments(id));
-      alert("Comment updated successfully");
     } else if (editCommentStatus === "failed") {
       dispatch(resetEditComment());
-      alert("Something went wrong");
     }
   }, [createCommentStatus, editCommentStatus]);
 
@@ -77,10 +74,8 @@ function Comments({ id }) {
     if (deleteCommentStatus === "succeeded") {
       dispatch(fetchGetAllComments(id));
       dispatch(resetDeleteComment());
-      alert("Comment deleted successfully");
     } else if (deleteCommentStatus === "failed") {
       dispatch(resetDeleteComment());
-      alert("Something went wrong");
     }
   }, [deleteCommentStatus]);
 
@@ -91,15 +86,19 @@ function Comments({ id }) {
 
   const handleComment = () => {
     if (!comment) {
-      alert("Please enter a comment");
+      toast.warning("Please write a comment");
     } else {
-      console.log(comment);
-      dispatch(
+      const commentPromise = dispatch(
         fetchCreateComment({
           id: id,
           content: comment,
         })
-      );
+      ).unwrap();
+      toast.promise(commentPromise, {
+        pending: "Creating comment...",
+        success: "Comment created successfully",
+        error: "Something went wrong",
+      });
       setComment("");
     }
   };
@@ -112,20 +111,32 @@ function Comments({ id }) {
 
   const handleCommentEdit = (commentId) => {
     if (!editComment) {
-      alert("Please enter a comment");
+      toast.warning("Please enter a comment");
     } else {
-      dispatch(
+      const commentEditPromise = dispatch(
         fetchEditComment({
           id: commentId,
           content: editComment,
         })
-      );
+      ).unwrap();
+      toast.promise(commentEditPromise, {
+        pending: "Updating comment...",
+        success: "Comment updated successfully",
+        error: "Something went wrong",
+      });
       setIsEdit(!isEdit);
     }
   };
 
   const handleCommentDelete = (commentId) => {
-    dispatch(fetchDeleteComment(commentId));
+    const commentDeletePromise = dispatch(
+      fetchDeleteComment(commentId)
+    ).unwrap();
+    toast.promise(commentDeletePromise, {
+      pending: "Deleting comment...",
+      success: "Comment deleted successfully",
+      error: "Something went wrong",
+    });
   };
 
   return (

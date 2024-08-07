@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import CustomPassword from "@/components/CustomPassword";
+import { toast } from "react-toastify";
 
 function ResetPassword() {
   const { uid, token } = useParams();
@@ -30,25 +31,27 @@ function ResetPassword() {
 
   useEffect(() => {
     if (forgetPasswordVerifyStatus === "succeeded") {
-      alert("Password changed successfully");
       navigate("/login");
       resetForgetPasswordVerify();
-    } else if (forgetPasswordVerifyStatus === "failed") {
-      alert("Password change failed");
     }
   }, [forgetPasswordVerifyStatus]);
 
   const handleChangePassword = () => {
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      toast.warning("Passwords do not match");
     } else {
-      dispatch(
+      const changePasswordPromise = dispatch(
         fetchForgetPasswordVerify({
           uid: uid,
           token: token,
           password: password,
         })
-      );
+      ).unwrap();
+      toast.promise(changePasswordPromise, {
+        pending: "Changing password...",
+        success: "Password changed successfully",
+        error: "Something went wrong",
+      });
     }
   };
   return (

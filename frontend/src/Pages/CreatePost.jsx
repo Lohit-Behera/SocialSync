@@ -6,10 +6,8 @@ import { fetchCreatePost, resetCreatePost } from "@/features/PostSlice";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
@@ -17,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import DragNDrop from "@/components/DragNDrop";
 import CustomImage from "@/components/CustomImage";
+import { toast } from "react-toastify";
 
 function CreatePost() {
   const dispatch = useDispatch();
@@ -26,7 +25,6 @@ function CreatePost() {
   const userDetails = useSelector((state) => state.user.userDetails) || {};
   const createPost = useSelector((state) => state.post.createPost);
   const createPostStatus = useSelector((state) => state.post.createPostStatus);
-  console.log(!userInfo);
 
   const [isDragging, setIsDragging] = useState(false);
   const [textContent, setTextContent] = useState("");
@@ -44,43 +42,74 @@ function CreatePost() {
 
   useEffect(() => {
     if (createPostStatus === "succeeded") {
-      alert("Post created successfully");
       dispatch(resetCreatePost());
       navigate(`/post/${createPost.id}`);
     } else if (createPostStatus === "failed") {
-      alert("Something went wrong");
       dispatch(resetCreatePost());
     }
   }, [createPostStatus, navigate, dispatch]);
 
   const handleTextPost = () => {
-    dispatch(
-      fetchCreatePost({
-        content: textContent,
-        type: "text",
-      })
-    );
+    if (!textContent) {
+      toast.warning("Please enter text content");
+    } else {
+      const textPostPromise = dispatch(
+        fetchCreatePost({
+          content: textContent,
+          type: "text",
+        })
+      ).unwrap();
+      toast.promise(textPostPromise, {
+        pending: "Creating post...",
+        success: "Post created successfully",
+        error: "Something went wrong",
+      });
+    }
   };
 
   const handleImagePost = () => {
-    dispatch(
-      fetchCreatePost({
-        content: textContent,
-        image: image,
-        type: "image",
-      })
-    );
+    if (!image) {
+      toast.warning("Please select an image");
+    } else if (!textContent) {
+      toast.warning("Please enter caption");
+    } else {
+      const imagePostPromise = dispatch(
+        fetchCreatePost({
+          content: textContent,
+          image: image,
+          type: "image",
+        })
+      ).unwrap();
+      toast.promise(imagePostPromise, {
+        pending: "Creating post...",
+        success: "Post created successfully",
+        error: "Something went wrong",
+      });
+    }
   };
 
   const handleVideoPost = () => {
-    dispatch(
-      fetchCreatePost({
-        content: textContent,
-        video: video,
-        thumbnail: thumbnail,
-        type: "video",
-      })
-    );
+    if (!video) {
+      toast.warning("Please select a video");
+    } else if (!thumbnail) {
+      toast.warning("Please select a thumbnail");
+    } else if (!textContent) {
+      toast.warning("Please enter caption");
+    } else {
+      const videoPostPromise = dispatch(
+        fetchCreatePost({
+          content: textContent,
+          video: video,
+          thumbnail: thumbnail,
+          type: "video",
+        })
+      ).unwrap();
+      toast.promise(videoPostPromise, {
+        pending: "Creating post...",
+        success: "Post created successfully",
+        error: "Something went wrong",
+      });
+    }
   };
 
   const handleImageDrop = (e) => {
@@ -88,10 +117,9 @@ function CreatePost() {
     const file = e.dataTransfer.files[0];
     setIsDragging(false);
     if (file.type.startsWith("image/")) {
-      console.log(file);
       setImage(file);
     } else {
-      alert("Please select an image file");
+      toast.warning("Please select an image file");
     }
   };
 
@@ -99,10 +127,9 @@ function CreatePost() {
     e.preventDefault();
     const file = e.target.files[0];
     if (file.type.startsWith("image/")) {
-      console.log(file);
       setImage(file);
     } else {
-      alert("Please select an image file");
+      toast.warning("Please select an image file");
     }
   };
 
@@ -111,10 +138,9 @@ function CreatePost() {
     const file = e.dataTransfer.files[0];
     setIsDragging(false);
     if (file.type.startsWith("video/")) {
-      console.log(file);
       setVideo(file);
     } else {
-      alert("Please select an video file");
+      toast.warning("Please select an video file");
     }
   };
 
@@ -122,10 +148,9 @@ function CreatePost() {
     e.preventDefault();
     const file = e.target.files[0];
     if (file.type.startsWith("video/")) {
-      console.log(file);
       setVideo(file);
     } else {
-      alert("Please select an video file");
+      toast.warning("Please select an video file");
     }
   };
 
@@ -136,7 +161,7 @@ function CreatePost() {
     if (file.type.startsWith("image/")) {
       setThumbnail(file);
     } else {
-      alert("Please select an image file");
+      toast.warning("Please select an image file");
     }
   };
 
@@ -146,7 +171,7 @@ function CreatePost() {
     if (file.type.startsWith("image/")) {
       setThumbnail(file);
     } else {
-      alert("Please select an image file");
+      toast.warning("Please select an image file");
     }
   };
 
