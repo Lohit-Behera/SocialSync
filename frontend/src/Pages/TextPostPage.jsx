@@ -155,12 +155,12 @@ function TextPostPage() {
             {loading && (
               <Loader2 className="animate-spin mx-auto my-4 w-12 h-12" />
             )}
-            {noMorePost && (
-              <p className="text-base md:text-lg font-semibold text-center my-6">
-                No More Post
-              </p>
-            )}
           </div>
+          {noMorePost && (
+            <p className="text-base md:text-lg font-semibold text-center my-6">
+              No More Post
+            </p>
+          )}
         </>
       )}
     </>

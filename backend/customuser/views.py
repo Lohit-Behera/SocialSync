@@ -254,7 +254,7 @@ def delete_all_images(request):
 
 
 @api_view(['PUT'])
-def create_contact_us(request):
+def support(request):
     try:
         name = request.data.get('name')
         email = request.data.get('email')

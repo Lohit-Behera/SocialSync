@@ -2,6 +2,7 @@ import { Play } from "lucide-react";
 import React, { useRef, useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import CustomImage from "./CustomImage";
+import { baseUrl } from "@/features/Proxy";
 
 function VideoPlayer({ videoSrc, thumbnailSrc, height = "", glow = "50" }) {
   const videoRef = useRef(null);
@@ -86,7 +87,7 @@ function VideoPlayer({ videoSrc, thumbnailSrc, height = "", glow = "50" }) {
         <video
           className="w-full rounded-lg relative z-10"
           ref={videoRef}
-          src={videoSrc}
+          src={baseUrl + videoSrc}
           loop
           onClick={handleVideoClick}
         />

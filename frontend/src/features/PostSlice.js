@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { baseUrl } from "./Proxy";
 
 export const fetchCreatePost = createAsyncThunk('create/post', async (post, { rejectWithValue, getState }) => {
     try {
@@ -11,7 +12,7 @@ export const fetchCreatePost = createAsyncThunk('create/post', async (post, { re
             },
         };
         const { data } = await axios.post(
-            '/api/post/create/',
+            `${baseUrl}/api/post/create/`,
             post,
             config
         );
@@ -35,7 +36,7 @@ export const fetchGetPost = createAsyncThunk('get/post', async (id, { rejectWith
             },
         };
         const { data } = await axios.get(
-            `/api/post/get/post/${id}/`,
+            `${baseUrl}/api/post/get/post/${id}/`,
             config
         );
 
@@ -59,7 +60,7 @@ export const fetchGetUserAllPost = createAsyncThunk('get/user/all/textPost', asy
             },
         };
         const { data } = await axios.get(
-            `/api/post/get/user/${info.id}/${info.page ? `?page=${info.page}` : ''}`,
+            `${baseUrl}/api/post/get/user/${info.id}/${info.page ? `?page=${info.page}` : ''}`,
             config
         );
         return data;
@@ -82,7 +83,7 @@ export const fetchDeletePost = createAsyncThunk('delete/post', async (id, { reje
             },
         };
         const { data } = await axios.delete(
-            `/api/post/delete/${id}/`,
+            `${baseUrl}/api/post/delete/${id}/`,
             config
         );
         return data;
@@ -105,7 +106,7 @@ export const fetchEditPost = createAsyncThunk('edit/post', async (post, { reject
             },
         };
         const { data } = await axios.put(
-            `/api/post/edit/text/${post.id}/`,
+            `${baseUrl}/api/post/edit/text/${post.id}/`,
             post,
             config
         );
@@ -129,7 +130,7 @@ export const fetchGetAllVideoPost = createAsyncThunk('get/all/videoPost', async 
             },
         };
         const { data } = await axios.get(
-            '/api/post/get/all/video/',
+            `${baseUrl}/api/post/get/all/video/`,
             config
         );
         return data;
@@ -152,7 +153,7 @@ export const fetchGetAllImagePost = createAsyncThunk('get/all/imagePost', async 
             },
         };
         const { data } = await axios.get(
-            `/api/post/get/all/images/?page=${page}`,
+            `${baseUrl}/api/post/get/all/images/?page=${page}`,
             config
         );
         return data;
@@ -175,7 +176,7 @@ export const fetchGetAllTextPost = createAsyncThunk('get/all/textPost', async (p
             },
         };
         const { data } = await axios.get(
-            `/api/post/get/all/text/?page=${page}`,
+            `${baseUrl}/api/post/get/all/text/?page=${page}`,
             config
         );
 
@@ -199,7 +200,7 @@ export const fetchGetAllFollowingPosts = createAsyncThunk('get/all/followingPost
             },
         };
         const { data } = await axios.get(
-            `/api/post/get/all/following/?page=${page}`,
+            `${baseUrl}/api/post/get/all/following/?page=${page}`,
             config
         );
         return data;

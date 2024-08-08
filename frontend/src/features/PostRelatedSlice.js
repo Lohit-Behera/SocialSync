@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { baseUrl } from "./Proxy";
 
 // Like post
 export const fetchLike = createAsyncThunk('like', async (id, { rejectWithValue, getState }) => {
@@ -12,7 +13,7 @@ export const fetchLike = createAsyncThunk('like', async (id, { rejectWithValue, 
             },
         };
         const { data } = await axios.post(
-            `/api/post/like/${id}/`,
+            `${baseUrl}/api/post/like/${id}/`,
             {},
             config
         );
@@ -37,7 +38,7 @@ export const fetchCreateComment = createAsyncThunk('comment/create', async (comm
             },
         };
         const { data } = await axios.put(
-            `/api/post/create/comment/${comment.id}/`,
+            `${baseUrl}/api/post/create/comment/${comment.id}/`,
             comment,
             config
         );
@@ -60,7 +61,7 @@ export const fetchGetAllComments = createAsyncThunk('get/all/comments', async (i
             },
         };
         const { data } = await axios.get(
-            `/api/post/get/comments/${id}/`,
+            `${baseUrl}/api/post/get/comments/${id}/`,
             config
         );
         return data;
@@ -84,7 +85,7 @@ export const fetchDeleteComment = createAsyncThunk('delete/comment', async (id, 
             },
         };
         const { data } = await axios.delete(
-            `/api/post/delete/comment/${id}/`,
+            `${baseUrl}/api/post/delete/comment/${id}/`,
             config
         );
         return data;
@@ -108,7 +109,7 @@ export const fetchEditComment = createAsyncThunk('edit/comment', async (comment,
             },
         };
         const { data } = await axios.put(
-            `/api/post/edit/comment/${comment.id}/`,
+            `${baseUrl}/api/post/edit/comment/${comment.id}/`,
             comment,
             config
         );

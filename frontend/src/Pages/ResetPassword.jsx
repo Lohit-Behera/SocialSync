@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -14,8 +14,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import CustomPassword from "@/components/CustomPassword";
 import { toast } from "react-toastify";
+import Loader from "@/components/Loader/Loader";
+
+const CustomPassword = lazy(() => import("@/components/CustomPassword"));
 
 function ResetPassword() {
   const { uid, token } = useParams();
@@ -55,37 +57,39 @@ function ResetPassword() {
     }
   };
   return (
-    <div className="grid place-items-center min-h-[80vh]">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Change Password</CardTitle>
-          <CardDescription>Enter your new password.</CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          <div className="grid gap-2">
-            <CustomPassword
-              id="password"
-              label="Password"
-              placeholder="Password"
-              change={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div className="grid gap-2">
-            <CustomPassword
-              id="confirm-password"
-              label="Confirm Password"
-              placeholder="Confirm Password"
-              change={(e) => setConfirmPassword(e.target.value)}
-            />
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button className="w-full" onClick={handleChangePassword}>
-            Change Password
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
+    <Suspense fallback={<Loader />}>
+      <div className="grid place-items-center min-h-[80vh]">
+        <Card className="w-full max-w-sm">
+          <CardHeader>
+            <CardTitle className="text-2xl">Change Password</CardTitle>
+            <CardDescription>Enter your new password.</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <div className="grid gap-2">
+              <CustomPassword
+                id="password"
+                label="Password"
+                placeholder="Password"
+                change={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <CustomPassword
+                id="confirm-password"
+                label="Confirm Password"
+                placeholder="Confirm Password"
+                change={(e) => setConfirmPassword(e.target.value)}
+              />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button className="w-full" onClick={handleChangePassword}>
+              Change Password
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    </Suspense>
   );
 }
 

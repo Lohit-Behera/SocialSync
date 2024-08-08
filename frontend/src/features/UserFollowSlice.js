@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { baseUrl } from "./Proxy";
 
 export const fetchFollowUser = createAsyncThunk('follow/user', async (id, { rejectWithValue, getState }) => {
     try {
@@ -11,7 +12,7 @@ export const fetchFollowUser = createAsyncThunk('follow/user', async (id, { reje
             },
         };
         const { data } = await axios.post(
-            `/api/user/follow/${id}/`,
+            `${baseUrl}/api/user/follow/${id}/`,
             {},
             config
         );
@@ -35,7 +36,7 @@ export const fetchGetFollow = createAsyncThunk('get/follow', async (id, { reject
             },
         };
         const { data } = await axios.get(
-            `/api/user/list/follow/${id}/`,
+            `${baseUrl}/api/user/list/follow/${id}/`,
             config
         );
         return data;

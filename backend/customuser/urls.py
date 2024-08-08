@@ -10,7 +10,7 @@ urlpatterns = [
     path('reset-password/verify/', views.password_reset_confirm, name='reset_password_confirm'),
     path('resend/verify/', views.resend_verification_email, name='resend_verification_email'),
     
-    path('contactus/', views.create_contact_us, name='contact_us'),
+    path('support/', views.support, name='support'),
     path('get/all/contactus/', views.get_all_queries, name='get_all_queries'),
     path('admin/delete/images/', views.delete_all_images, name='delete_images'),
     

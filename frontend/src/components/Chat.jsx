@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  lazy,
+  Suspense,
+} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchAllMassage,
@@ -11,9 +18,11 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Loader2, Send } from "lucide-react";
 import { setWebSocketChatDisconnected } from "@/features/WebSocketSlice";
-import MassageLoader from "./Loader/MassageLoader";
-import ServerErrorPage from "@/Pages/Error/ServerErrorPage";
 import { toast } from "react-toastify";
+import MassageLoader from "./Loader/MassageLoader";
+import { socketUrl } from "@/features/Proxy";
+
+const ServerErrorPage = lazy(() => import("../Pages/Error/ServerErrorPage"));
 
 const Chat = ({ roomName }) => {
   const dispatch = useDispatch();
@@ -114,9 +123,7 @@ const Chat = ({ roomName }) => {
   }, [handleScroll]);
 
   useEffect(() => {
-    websocket.current = new WebSocket(
-      `ws://localhost:8000/ws/chat/${roomName}/`
-    );
+    websocket.current = new WebSocket(`${socketUrl}/ws/chat/${roomName}/`);
 
     websocket.current.onopen = () => {
       dispatch(setWebSocketChatDisconnected(false));
@@ -157,7 +164,7 @@ const Chat = ({ roomName }) => {
   };
 
   return (
-    <>
+    <Suspense fallback={<MassageLoader />}>
       {initialMessageStatus === "loading" || initialMessageStatus === "idle" ? (
         <MassageLoader />
       ) : initialMessageStatus === "failed" ? (
@@ -207,6 +214,11 @@ const Chat = ({ roomName }) => {
               placeholder="Type a message"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  sendMessage();
+                }
+              }}
             />
             <Button
               className="rounded-full mt-1 md:mt-0"
@@ -218,7 +230,7 @@ const Chat = ({ roomName }) => {
           </div>
         </>
       )}
-    </>
+    </Suspense>
   );
 };
 

@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import ImageLoader from "./Loader/ImageLoader/ImageLoader";
 import ErrorImage from "../assets/image not found.svg";
+import { baseUrl } from "@/features/Proxy";
 
 function CustomImage({ className, src, alt, onClick, absolute = false }) {
   const [loaded, setLoaded] = useState(false);
@@ -20,11 +21,11 @@ function CustomImage({ className, src, alt, onClick, absolute = false }) {
     <div
       className={`${className} ${
         absolute ? "absolute" : "relative"
-      } flex justify-center mx-auto rounded-lg min-h-56`}
+      } flex justify-center mx-auto rounded-lg`}
       onClick={onClick}
     >
       <div
-        className="absolute inset-0 w-full h-full flex items-center justify-center bg-background"
+        className="absolute inset-0 w-full h-full min-h-40 flex items-center justify-center bg-background"
         style={{
           opacity: loaded ? 0 : 1,
           transition: "opacity 0.5s ease-in-out",
@@ -34,7 +35,7 @@ function CustomImage({ className, src, alt, onClick, absolute = false }) {
       </div>
       <img
         className="w-full h-full object-cover rounded-lg"
-        src={error ? ErrorImage : src}
+        src={error ? ErrorImage : `${baseUrl}${src}`}
         alt={alt}
         style={imagesStyle}
         onLoad={imageLoaded}

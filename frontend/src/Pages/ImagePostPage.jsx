@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -11,10 +11,11 @@ import {
   resetFollow,
 } from "@/features/UserFollowSlice";
 import { Loader2 } from "lucide-react";
-import Posts from "@/components/Posts";
 import PostLoader from "@/components/Loader/PostLoader";
-import ServerErrorPage from "./Error/ServerErrorPage";
 import { toast } from "react-toastify";
+
+const Posts = lazy(() => import("@/components/Posts"));
+const ServerErrorPage = lazy(() => import("./Error/ServerErrorPage"));
 
 function ImagePostPage() {
   const dispatch = useDispatch();
@@ -128,7 +129,7 @@ function ImagePostPage() {
   }, [handleScroll]);
 
   return (
-    <>
+    <Suspense fallback={<PostLoader />}>
       {pageLoading ? (
         <PostLoader />
       ) : getAllImagePostStatus === "failed" ? (
@@ -159,7 +160,7 @@ function ImagePostPage() {
           )}
         </div>
       )}
-    </>
+    </Suspense>
   );
 }
 

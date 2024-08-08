@@ -70,7 +70,7 @@ def create_post(request):
             
         if data['type'] == 'video':
             image = request.FILES.get('thumbnail')
-            pil_image = Image.open(image)
+            pil_image = Image.open(image).convert('RGB')
             
             original_width, original_height = pil_image.size
             aspect_ratio = original_width / original_height

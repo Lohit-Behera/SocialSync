@@ -1,6 +1,6 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { useEffect, useMemo, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Card,
@@ -17,11 +17,12 @@ import {
   fetchGetPost,
   resetEditTextPost,
 } from "@/features/PostSlice";
-import VideoPlayer from "@/components/VideoPlayer";
-import DragNDrop from "@/components/DragNDrop";
 import EditPostLoader from "@/components/Loader/EditPostLoader";
-import ServerErrorPage from "./Error/ServerErrorPage";
 import { toast } from "react-toastify";
+
+const VideoPlayer = lazy(() => import("@/components/VideoPlayer"));
+const DragNDrop = lazy(() => import("@/components/DragNDrop"));
+const ServerErrorPage = lazy(() => import("./Error/ServerErrorPage"));
 
 function EditPost() {
   const { id } = useParams();
@@ -198,7 +199,7 @@ function EditPost() {
   }, [image]);
 
   return (
-    <>
+    <Suspense fallback={<EditPostLoader />}>
       {getPostStatus === "loading" || getPostStatus === "idle" ? (
         <EditPostLoader />
       ) : getPostStatus === "failed" ? (
@@ -373,7 +374,7 @@ function EditPost() {
           </Card>
         </div>
       )}
-    </>
+    </Suspense>
   );
 }
 

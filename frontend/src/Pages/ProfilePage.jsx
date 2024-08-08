@@ -1,10 +1,11 @@
 import React from "react";
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import Profile from "@/components/Profile";
 import ProfileLoader from "@/components/Loader/ProfileLoader";
-import ServerErrorPage from "./Error/ServerErrorPage";
+
+const Profile = lazy(() => import("@/components/Profile"));
+const ServerErrorPage = lazy(() => import("./Error/ServerErrorPage"));
 
 function ProfilePage() {
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ function ProfilePage() {
   }, [userInfo, dispatch]);
 
   return (
-    <>
+    <Suspense fallback={<ProfileLoader />}>
       {userDetailsStatus === "loading" || userDetailsStatus === "idle" ? (
         <ProfileLoader />
       ) : userDetailsStatus === "failed" ? (
@@ -31,7 +32,7 @@ function ProfilePage() {
       ) : (
         <Profile user={userDetails} />
       )}
-    </>
+    </Suspense>
   );
 }
 

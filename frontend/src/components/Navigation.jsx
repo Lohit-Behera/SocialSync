@@ -38,7 +38,6 @@ import {
 } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import DarkModeToggle from "./DarkModeToggle";
-import { fetchDeleteImages } from "@/features/DeleteImages";
 
 function Navigation() {
   const dispatch = useDispatch();
@@ -47,23 +46,9 @@ function Navigation() {
   const userInfo = useSelector((state) => state.user.userInfo);
   const userDetails = useSelector((state) => state.user.userDetails);
   const profileImage = userDetails ? userDetails.profile_image : "";
-  const deleteImageStatus = useSelector(
-    (state) => state.deleteImages.deleteImageStatus
-  );
-
-  useEffect(() => {
-    if (deleteImageStatus === "succeeded") {
-      alert("Images deleted successfully");
-    } else if (deleteImageStatus === "failed") {
-      alert("Something went wrong");
-    }
-  }, [deleteImageStatus]);
 
   const handleLogout = () => {
     dispatch(logout());
-  };
-  const deleteImagesHandler = () => {
-    dispatch(fetchDeleteImages());
   };
   return (
     <>
@@ -254,7 +239,9 @@ function Navigation() {
                   <DropdownMenuItem onClick={() => navigate("/update-profile")}>
                     Settings
                   </DropdownMenuItem>
-                  <DropdownMenuItem>Support</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/support")}>
+                    Support
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     Logout
@@ -429,7 +416,9 @@ function Navigation() {
                   <DropdownMenuItem onClick={() => navigate("/update-profile")}>
                     Settings
                   </DropdownMenuItem>
-                  <DropdownMenuItem>Support</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/support")}>
+                    Support
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     Logout

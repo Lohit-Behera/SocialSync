@@ -1,17 +1,20 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { useEffect, useRef, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, ScrollRestoration } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import Navigation from "./components/Navigation";
 import { fetchUserDetails } from "./features/UserSlice";
 import { fetchGetFollow } from "./features/UserFollowSlice";
 import { fetchOnlineStatus } from "./features/ChatSlice";
 import { setWebSocketNotificationDisconnected } from "./features/WebSocketSlice";
-import ServerErrorPage from "./Pages/Error/ServerErrorPage";
 import { ErrorBoundary } from "react-error-boundary";
 import Loader from "./components/Loader/Loader";
-import SomethingWentWrong from "./Pages/Error/SomethingWentWrong";
-import { toast } from "react-toastify";
+import Navigation from "./components/Navigation";
+import { socketUrl } from "./features/Proxy";
+
+const ServerErrorPage = lazy(() => import("./Pages/Error/ServerErrorPage"));
+const SomethingWentWrong = lazy(() =>
+  import("./Pages/Error/SomethingWentWrong")
+);
 
 function Layout() {
   const dispatch = useDispatch();
@@ -42,7 +45,7 @@ function Layout() {
   useEffect(() => {
     if (userInfo) {
       websocket.current = new WebSocket(
-        "ws://localhost:8000/ws/notifications/?token=" + userInfo.token
+        `${socketUrl}/ws/notifications/?token=${userInfo.token}`
       );
       websocket.current.onopen = () => {
         dispatch(setWebSocketNotificationDisconnected(false));
@@ -66,7 +69,7 @@ function Layout() {
   }, [userInfo]);
 
   return (
-    <>
+    <Suspense fallback={<Loader />}>
       <Navigation />
       <div className="md:ml-[55px] mt-14 md:mt-0">
         {userDetailsStatus === "loading" ? (
@@ -75,11 +78,12 @@ function Layout() {
           <ServerErrorPage />
         ) : (
           <ErrorBoundary fallback={<SomethingWentWrong />}>
+            {location.pathname !== "/chat/:id" && <ScrollRestoration />}
             <Outlet />
           </ErrorBoundary>
         )}
       </div>
-    </>
+    </Suspense>
   );
 }
 

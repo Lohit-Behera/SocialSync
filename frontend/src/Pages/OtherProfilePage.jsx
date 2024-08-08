@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, lazy, Suspense } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUserDetailsUnknown } from "@/features/UserSlice";
-import Profile from "@/components/Profile";
 import ProfileLoader from "@/components/Loader/ProfileLoader";
-import ServerErrorPage from "./Error/ServerErrorPage";
+
+const Profile = lazy(() => import("@/components/Profile"));
+const ServerErrorPage = lazy(() => import("./Error/ServerErrorPage"));
 
 function OtherProfile() {
   const dispatch = useDispatch();
@@ -26,7 +27,7 @@ function OtherProfile() {
     }
   }, [id, dispatch, followStatus]);
   return (
-    <>
+    <Suspense fallback={<ProfileLoader />}>
       {userDetailsUnknownStatus === "loading" ||
       userDetailsUnknownStatus === "idle" ? (
         <ProfileLoader />
@@ -35,7 +36,7 @@ function OtherProfile() {
       ) : (
         <Profile user={userDetailsUnknown} />
       )}
-    </>
+    </Suspense>
   );
 }
 

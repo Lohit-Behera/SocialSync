@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -11,11 +11,10 @@ import {
   resetFollow,
 } from "@/features/UserFollowSlice";
 import { Loader2 } from "lucide-react";
-import Posts from "@/components/Posts";
 import PostLoader from "@/components/Loader/PostLoader";
 import ServerErrorPage from "./Error/ServerErrorPage";
-import SomethingWentWrong from "./Error/SomethingWentWrong";
 import { toast } from "react-toastify";
+const Posts = lazy(() => import("@/components/Posts"));
 
 function HomePage() {
   const dispatch = useDispatch();
@@ -131,7 +130,7 @@ function HomePage() {
   }, [handleScroll]);
 
   return (
-    <>
+    <Suspense fallback={<PostLoader />}>
       {pageLoading ? (
         <PostLoader />
       ) : getAllFollowingPostsStatus === "failed" ? (
@@ -167,7 +166,7 @@ function HomePage() {
           )}
         </div>
       )}
-    </>
+    </Suspense>
   );
 }
 

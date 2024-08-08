@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { CardFooter } from "@/components/ui/card";
@@ -14,7 +14,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash, X } from "lucide-react";
@@ -29,9 +28,11 @@ import {
 } from "@/features/PostRelatedSlice";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import CommentLoader from "./Loader/CommentLoader";
-import ServerErrorPage from "@/Pages/Error/ServerErrorPage";
 import { toast } from "react-toastify";
+
+import CommentLoader from "./Loader/CommentLoader";
+
+const ServerErrorPage = lazy(() => import("../Pages/Error/ServerErrorPage"));
 
 function Comments({ id }) {
   const dispatch = useDispatch();
@@ -140,7 +141,7 @@ function Comments({ id }) {
   };
 
   return (
-    <>
+    <Suspense fallback={<CommentLoader />}>
       {userInfo && (
         <CardFooter className="w-full flex flex-col space-y-3">
           <div className="grid grid-cols-1 gap-4 w-full">
@@ -276,7 +277,7 @@ function Comments({ id }) {
           )}
         </>
       )}
-    </>
+    </Suspense>
   );
 }
 

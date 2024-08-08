@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { baseUrl } from "./Proxy";
 
 export const fetchCreateTextPost = createAsyncThunk('create/textPost', async (textPost, { rejectWithValue, getState }) => {
     try {
@@ -11,7 +12,7 @@ export const fetchCreateTextPost = createAsyncThunk('create/textPost', async (te
             },
         };
         const { data } = await axios.post(
-            '/api/post/create/text/post/',
+            `${baseUrl}/api/post/create/text/post/`,
             textPost,
             config
         );
@@ -35,7 +36,7 @@ export const fetchGetTextPost = createAsyncThunk('get/textPost', async (id, { re
             },
         };
         const { data } = await axios.get(
-            `/api/post/get/text/post/${id}/`,
+            `${baseUrl}/api/post/get/text/post/${id}/`,
             config
         );
 
@@ -59,7 +60,7 @@ export const fetchGetAllTextPost = createAsyncThunk('get/all/textPost', async (_
             },
         };
         const { data } = await axios.get(
-            '/api/post/get/all/text/',
+            `${baseUrl}/api/post/get/all/text/`,
             config
         );
 
@@ -83,7 +84,7 @@ export const fetchGetUserAllTextPost = createAsyncThunk('get/user/all/textPost',
             },
         };
         const { data } = await axios.get(
-            `/api/post/get/user/${id}/`,
+            `${baseUrl}/api/post/get/user/${id}/`,
             config
         );
         return data;
@@ -106,7 +107,7 @@ export const fetchDeleteTextPost = createAsyncThunk('delete/textPost', async (id
             },
         };
         const { data } = await axios.delete(
-            `/api/post/delete/text/${id}/`,
+            `${baseUrl}/api/post/delete/text/${id}/`,
             config
         );
         return data;
@@ -129,7 +130,7 @@ export const fetchEditTextPost = createAsyncThunk('edit/textPost', async (textPo
             },
         };
         const { data } = await axios.put(
-            `/api/post/edit/text/${textPost.id}/`,
+            `${baseUrl}/api/post/edit/text/${textPost.id}/`,
             textPost,
             config
         );

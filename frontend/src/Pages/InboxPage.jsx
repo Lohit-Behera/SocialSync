@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import moment from "moment";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchUserList, fetchOnlineStatus } from "@/features/ChatSlice";
 import InboxLoader from "@/components/Loader/InboxLoader";
-import ServerErrorPage from "./Error/ServerErrorPage";
+
+import moment from "moment";
+const ServerErrorPage = lazy(() => import("./Error/ServerErrorPage"));
 
 function InboxPage() {
   const dispatch = useDispatch();
@@ -49,7 +50,7 @@ function InboxPage() {
     }
   }, [onlineStatus, onlineStatusStatus]);
   return (
-    <>
+    <Suspense fallback={<InboxLoader />}>
       {userListStatus === "loading" || userListStatus === "idle" ? (
         <InboxLoader />
       ) : userListStatus === "failed" || onlineStatusStatus === "failed" ? (
@@ -142,7 +143,7 @@ function InboxPage() {
           </div>
         </>
       )}
-    </>
+    </Suspense>
   );
 }
 

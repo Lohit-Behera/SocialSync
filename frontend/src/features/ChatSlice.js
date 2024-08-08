@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { baseUrl } from "./Proxy";
 
 export const fetchChatRoom = createAsyncThunk('chat/room', async (receiver, { rejectWithValue, getState }) => {
     try {
@@ -11,7 +12,7 @@ export const fetchChatRoom = createAsyncThunk('chat/room', async (receiver, { re
             },
         };
         const { data } = await axios.post(
-            `/api/chat/room/`,
+            `${baseUrl}/api/chat/room/`,
             receiver,
             config
         );
@@ -35,7 +36,7 @@ export const fetchInitialMessage = createAsyncThunk('initial/message', async (ro
             },
         };
         const { data } = await axios.get(
-            `/api/chat/initial/messages/${roomName}/`,
+            `${baseUrl}/api/chat/initial/messages/${roomName}/`,
             config
         );
         return data;
@@ -58,7 +59,7 @@ export const fetchAllMassage = createAsyncThunk('all/message', async (names, { r
             },
         };
         const { data } = await axios.get(
-            `/api/chat/all/messages/${names.roomName}/${names.keyword}`,
+            `${baseUrl}/api/chat/all/messages/${names.roomName}/${names.keyword}`,
             config
         );
         return data;
@@ -81,7 +82,7 @@ export const fetchUserList = createAsyncThunk('user/list', async (_, { rejectWit
             },
         };
         const { data } = await axios.get(
-            `/api/chat/user/list//`,
+            `${baseUrl}/api/chat/user/list/`,
             config
         );
         return data;
@@ -104,7 +105,7 @@ export const fetchOnlineStatus = createAsyncThunk('user/status', async (_, { rej
             },
         };
         const { data } = await axios.get(
-            `/api/chat/user/online-status/`,
+            `${baseUrl}/api/chat/user/online-status/`,
             config
         );
         return data;

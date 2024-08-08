@@ -27,6 +27,7 @@ function CreatePost() {
   const createPostStatus = useSelector((state) => state.post.createPostStatus);
 
   const [isDragging, setIsDragging] = useState(false);
+  const [isThumbnailDragging, setIsThumbnailDragging] = useState(false);
   const [textContent, setTextContent] = useState("");
   const [image, setImage] = useState(null);
   const [video, setVideo] = useState(null);
@@ -182,7 +183,7 @@ function CreatePost() {
           <video
             src={URL.createObjectURL(video)}
             controls
-            className="w-full md:w-[40%] lg:w-[30%] max-h-[80vh]"
+            className="w-full max-h-[80vh]"
           />
         </div>
       );
@@ -355,8 +356,8 @@ function CreatePost() {
                         className="hidden md:flex "
                         handleDrop={handleThumbnailDrop}
                         uploadHandler={thumbnailHandler}
-                        isDragging={isDragging}
-                        setIsDragging={setIsDragging}
+                        isDragging={isThumbnailDragging}
+                        setIsDragging={setIsThumbnailDragging}
                         type={"image"}
                       />
                     </>

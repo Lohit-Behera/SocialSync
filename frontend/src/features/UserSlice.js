@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { baseUrl } from "./Proxy";
 
 export const fetchLogin = createAsyncThunk('user/login', async (user, { rejectWithValue }) => {
     try {
@@ -9,7 +10,7 @@ export const fetchLogin = createAsyncThunk('user/login', async (user, { rejectWi
             },
         };
         const { data } = await axios.post(
-            '/api/user/login/',
+            `${baseUrl}/api/user/login/`,
             user,
             config
         );
@@ -44,7 +45,7 @@ export const fetchRegister = createAsyncThunk('user/register', async (user, { re
         };
 
         const { data } = await axios.post(
-            '/api/user/register/',
+            `${baseUrl}/api/user/register/`,
             user,
             config
         );
@@ -71,7 +72,7 @@ export const fetchUserDetails = createAsyncThunk('user/details', async (id, { re
             },
         };
         const { data } = await axios.get(
-            `/api/user/details/${id}/`,
+            `${baseUrl}/api/user/details/${id}/`,
             config
         );
         return data;
@@ -94,7 +95,7 @@ export const fetchUserUpdate = createAsyncThunk('user/update', async (user, { re
             },
         };
         const { data } = await axios.put(
-            `/api/user/update/${user.id}/`,
+            `${baseUrl}/api/user/update/${user.id}/`,
             user,
             config
         );
@@ -119,7 +120,7 @@ export const fetchUserDetailsUnknown = createAsyncThunk('user/unknown', async (i
             },
         };
         const { data } = await axios.get(
-            `/api/user/details/unknown/${id}/`,
+            `${baseUrl}/api/user/details/unknown/${id}/`,
             config
         );
         return data;
@@ -142,7 +143,7 @@ export const fetchFollowingList = createAsyncThunk('user/following', async (_, {
             },
         };
         const { data } = await axios.get(
-            `/api/user/list/following/`,
+            `${baseUrl}/api/user/list/following/`,
             config
         );
         return data;
@@ -165,7 +166,7 @@ export const fetchOtherProfile = createAsyncThunk('user/other', async (id, { rej
             },
         };
         const { data } = await axios.get(
-            `/api/user/others/profile/${id}/`,
+            `${baseUrl}/api/user/others/profile/${id}/`,
             config
         );
         return data;
@@ -186,7 +187,7 @@ export const fetchForgetPasswordSubmit = createAsyncThunk('user/forget', async (
             },
         };
         const { data } = await axios.post(
-            `/api/user/forget/`,
+            `${baseUrl}/api/user/forget/`,
             email,
             config
         );
@@ -208,7 +209,7 @@ export const fetchForgetPasswordVerify = createAsyncThunk('user/forget/verify', 
             },
         };
         const { data } = await axios.post(
-            `/api/user/reset-password/verify/`,
+            `${baseUrl}/api/user/reset-password/verify/`,
             userData,
             config
         );
@@ -232,7 +233,7 @@ export const fetchReSendVerifyEmail = createAsyncThunk('user/resend', async (_, 
             },
         };
         const { data } = await axios.post(
-            `/api/user/resend/verify/`,
+            `${baseUrl}/api/user/resend/verify/`,
             {},
             config
         );

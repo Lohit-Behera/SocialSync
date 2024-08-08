@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import VideoPlayer from "@/components/VideoPlayer";
@@ -22,7 +22,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   fetchGetPost,
@@ -32,11 +31,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, Send, Pencil, Trash } from "lucide-react";
 import { fetchLike, resetLike } from "@/features/PostRelatedSlice";
-import Comments from "@/components/Comments";
-import PostDetailsLoader from "@/components/Loader/PostDetailsLoader";
-import ServerErrorPage from "./Error/ServerErrorPage";
-import CustomImage from "@/components/CustomImage";
 import { toast } from "react-toastify";
+import PostDetailsLoader from "@/components/Loader/PostDetailsLoader";
+
+const Comments = lazy(() => import("@/components/Comments"));
+const CustomImage = lazy(() => import("@/components/CustomImage"));
+const ServerErrorPage = lazy(() => import("./Error/ServerErrorPage"));
 
 function PostDetails() {
   const dispatch = useDispatch();
@@ -112,7 +112,7 @@ function PostDetails() {
   };
 
   return (
-    <>
+    <Suspense fallback={<PostDetailsLoader />}>
       {getPostStatus === "loading" || getPostStatus === "idle" ? (
         <PostDetailsLoader />
       ) : getPostStatus === "failed" ? (
@@ -225,7 +225,7 @@ function PostDetails() {
           </div>
         </>
       )}
-    </>
+    </Suspense>
   );
 }
 

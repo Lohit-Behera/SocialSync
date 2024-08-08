@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchChatRoom } from "@/features/ChatSlice";
 import { fetchOtherProfile } from "@/features/UserSlice";
-import Chat from "@/components/Chat";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import ChatLoader from "@/components/Loader/ChatLoader";
-import ServerErrorPage from "./Error/ServerErrorPage";
+
+const Chat = lazy(() => import("@/components/Chat"));
+const ServerErrorPage = lazy(() => import("./Error/ServerErrorPage"));
 
 function ChatPage() {
   const dispatch = useDispatch();
@@ -39,7 +40,7 @@ function ChatPage() {
   }, [id]);
 
   return (
-    <>
+    <Suspense fallback={<ChatLoader />}>
       {chatRoomStatus === "loading" || chatRoomStatus === "idle" ? (
         <ChatLoader />
       ) : chatRoomStatus === "failed" ? (
@@ -97,7 +98,7 @@ function ChatPage() {
           </div>
         </>
       )}
-    </>
+    </Suspense>
   );
 }
 

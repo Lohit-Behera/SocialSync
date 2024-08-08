@@ -7,9 +7,7 @@ import PostRelatedSlice from "@/features/PostRelatedSlice";
 import UserFollowSlice from "@/features/UserFollowSlice";
 import ChatSlice from "@/features/ChatSlice";
 import webSocketSlice from "@/features/WebSocketSlice";
-
-
-import DeleteImages from "@/features/DeleteImages";
+import SupportSlice from "@/features/SupportSlice";
 
 const store = configureStore({
     reducer: {
@@ -20,8 +18,7 @@ const store = configureStore({
         postRelated: PostRelatedSlice,
         userFollow: UserFollowSlice,
         chat: ChatSlice,
-        
-        deleteImages: DeleteImages
+        support: SupportSlice
     }
 })
 

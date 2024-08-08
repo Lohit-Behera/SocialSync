@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -11,9 +11,11 @@ import {
   resetFollow,
 } from "@/features/UserFollowSlice";
 import { Loader2 } from "lucide-react";
-import Posts from "@/components/Posts";
-import PostLoader from "@/components/Loader/PostLoader";
 import { toast } from "react-toastify";
+import PostLoader from "@/components/Loader/PostLoader";
+
+const ServerErrorPage = lazy(() => import("./Error/ServerErrorPage"));
+const Posts = lazy(() => import("@/components/Posts"));
 
 function VideoPostPage() {
   const dispatch = useDispatch();
@@ -127,11 +129,11 @@ function VideoPostPage() {
   }, [handleScroll]);
 
   return (
-    <>
+    <Suspense fallback={<PostLoader />}>
       {pageLoading ? (
         <PostLoader />
       ) : getAllVideoPostStatus === "failed" ? (
-        <p>Error</p>
+        <ServerErrorPage />
       ) : (
         <div className="w-[95%] md:w-[90%] lg:w-[85%] mx-auto">
           <h1 className="text-3xl font-bold text-center my-4">Video Posts</h1>
@@ -158,7 +160,7 @@ function VideoPostPage() {
           )}
         </div>
       )}
-    </>
+    </Suspense>
   );
 }
 

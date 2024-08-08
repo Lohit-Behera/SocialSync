@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -11,10 +11,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import CustomPassword from "@/components/CustomPassword";
-import UpdateProfileLoader from "@/components/Loader/UpdateProfileLoader";
-import ServerErrorPage from "./Error/ServerErrorPage";
 import { toast } from "react-toastify";
+import UpdateProfileLoader from "@/components/Loader/UpdateProfileLoader";
+
+const CustomPassword = lazy(() => import("@/components/CustomPassword"));
+const ServerErrorPage = lazy(() => import("./Error/ServerErrorPage"));
 
 function UpdateProfilePage() {
   const dispatch = useDispatch();
@@ -104,7 +105,7 @@ function UpdateProfilePage() {
   };
 
   return (
-    <>
+    <Suspense fallback={<UpdateProfileLoader />}>
       {userUpdateStatus === "loading" ? (
         <UpdateProfileLoader />
       ) : userUpdateStatus === "failed" ? (
@@ -210,7 +211,7 @@ function UpdateProfilePage() {
           </div>
         </div>
       )}
-    </>
+    </Suspense>
   );
 }
 

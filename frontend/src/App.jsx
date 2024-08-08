@@ -25,6 +25,7 @@ import VideoPostPage from "./Pages/VideoPostPage";
 import ImagePostPage from "./Pages/ImagePostPage";
 import ResetPassword from "./Pages/ResetPassword";
 import PageNotFound from "./Pages/Error/PageNotFound";
+import SupportPage from "./Pages/SupportPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -45,6 +46,7 @@ const router = createBrowserRouter(
       <Route path="/video-post" element={<VideoPostPage />} />
       <Route path="/image-post" element={<ImagePostPage />} />
       <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
+      <Route path="/support" element={<SupportPage />} />
     </Route>
   )
 );
