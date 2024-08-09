@@ -57,7 +57,7 @@ function Navigation() {
           <nav className="flex flex-col items-center gap-4 px-2">
             <Link to="/" className="mt-2">
               <Avatar className="hover:scale-110 duration-300">
-                <AvatarImage src={Logo} />
+                <AvatarImage src={Logo} noUrl />
                 <AvatarFallback>L</AvatarFallback>
               </Avatar>
             </Link>
@@ -266,7 +266,7 @@ function Navigation() {
                 <SheetClose asChild>
                   <Link to="/" className="ml-5">
                     <Avatar>
-                      <AvatarImage src={Logo} />
+                      <AvatarImage src={Logo} noUrl />
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                   </Link>
