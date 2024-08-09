@@ -238,7 +238,7 @@ function CreatePost() {
                   <Label htmlFor="image-upload">Select Image</Label>
                   {image ? (
                     <>
-                      <CustomImage src={URL.createObjectURL(image)} />
+                      <CustomImage noUrl src={URL.createObjectURL(image)} />
                       <Button
                         variant="default"
                         size="sm"
@@ -332,7 +332,7 @@ function CreatePost() {
                   <Label htmlFor="image-upload">Select Thumbnail</Label>
                   {thumbnail ? (
                     <>
-                      <CustomImage src={URL.createObjectURL(thumbnail)} />
+                      <CustomImage noUrl src={URL.createObjectURL(thumbnail)} />
                       <Button
                         variant="default"
                         size="sm"

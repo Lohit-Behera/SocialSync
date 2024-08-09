@@ -178,6 +178,7 @@ function SignupPage() {
           >
             <CustomImage
               src={WaterFall}
+              noUrl
               alt="Image"
               className="h-full w-full object-cover grayscale hover:grayscale-0 duration-700 ease-in-out"
             />

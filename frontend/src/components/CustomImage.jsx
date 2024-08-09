@@ -4,7 +4,14 @@ import ImageLoader from "./Loader/ImageLoader/ImageLoader";
 import ErrorImage from "../assets/image not found.svg";
 import { baseUrl } from "@/features/Proxy";
 
-function CustomImage({ className, src, alt, onClick, absolute = false }) {
+function CustomImage({
+  className,
+  src,
+  alt,
+  onClick,
+  absolute = false,
+  noUrl = false,
+}) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
 
@@ -35,7 +42,7 @@ function CustomImage({ className, src, alt, onClick, absolute = false }) {
       </div>
       <img
         className="w-full h-full object-cover rounded-lg"
-        src={error ? ErrorImage : `${baseUrl}${src}`}
+        src={error ? ErrorImage : noUrl ? src : `${baseUrl}${src}`}
         alt={alt}
         style={imagesStyle}
         onLoad={imageLoaded}

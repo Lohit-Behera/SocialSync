@@ -184,6 +184,7 @@ function LoginPage() {
           >
             <CustomImage
               src={WaterFall}
+              noUrl
               alt="Image"
               width="1920"
               height="1080"
