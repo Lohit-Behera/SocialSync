@@ -84,8 +84,8 @@ function SignupPage() {
   return (
     <Suspense fallback={<Loader />}>
       <div className="w-full lg:grid lg:grid-cols-2 min-h-auto md:min-h-[100vh]">
-        <div className="flex items-center justify-center py-12">
-          <div className="mx-auto grid w-[350px] gap-6">
+        <div className="flex items-center justify-center py-12 ">
+          <div className="mx-auto grid w-[400px] gap-6 border-2 p-6 rounded-lg bg-background">
             <div className="grid gap-2 text-center">
               <h1 className="text-3xl font-bold">Sign Up</h1>
               <p className="text-balance text-muted-foreground">
@@ -158,9 +158,6 @@ function SignupPage() {
               />
               <Button type="submit" className="w-full" onClick={submitHandler}>
                 Sign Up
-              </Button>
-              <Button variant="outline" className="w-full">
-                Sign Up with Google
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
