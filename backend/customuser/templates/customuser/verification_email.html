@@ -4,8 +4,11 @@
     <meta charset="UTF-8" />
     <title>Verification Email</title>
     <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
       .button {
-        background-color: #3b82f6;
+        background-color: #e11d48;
         border: none;
         color: white;
         padding: 8px 25px;
@@ -16,6 +19,11 @@
         margin: 4px 2px;
         cursor: pointer;
         border-radius: 4px;
+        transition: all 0.3s ease;
+      }
+      .button:hover {
+        background-color: #bf193d;
+        box-shadow: 0 10px 30px rgba(225, 29, 72, 0.4);
       }
       .header {
         font-size: 18px;
@@ -23,7 +31,10 @@
       }
       h1 {
         font-size: 26px;
-        text-align: center;
+        color: #e11d48;
+      }
+      h2 {
+        font-size: 20px;
       }
       p {
         font-size: 18px;
@@ -31,7 +42,8 @@
     </style>
   </head>
   <body>
-    <h1>Verify Email</h1>
+    <h1>Social Sync</h1>
+    <h2>Verify Email</h2>
     <p class="header">Hi {{ first_name }},</p>
     <p class="header">
       Please click the Verify Email to verify your email address:
