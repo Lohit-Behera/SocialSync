@@ -133,8 +133,7 @@ function TextPostPage() {
         <ServerErrorPage />
       ) : (
         <>
-          <h1 className="text-3xl text-center font-bold my-4">Text Post</h1>
-          <div className="w-[96%] md:w-[90%] lg:w-[95%] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
+          <div className="w-[96%] md:w-[90%] lg:w-[95%] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-10">
             {textPosts.length > 0 ? (
               <>
                 {textPosts.map((post) => (

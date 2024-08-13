@@ -135,8 +135,7 @@ function ImagePostPage() {
       ) : getAllImagePostStatus === "failed" ? (
         <ServerErrorPage />
       ) : (
-        <div className="w-[95%] md:w-[90%] lg:w-[85%] mx-auto mb-6">
-          <h1 className="text-3xl font-bold text-center my-4">Image Posts</h1>
+        <div className="w-[95%] md:w-[90%] lg:w-[85%] mx-auto my-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {imagePosts.map((post) => (
               <Posts
