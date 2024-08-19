@@ -9,6 +9,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "./ui/button";
 import {
@@ -20,7 +28,9 @@ import { fetchGetUserAllPost, resetGetUserAllPost } from "@/features/PostSlice";
 import { Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import ProfileLoader from "./Loader/ProfileLoader";
-
+import { fetchGetFollowerFollowingList } from "@/features/UserSlice";
+import { Skeleton } from "./ui/skeleton";
+import { ScrollArea } from "@/components/ui/scroll-area";
 const Posts = lazy(() => import("@/components/Posts"));
 const ServerErrorPage = lazy(() => import("@/Pages/Error/ServerErrorPage"));
 
@@ -47,6 +57,12 @@ function Profile({ user = {} }) {
   );
   const getUserAllPost =
     useSelector((state) => state.post.getUserAllPost) || [];
+
+  const getFollowerFollowingListStatus = useSelector(
+    (state) => state.user.getFollowerFollowingListStatus
+  );
+  const getFollowerFollowingList =
+    useSelector((state) => state.user.getFollowerFollowingList) || [];
 
   const [posts, setPosts] = useState([]);
   const [pageLoading, setPageLoading] = useState(true);
@@ -126,6 +142,14 @@ function Profile({ user = {} }) {
     });
   };
 
+  const handleFollowers = () => {
+    dispatch(fetchGetFollowerFollowingList({ id: id, type: "followers" }));
+  };
+
+  const handleFollowing = () => {
+    dispatch(fetchGetFollowerFollowingList({ id: id, type: "following" }));
+  };
+
   return (
     <Suspense fallback={<ProfileLoader />}>
       <div className="w-[96%] md:w-[80%] lg:w-[70%] mx-auto mt-4">
@@ -178,24 +202,104 @@ function Profile({ user = {} }) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-3">
+              <div className="grid grid-cols-3 text-base md:text-xl font-semibold mt-2 text-center">
+                <Dialog>
+                  <DialogTrigger onClick={handleFollowers}>
+                    <p>Followers</p>
+                    <p>{followers.length}</p>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <ScrollArea className="max-h-[70vh] w-full h-full">
+                      <DialogHeader className="">
+                        <DialogTitle className="text-lg md:text-xl font-semibold text-center">
+                          Followers
+                        </DialogTitle>
+                        {getFollowerFollowingListStatus === "loading" ? (
+                          <>
+                            {Array.from({ length: 10 }).map((_, index) => (
+                              <div
+                                key={index}
+                                className="w-full h-full flex space-x-2 items-center"
+                              >
+                                <Skeleton className="w-12 h-12 rounded-full" />
+                                <Skeleton className="w-[50%] h-5 " />
+                              </div>
+                            ))}
+                          </>
+                        ) : getFollowerFollowingListStatus === "failed" ? (
+                          <p>Error...</p>
+                        ) : (
+                          <>
+                            {getFollowerFollowingList.map((user) => (
+                              <div
+                                key={user.id}
+                                className="flex space-x-2 items-center bg-muted p-1 md:p-3 rounded-lg"
+                              >
+                                <Avatar className="w-12 h-12 hover:border-2 hover:cursor-pointer border-primary">
+                                  <AvatarImage src={user.profile_image} />
+                                  <AvatarFallback>P</AvatarFallback>
+                                </Avatar>
+                                <p className="text-base md:text-lg font-semibold hover:underline hover:cursor-pointer">
+                                  {user.user_name}
+                                </p>
+                              </div>
+                            ))}
+                          </>
+                        )}
+                      </DialogHeader>
+                    </ScrollArea>
+                  </DialogContent>
+                </Dialog>
+                <Dialog>
+                  <DialogTrigger onClick={handleFollowing}>
+                    <p>Following</p>
+                    <p>{following.length}</p>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <ScrollArea className="max-h-[70vh] w-full h-full">
+                      <DialogHeader>
+                        <DialogTitle className="text-lg md:text-xl font-semibold text-center">
+                          Following
+                        </DialogTitle>
+                        {getFollowerFollowingListStatus === "loading" ? (
+                          <>
+                            {Array.from({ length: 10 }).map((_, index) => (
+                              <div
+                                key={index}
+                                className="w-full h-full flex space-x-2 items-center"
+                              >
+                                <Skeleton className="w-12 h-12 rounded-full" />
+                                <Skeleton className="w-[50%] h-5 " />
+                              </div>
+                            ))}
+                          </>
+                        ) : getFollowerFollowingListStatus === "failed" ? (
+                          <p>Error...</p>
+                        ) : (
+                          <>
+                            {getFollowerFollowingList.map((user) => (
+                              <div
+                                key={user.id}
+                                className="flex space-x-3 items-center bg-muted p-1 md:p-3 rounded-lg"
+                              >
+                                <Avatar className="w-12 h-12 hover:border-2 hover:cursor-pointer border-primary">
+                                  <AvatarImage src={user.profile_image} />
+                                  <AvatarFallback>P</AvatarFallback>
+                                </Avatar>
+                                <p className="text-base md:text-lg font-semibold hover:underline hover:cursor-pointer">
+                                  {user.user_name}
+                                </p>
+                              </div>
+                            ))}
+                          </>
+                        )}
+                      </DialogHeader>
+                    </ScrollArea>
+                  </DialogContent>
+                </Dialog>
                 <div>
-                  <p className="text-base md:text-xl font-semibold mt-2 text-center">
-                    Followers
-                  </p>
-                  <p className="text-center">{followers.length}</p>
-                </div>
-                <div>
-                  <p className="text-base md:text-xl font-semibold mt-2 text-center">
-                    Following
-                  </p>
-                  <p className="text-center">{following.length}</p>
-                </div>
-                <div>
-                  <p className="text-base md:text-xl font-semibold mt-2 text-center">
-                    Post
-                  </p>
-                  <p className="text-center">{total_posts}</p>
+                  <p>Post</p>
+                  <p>{total_posts}</p>
                 </div>
               </div>
             </CardContent>

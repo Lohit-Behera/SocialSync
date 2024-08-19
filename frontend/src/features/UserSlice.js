@@ -247,6 +247,30 @@ export const fetchReSendVerifyEmail = createAsyncThunk('user/resend', async (_, 
     }
 });
 
+export const fetchGetFollowerFollowingList = createAsyncThunk('user/following/followers', async (type, { rejectWithValue, getState }) => {
+    try {
+        const { user: { userInfo } = {} } = getState();
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userInfo.token}`,
+            },
+        };
+        const { data } = await axios.get(
+            `${baseUrl}/api/user/get/followers/following/${type.id}/?type=${type.type}`,
+            config
+        );
+        return data;
+        
+    } catch (error) {
+        return rejectWithValue(
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        );
+    }
+})
+
 const userSlice = createSlice({
     name: "user",
     initialState: {
@@ -288,7 +312,11 @@ const userSlice = createSlice({
 
         reSendVerifyEmail: null,
         reSendVerifyEmailStatus: "idle",
-        reSendVerifyEmailError: null
+        reSendVerifyEmailError: null,
+
+        getFollowerFollowingList: null,
+        getFollowerFollowingListStatus: "idle",
+        getFollowerFollowingListError: null
     },
     reducers: {
         logout: (state) => {
@@ -326,6 +354,11 @@ const userSlice = createSlice({
             state.reSendVerifyEmail = null;
             state.reSendVerifyEmailStatus = "idle";
             state.reSendVerifyEmailError = null;
+        },
+        resetGetFollowerFollowingList: (state) => {
+            state.getFollowerFollowingList = null;
+            state.getFollowerFollowingListStatus = "idle";
+            state.getFollowerFollowingListError = null;
         }
     },
     extraReducers: (builder) => {
@@ -459,10 +492,23 @@ const userSlice = createSlice({
                 state.reSendVerifyEmailStatus = "failed";
                 state.reSendVerifyEmailError = action.payload;
             })
-    },
+
+            // Get Follower Following List
+            .addCase(fetchGetFollowerFollowingList.pending, (state) => {
+                state.getFollowerFollowingListStatus = "loading";
+            })
+            .addCase(fetchGetFollowerFollowingList.fulfilled, (state, action) => {
+                state.getFollowerFollowingListStatus = "succeeded";
+                state.getFollowerFollowingList = action.payload;
+            })
+            .addCase(fetchGetFollowerFollowingList.rejected, (state, action) => {   
+                state.getFollowerFollowingListStatus = "failed";
+                state.getFollowerFollowingListError = action.payload;
+            })
+    },      
 });
 
 
-export const { logout, resetRegister, resetUserUpdate, resetFollowingList, resetForgetPasswordSubmit, resetForgetPasswordVerify, resetReSendVerifyEmail } = userSlice.actions
+export const { logout, resetRegister, resetUserUpdate, resetFollowingList, resetForgetPasswordSubmit, resetForgetPasswordVerify, resetReSendVerifyEmail, resetGetFollowerFollowingList } = userSlice.actions
 
 export default userSlice.reducer

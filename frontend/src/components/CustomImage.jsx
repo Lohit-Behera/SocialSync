@@ -11,6 +11,7 @@ function CustomImage({
   onClick,
   absolute = false,
   noUrl = false,
+  hover = false,
 }) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
@@ -28,7 +29,10 @@ function CustomImage({
     <div
       className={`${className} ${
         absolute ? "absolute" : "relative"
-      } flex justify-center mx-auto rounded-lg`}
+      } flex justify-center mx-auto rounded-lg ${
+        hover &&
+        "hover:scale-103 duration-200 hover:drop-shadow-[0_15px_15px_rgba(225,29,72,0.5)] ease-in-out"
+      }`}
       onClick={onClick}
     >
       <div

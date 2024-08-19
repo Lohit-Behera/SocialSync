@@ -88,11 +88,12 @@ function Posts({
               setActiveVideoId={setActiveVideoId}
               thumbnailSrc={post.thumbnail}
               glow="20"
+              hover
             />
           )}
           {post.type === "image" && (
             <Link to={`/post/${post.id}`}>
-              <CustomImage src={post.image} alt="image" />
+              <CustomImage src={post.image} alt="image" hover />
             </Link>
           )}
           <Link to={`/post/${post.id}`}>

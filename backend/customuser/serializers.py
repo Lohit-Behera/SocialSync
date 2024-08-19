@@ -51,3 +51,8 @@ class OnlineStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['is_online', 'last_seen']
+        
+class UserFollowingFollowersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id','user_name','profile_image']

@@ -21,7 +21,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 import os
 
-from .serializers import UserSerializerWithToken, UserSerializer, ContactUsSerializer, UserFollowSerializer, UserFollowingListSerializer
+from .serializers import UserSerializerWithToken, UserSerializer, ContactUsSerializer, UserFollowSerializer, UserFollowingListSerializer, UserFollowingFollowersSerializer
 
 from .models import CustomUser, EmailVerificationToken, ContactUs
 
@@ -451,3 +451,14 @@ def password_reset_confirm(request):
         return Response({'message': 'Password has been reset.'}, status=status.HTTP_200_OK)
     return Response({'message': 'Invalid token or user ID'}, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_followers_following(request, pk):
+    user = CustomUser.objects.get(id=pk)
+    type = request.GET["type"]
+    if type == 'followers':
+        followers = user.followers.all()
+        return Response(UserFollowingFollowersSerializer(followers, many=True).data, status=status.HTTP_200_OK)
+    if type == 'following':
+        following = user.following.all()
+        return Response(UserFollowingFollowersSerializer(following, many=True).data, status=status.HTTP_200_OK)

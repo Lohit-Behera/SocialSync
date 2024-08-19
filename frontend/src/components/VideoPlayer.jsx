@@ -4,7 +4,13 @@ import { Loader2 } from "lucide-react";
 import CustomImage from "./CustomImage";
 import { baseUrl } from "@/features/Proxy";
 
-function VideoPlayer({ videoSrc, thumbnailSrc, height = "", glow = "50" }) {
+function VideoPlayer({
+  videoSrc,
+  thumbnailSrc,
+  height = "",
+  glow = "50",
+  hover = false,
+}) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -70,6 +76,7 @@ function VideoPlayer({ videoSrc, thumbnailSrc, height = "", glow = "50" }) {
           showThumbnail ? "opacity-100" : "opacity-0"
         }`}
         absolute
+        hover={hover}
       />
       <div
         className={`w-full ${height} mx-auto rounded-lg relative ${

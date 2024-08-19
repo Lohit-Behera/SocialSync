@@ -27,4 +27,5 @@ urlpatterns = [
     path('follow/<uuid:user_id>/', views.follow_user, name='follow_user'),
     path('list/follow/<uuid:user_id>/', views.list_follow, name='list_follow'),
     path('others/profile/<uuid:user_id>/', views.other_user_profile, name='other_user_profile'),
+    path('get/followers/following/<str:pk>/', views.get_user_followers_following, name='get_user_followers_following'),
 ]
