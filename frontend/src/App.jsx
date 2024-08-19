@@ -45,7 +45,7 @@ const router = createBrowserRouter(
       <Route path="/chat/:id" element={<ChatPage />} />
       <Route path="/video-post" element={<VideoPostPage />} />
       <Route path="/image-post" element={<ImagePostPage />} />
-      <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
+      <Route path="/change-password/:uid/:token" element={<ResetPassword />} />
       <Route path="/support" element={<SupportPage />} />
     </Route>
   )

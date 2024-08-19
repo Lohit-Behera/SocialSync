@@ -1,7 +1,7 @@
 import React, { useState, lazy, Suspense } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, UserMinus, UserPlus } from "lucide-react";
+import { AlignJustify, Loader2, UserMinus, UserPlus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Loader from "./Loader/Loader";
@@ -92,7 +92,7 @@ function Posts({
           )}
           {post.type === "image" && (
             <Link to={`/post/${post.id}`}>
-              <CustomImage src={post.image} alt="image" className="" />
+              <CustomImage src={post.image} alt="image" />
             </Link>
           )}
           <Link to={`/post/${post.id}`}>
@@ -107,6 +107,7 @@ function Posts({
           {post.type === "video" && (
             <div className="flex justify-end">
               <Button size="sm" onClick={() => navigate(`/post/${post.id}`)}>
+                <AlignJustify className="mr-2 h-4 md:h-5 w-4 md:w-5" />
                 Details
               </Button>
             </div>

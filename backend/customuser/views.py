@@ -154,19 +154,12 @@ def update_user(request, pk):
 
     data = request.data
     user = CustomUser.objects.get(id=pk)
-
-    user.email = data['email']
     user.first_name = data['first_name']
     user.last_name = data['last_name']
 
     profile_image = request.FILES.get('profile_image')
     if profile_image:
         user.profile_image = profile_image
-
-    password = data.get('password')
-    if password:
-        user.set_password(password)
-
     user.save()
     return Response({'message': 'User updated successfully'})
 
@@ -389,6 +382,7 @@ def other_user_profile(request, user_id):
 def password_reset_request(request):
     try:
         data = request.data
+        print(data)
         
         if CustomUser.objects.filter(email=data['email']).exists():
             user = CustomUser.objects.get(email=data['email'])
@@ -397,16 +391,40 @@ def password_reset_request(request):
         
         token = default_token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
-
-        frontend_url = 'http://localhost:5173/reset-password'
+        
+        if data["type"] == "change":
+            massage = "Password changed link sent."
+            subject = 'Password change Requested'
+        
+        if data["type"] == "reset":
+            massage = "Password reset link sent."
+            subject = 'Password Reset Requested'
+            
+        frontend_url = 'http://localhost:5173/change-password'
         reset_link = f'{frontend_url}/{uid}/{token}'
-
-        subject = 'Password Reset Requested'
-        message = f'Click the link below to reset your password:\n\n{reset_link}'
-
-        send_mail(subject, message, EMAIL_HOST_USER, [user.email])
-
-        return Response({'message': 'Password reset link sent.'}, status=status.HTTP_200_OK)
+        
+        email_context = {
+            'first_name': user.first_name,
+            'reset_link': reset_link
+        }
+        
+        template_name = os.path.join(BASE_DIR, 'customuser/templates/customuser/change_password_email.html')
+        
+        html_message = render_to_string(
+            template_name=template_name,
+            context=email_context
+            )
+        
+        plain_message = strip_tags(html_message)  
+        
+        send_mail(
+            subject=subject,
+            message=plain_message,
+            from_email=EMAIL_HOST_USER,
+            recipient_list=[user.email],
+            html_message=html_message
+            )
+        return Response({'message': massage}, status=status.HTTP_200_OK)
 
     except Exception as e:
         print(f"Error: {e}")

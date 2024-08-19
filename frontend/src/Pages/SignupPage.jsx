@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "react-toastify";
 import WaterFall from "../assets/waterfalls.jpg";
 import Loader from "@/components/Loader/Loader";
+import { SquarePen } from "lucide-react";
 
 const CustomPassword = lazy(() => import("@/components/CustomPassword"));
 const CustomImage = lazy(() => import("@/components/CustomImage"));
@@ -157,6 +158,7 @@ function SignupPage() {
                 change={(e) => setConfirmPassword(e.target.value)}
               />
               <Button type="submit" className="w-full" onClick={submitHandler}>
+                <SquarePen className="mr-2 h-4 md:h-5 w-4 md:w-5" />
                 Sign Up
               </Button>
             </div>

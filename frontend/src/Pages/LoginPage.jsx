@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  fetchForgetPasswordSubmit,
   fetchLogin,
+  fetchForgetPasswordSubmit,
   resetForgetPasswordSubmit,
 } from "@/features/UserSlice";
 import { toast } from "react-toastify";
 import Loader from "@/components/Loader/Loader";
 import WaterFall from "../assets/waterfalls.jpg";
+import { Link2, LogIn } from "lucide-react";
 
 const CustomPassword = lazy(() => import("@/components/CustomPassword"));
 const CustomImage = lazy(() => import("@/components/CustomImage"));
@@ -78,6 +79,7 @@ function LoginPage() {
       const forgetPasswordPromise = dispatch(
         fetchForgetPasswordSubmit({
           email: email,
+          type: "reset",
         })
       ).unwrap();
       toast.promise(forgetPasswordPromise, {
@@ -119,13 +121,14 @@ function LoginPage() {
                     />
                   </div>
                   <Button onClick={handleForgetPassword} className="w-full">
+                    <Link2 className="mr-2 h-4 md:h-5 w-4 md:w-5" />
                     Send Link
                   </Button>
                   <Button
                     className="w-full"
                     onClick={() => setForgetPassword(false)}
                   >
-                    Login
+                    <LogIn className="mr-2 h-4 md:h-5 w-4 md:w-5" /> Login
                   </Button>
                 </div>
               </>
@@ -161,7 +164,7 @@ function LoginPage() {
                     className="w-full"
                     onClick={loginHandler}
                   >
-                    Login
+                    <LogIn className="mr-2 h-4 md:h-5 w-4 md:w-5" /> Login
                   </Button>
                 </div>
                 <div className="mt-4 text-center text-sm">

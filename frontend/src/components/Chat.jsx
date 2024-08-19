@@ -39,7 +39,7 @@ const Chat = ({ roomName }) => {
   const scrollToBottom = () => {
     const scrollableHeight = document.documentElement.scrollHeight;
     window.scrollTo({
-      top: scrollableHeight,
+      top: scrollableHeight + 300,
       behavior: "smooth",
     });
   };

@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash, X } from "lucide-react";
+import { MessageSquarePlus, Pencil, Trash, X } from "lucide-react";
 import {
   fetchCreateComment,
   fetchDeleteComment,
@@ -151,6 +151,7 @@ function Comments({ id }) {
             <Textarea
               id="comment"
               required
+              value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Add a comment"
               className="w-full resize-none"
@@ -158,6 +159,7 @@ function Comments({ id }) {
             />
           </div>
           <Button className="w-full" size="sm" onClick={handleComment}>
+            <MessageSquarePlus className="mr-2 h-4 md:h-5 w-4 md:w-5" />
             Add
           </Button>
         </CardFooter>
@@ -193,7 +195,7 @@ function Comments({ id }) {
                     {userInfo?.id === comment.user && (
                       <div className="flex space-x-2">
                         <Button
-                          className="w-8 h-8"
+                          className="w-8 h-8 hover:bg-background/40"
                           size="icon"
                           variant="outline"
                           onClick={() =>
@@ -226,8 +228,8 @@ function Comments({ id }) {
                               </AlertDialogTitle>
                               <AlertDialogDescription>
                                 This action cannot be undone. This will
-                                permanently delete your Post and remove your
-                                data from our servers.
+                                permanently delete your Comment and remove data
+                                from our servers.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>

@@ -6,15 +6,18 @@ import {
   fetchReSendVerifyEmail,
   fetchUserUpdate,
   resetUserUpdate,
+  fetchForgetPasswordSubmit,
+  resetForgetPasswordSubmit,
 } from "@/features/UserSlice";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "react-toastify";
 import UpdateProfileLoader from "@/components/Loader/UpdateProfileLoader";
-
-const CustomPassword = lazy(() => import("@/components/CustomPassword"));
+import { CloudUpload, Pencil, RefreshCcw, X } from "lucide-react";
+import CustomImage from "@/components/CustomImage";
 const ServerErrorPage = lazy(() => import("./Error/ServerErrorPage"));
 
 function UpdateProfilePage() {
@@ -28,13 +31,11 @@ function UpdateProfilePage() {
     (state) => state.user.reSendVerifyEmailStatus
   );
 
-  const [userName, setUserName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
   const [profileImage, setProfileImage] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [editFirstName, setEditFirstName] = useState(false);
+  const [editLastName, setEditLastName] = useState(false);
 
   useEffect(() => {
     if (userUpdateStatus === "succeeded") {
@@ -50,9 +51,7 @@ function UpdateProfilePage() {
     } else {
       setFirstName(userDetails.first_name);
       setLastName(userDetails.last_name);
-      setEmail(userDetails.email);
       setProfileImage(userDetails.profile_image);
-      setUserName(userDetails.user_name);
     }
   }, [userInfo, userDetails, userUpdateStatus]);
 
@@ -74,16 +73,18 @@ function UpdateProfilePage() {
   };
 
   const updateHandler = (e) => {
-    if (password !== confirmPassword) {
-      toast.warning("Passwords do not match");
+    if (
+      firstName === userDetails.first_name ||
+      lastName === userDetails.last_name ||
+      profileImage
+    ) {
+      toast.warning("Please update at least one field");
     } else {
       const updatePromise = dispatch(
         fetchUserUpdate({
           id: userDetails.id,
           first_name: firstName,
           last_name: lastName,
-          email: email,
-          password: password,
           profile_image: profileImage,
         })
       ).unwrap();
@@ -93,6 +94,20 @@ function UpdateProfilePage() {
         error: "Failed to update profile",
       });
     }
+  };
+
+  const handleChangePassword = () => {
+    const changePasswordPromise = dispatch(
+      fetchForgetPasswordSubmit({
+        type: "change",
+        email: userDetails.email,
+      })
+    ).unwrap();
+    toast.promise(changePasswordPromise, {
+      pending: "Sending password change link...",
+      success: "Password change link sent successfully",
+      error: "Failed to send password change link",
+    });
   };
 
   const sendVerifyEmailHandler = () => {
@@ -136,49 +151,97 @@ function UpdateProfilePage() {
             <h1 className="text-lg md:text-2xl font-bold text-center my-4 ">
               Update Profile
             </h1>
-            <h3 className="text-center">
-              if you don't want to change image or password just leave it blank
-            </h3>
             <div className="grid gap-2">
               <Label htmlFor="userName">User Name</Label>
-              <Input
-                id="userName"
-                placeholder="User Name"
-                required
-                value={userName || ""}
-                onChange={(e) => setUserName(e.target.value)}
-              />
+              <p id="userName" className="text-base md:text-lg font-semibold">
+                {userDetails.user_name}
+              </p>
             </div>
             <div className="grid gap-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="first-name">First name</Label>
-                  <Input
-                    id="first-name"
-                    placeholder="First Name"
-                    onChange={(e) => setFirstName(e.target.value)}
-                    value={firstName || ""}
-                  />
+                  {editFirstName ? (
+                    <div className="flex justify-between space-x-1 md:space-x-2">
+                      <Input
+                        id="first-name"
+                        placeholder="First Name"
+                        onChange={(e) => setFirstName(e.target.value)}
+                        value={firstName || ""}
+                      />
+                      <Button
+                        className="my-auto"
+                        variant="secondary"
+                        size="icon"
+                        onClick={() => setEditFirstName(false)}
+                      >
+                        <X />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between space-x-1 md:space-x-2">
+                      <p
+                        id="first-name"
+                        className="text-base md:text-lg font-semibold"
+                      >
+                        {userDetails.first_name}
+                      </p>
+                      <Button
+                        className="my-auto"
+                        variant="secondary"
+                        size="icon"
+                        onClick={() => setEditFirstName(true)}
+                      >
+                        <Pencil />
+                      </Button>
+                    </div>
+                  )}
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="last-name">Last name</Label>
-                  <Input
-                    id="last-name"
-                    placeholder="Last Name"
-                    onChange={(e) => setLastName(e.target.value)}
-                    value={lastName || ""}
-                  />
+                  {editLastName ? (
+                    <div className="flex justify-between space-x-1 md:space-x-2">
+                      <Input
+                        className="my-auto"
+                        id="last-name"
+                        placeholder="Last Name"
+                        onChange={(e) => setLastName(e.target.value)}
+                        value={lastName || ""}
+                      />
+                      <Button
+                        className="my-auto"
+                        variant="secondary"
+                        size="icon"
+                        onClick={() => setEditLastName(false)}
+                      >
+                        <X />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between space-x-1 md:space-x-2">
+                      <p
+                        id="last-name"
+                        className="text-base md:text-lg font-semibold"
+                      >
+                        {userDetails.last_name}
+                      </p>
+                      <Button
+                        className="my-auto"
+                        variant="secondary"
+                        size="icon"
+                        onClick={() => setEditLastName(true)}
+                      >
+                        <Pencil />
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Email"
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email || ""}
-                />
+                <p id="email" className="text-base md:text-lg font-semibold">
+                  {userDetails.email}
+                </p>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="profile-image">Profile Image</Label>
@@ -191,20 +254,16 @@ function UpdateProfilePage() {
                   onChange={(e) => imageHandler(e)}
                   className="block w-full text-primary font-semibold file:me-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground file:hover:cursor-pointer hover:file:bg-primary/90  file:disabled:opacity-50 file:disabled:pointer-events-none cursor-pointer"
                 />
+                {profileImage && profileImage instanceof File && (
+                  <CustomImage noUrl src={URL.createObjectURL(profileImage)} />
+                )}
               </div>
-              <CustomPassword
-                id="password"
-                label="Password"
-                placeholder="Password"
-                change={(e) => setPassword(e.target.value)}
-              />
-              <CustomPassword
-                id="confirm-password"
-                label="Confirm Password"
-                placeholder="Confirm Password"
-                change={(e) => setConfirmPassword(e.target.value)}
-              />
+              <Button onClick={handleChangePassword} className="w-full">
+                <RefreshCcw className="mr-2 h-4 md:h-5 w-4 md:w-5" />
+                Change Password
+              </Button>
               <Button onClick={updateHandler} className="w-full">
+                <CloudUpload className="mr-2 h-4 md:h-5 w-4 md:w-5" />
                 Update
               </Button>
             </div>

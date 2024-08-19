@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import DragNDrop from "@/components/DragNDrop";
 import CustomImage from "@/components/CustomImage";
 import { toast } from "react-toastify";
+import { CloudUpload, RefreshCw } from "lucide-react";
 
 function CreatePost() {
   const dispatch = useDispatch();
@@ -225,7 +226,7 @@ function CreatePost() {
                   size="sm"
                   onClick={handleTextPost}
                 >
-                  Post
+                  <CloudUpload className="mr-2 h-4 md:h-5 w-4 md:w-5" /> Post
                 </Button>
               </CardFooter>
             </TabsContent>
@@ -244,7 +245,8 @@ function CreatePost() {
                         size="sm"
                         onClick={(e) => setImage(null)}
                       >
-                        New Image
+                        <RefreshCw className="mr-2 h-4 md:h-5 w-4 md:w-5" />{" "}
+                        Change Image
                       </Button>
                     </>
                   ) : (
@@ -286,7 +288,7 @@ function CreatePost() {
                   size="sm"
                   onClick={handleImagePost}
                 >
-                  Post
+                  <CloudUpload className="mr-2 h-4 md:h-5 w-4 md:w-5" /> Post
                 </Button>
               </CardFooter>
             </TabsContent>
@@ -324,7 +326,8 @@ function CreatePost() {
                       size="sm"
                       onClick={(e) => setVideo(null)}
                     >
-                      New Video
+                      <RefreshCw className="mr-2 h-4 md:h-5 w-4 md:w-5" />{" "}
+                      Change Video
                     </Button>
                   )}
                 </div>
@@ -338,7 +341,8 @@ function CreatePost() {
                         size="sm"
                         onClick={(e) => setThumbnail(null)}
                       >
-                        New Thumbnail
+                        <RefreshCw className="mr-2 h-4 md:h-5 w-4 md:w-5" />{" "}
+                        Change Thumbnail
                       </Button>
                     </>
                   ) : (
@@ -380,6 +384,7 @@ function CreatePost() {
                   size="sm"
                   onClick={handleVideoPost}
                 >
+                  <CloudUpload className="mr-2 h-4 md:h-5 w-4 md:w-5" />
                   Post
                 </Button>
               </CardFooter>
