@@ -1,8 +1,8 @@
 import React from "react";
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
-import { Eye, EyeOff } from "lucide-react";
 
 function CustomPassword({ id, label, placeholder, change, forget, onClick }) {
   const [showPassword, setShowPassword] = useState(false);

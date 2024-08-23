@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "@/features/UserSlice";
 import { Link, NavLink, useNavigate } from "react-router-dom";
@@ -11,13 +11,11 @@ import {
   PanelLeft,
   LogIn,
   SquarePlus,
-  ImageMinus,
 } from "lucide-react";
 import Logo from "@/assets/Logo.svg";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,

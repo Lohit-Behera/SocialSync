@@ -107,8 +107,12 @@ function Posts({
           </Link>
           {post.type === "video" && (
             <div className="flex justify-end">
-              <Button size="sm" onClick={() => navigate(`/post/${post.id}`)}>
-                <AlignJustify className="mr-2 h-4 md:h-5 w-4 md:w-5" />
+              <Button
+                className="text-xs md:text-sm"
+                size="sx"
+                onClick={() => navigate(`/post/${post.id}`)}
+              >
+                <AlignJustify className="mr-2 h-3 md:h-4 w-3 md:w-4" />
                 Details
               </Button>
             </div>

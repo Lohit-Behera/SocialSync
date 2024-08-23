@@ -190,4 +190,5 @@ SESSION_COOKIE_NAME = "sessionid"
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://localhost",
 ]
