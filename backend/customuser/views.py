@@ -159,6 +159,7 @@ def update_user(request, pk):
 
     profile_image = request.FILES.get('profile_image')
     if profile_image:
+        user.profile_image.delete(save=False)
         user.profile_image = profile_image
     user.save()
     return Response({'message': 'User updated successfully'})

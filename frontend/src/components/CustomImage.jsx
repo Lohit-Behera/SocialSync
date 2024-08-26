@@ -31,7 +31,7 @@ function CustomImage({
         absolute ? "absolute" : "relative"
       } flex justify-center mx-auto rounded-lg ${
         hover &&
-        "hover:scale-103 duration-200 hover:drop-shadow-[0_15px_15px_rgba(225,29,72,0.5)] ease-in-out"
+        "duration-200 hover:drop-shadow-[0_0px_12px_rgba(225,29,72,0.5)] ease-in-out"
       }`}
       onClick={onClick}
     >

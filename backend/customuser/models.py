@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 import uuid
+
+from io import BytesIO
+from django.core.files.base import ContentFile
+
 from PIL import Image
 from post.models import Post
 
@@ -52,13 +56,26 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        if self.profile_image:
-            img = Image.open(self.profile_image.path)
-
-            max_size = (170, 170)
-
-            img.thumbnail(max_size)
-            img.save(self.profile_image.path)
+        if self.profile_image and hasattr(self.profile_image, 'file'):
+            pil_image = Image.open(self.profile_image.file).convert('RGB')
+            
+            original_width, original_height = pil_image.size
+            aspect_ratio = original_width / original_height
+            new_width = min(170, original_width)
+            new_height = int(new_width / aspect_ratio)
+            
+            if new_height > 170:
+                new_height = 170
+                new_width = int(new_height * aspect_ratio)
+            
+            resized_image = pil_image.resize((new_width, new_height), Image.LANCZOS)
+            
+            image_io = BytesIO()
+            resized_image.save(image_io, format='JPEG', quality=70)
+            image_file = ContentFile(image_io.getvalue(), 'resized_image.jpg')
+            
+            self.profile_image.save('profile_image.jpg', image_file, save=False)
+            super().save(*args, **kwargs)
             
     @property
     def total_posts(self):

@@ -93,7 +93,12 @@ function Posts({
           )}
           {post.type === "image" && (
             <Link to={`/post/${post.id}`}>
-              <CustomImage src={post.image} alt="image" hover />
+              <CustomImage
+                className="h-80 md:h-52"
+                src={post.image}
+                alt="image"
+                hover
+              />
             </Link>
           )}
           <Link to={`/post/${post.id}`}>

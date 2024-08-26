@@ -74,9 +74,9 @@ function UpdateProfilePage() {
 
   const updateHandler = (e) => {
     if (
-      firstName === userDetails.first_name ||
-      lastName === userDetails.last_name ||
-      profileImage
+      firstName === userDetails.first_name &&
+      lastName === userDetails.last_name &&
+      !profileImage
     ) {
       toast.warning("Please update at least one field");
     } else {

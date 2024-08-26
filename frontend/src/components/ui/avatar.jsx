@@ -22,7 +22,7 @@ const AvatarImage = React.forwardRef(
   ({ className, src, noUrl = false, ...props }, ref) => (
     <AvatarPrimitive.Image
       ref={ref}
-      className={cn("aspect-square h-full w-full", className)}
+      className={cn("aspect-square h-full w-full object-cover", className)}
       src={noUrl ? src : baseUrl + src}
       {...props}
     />
