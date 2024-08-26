@@ -21,6 +21,10 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 import os
 
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from PIL import Image
+
 from .serializers import UserSerializerWithToken, UserSerializer, ContactUsSerializer, UserFollowSerializer, UserFollowingListSerializer, UserFollowingFollowersSerializer
 
 from .models import CustomUser, EmailVerificationToken, ContactUs
@@ -55,6 +59,26 @@ def register_user(request):
         last_name = last_name_lower.replace(' ', '').capitalize()
 
         profile_image = request.FILES.get('profile_image')
+        
+        pil_image = profile_image.open(profile_image).convert('RGB')
+        
+        original_width, original_height = pil_image.size
+        aspect_ratio = original_width / original_height
+        new_width = min(170, original_width)
+        new_height = int(new_width / aspect_ratio)
+        
+        if new_height > 170:
+            new_height = 170
+            new_width = int(new_height * aspect_ratio)
+        
+        resized_image = pil_image.resize((new_width, new_height), Image.LANCZOS)
+        
+        image_io = BytesIO()
+        resized_image.save(image_io, format='JPEG', quality=70)
+        image_file = InMemoryUploadedFile(
+            image_io, None, 'profile_image.jpg', 'image/jpeg', image_io.tell(), None
+            )
+                
         email = data['email'].lower()
         user = CustomUser.objects.create(
             user_name=user_name,
@@ -62,7 +86,7 @@ def register_user(request):
             last_name=last_name,
             email=email,
             password=make_password(data['password']),
-            profile_image=profile_image,
+            profile_image=image_file,
         )
 
         send_verification_email(request, user)
@@ -160,7 +184,27 @@ def update_user(request, pk):
     profile_image = request.FILES.get('profile_image')
     if profile_image:
         user.profile_image.delete(save=False)
-        user.profile_image = profile_image
+        
+        pil_image = Image.open(profile_image).convert('RGB')
+        
+        original_width, original_height = pil_image.size
+        aspect_ratio = original_width / original_height
+        new_width = min(170, original_width)
+        new_height = int(new_width / aspect_ratio)
+        
+        if new_height > 170:
+            new_height = 170
+            new_width = int(new_height * aspect_ratio)
+        
+        resized_image = pil_image.resize((new_width, new_height), Image.LANCZOS)
+        
+        image_io = BytesIO()
+        resized_image.save(image_io, format='JPEG', quality=70)
+        image_file = InMemoryUploadedFile(
+            image_io, None, 'profile_image.jpg', 'image/jpeg', image_io.tell(), None
+            )
+        
+        user.profile_image = image_file
     user.save()
     return Response({'message': 'User updated successfully'})
 

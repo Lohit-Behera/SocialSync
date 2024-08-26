@@ -40,6 +40,7 @@ function UpdateProfilePage() {
   useEffect(() => {
     if (userUpdateStatus === "succeeded") {
       dispatch(resetUserUpdate());
+      window.location.reload();
     } else if (userUpdateStatus === "failed") {
       dispatch(resetUserUpdate());
     }
