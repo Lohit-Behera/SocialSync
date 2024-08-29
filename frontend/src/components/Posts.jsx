@@ -87,8 +87,8 @@ function Posts({
               isActive={activeVideoId === post.id}
               setActiveVideoId={setActiveVideoId}
               thumbnailSrc={post.thumbnail}
-              glow="20"
               hover
+              glow="20"
             />
           )}
           {post.type === "image" && (

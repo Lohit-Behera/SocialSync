@@ -185,6 +185,7 @@ function PostDetails() {
                   <VideoPlayer
                     videoSrc={getPost.video}
                     thumbnailSrc={getPost.thumbnail}
+                    hoverSet={true}
                   />
                 )}
                 {getPost.type === "image" && (
