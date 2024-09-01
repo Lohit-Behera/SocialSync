@@ -148,7 +148,7 @@ function PostDetails() {
                       </Button>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button size="icon" variant="outline">
+                          <Button size="icon" variant="destructive">
                             <Trash />
                           </Button>
                         </AlertDialogTrigger>
@@ -193,7 +193,7 @@ function PostDetails() {
                     <CustomImage
                       src={getPost.image}
                       alt="image"
-                      className="w-auto h-full object-cover items-center "
+                      className="w-auto h-full object-cover items-center mb-10"
                     />
                   </div>
                 )}

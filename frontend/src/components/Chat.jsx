@@ -36,12 +36,10 @@ const Chat = ({ roomName }) => {
   const [complete, setComplete] = useState(false);
   const [noMorePost, setNoMorePost] = useState(false);
 
+  const messagesEndRef = useRef(null);
+
   const scrollToBottom = () => {
-    const scrollableHeight = document.documentElement.scrollHeight;
-    window.scrollTo({
-      top: scrollableHeight + 300,
-      behavior: "smooth",
-    });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const websocket = useRef(null);
@@ -56,14 +54,11 @@ const Chat = ({ roomName }) => {
   const allMessageError = useSelector((state) => state.chat.allMessageError);
 
   useEffect(() => {
-    const scrollableHeight = document.documentElement.scrollHeight;
-    window.scrollTo({
-      top: scrollableHeight,
-    });
     setMessages([]);
     dispatch(resetInitialMessage());
     dispatch(resetAllMessage());
-  }, []);
+    scrollToBottom();
+  }, [dispatch]);
 
   useEffect(() => {
     if (initialMessageStatus === "succeeded") {
@@ -96,22 +91,23 @@ const Chat = ({ roomName }) => {
   }, [roomName, dispatch, allMessageStatus]);
 
   useEffect(() => {
-    scrollToBottom();
+    if (scroll) {
+      scrollToBottom();
+      setScroll(false);
+    }
   }, [scroll]);
 
   const handleScroll = useCallback(() => {
     const scrollY = window.scrollY;
-    if (scrollY === 0) {
-      if (currentPage === totalPages) {
-        setNoMorePost(true);
-      } else if (currentPage < totalPages) {
-        dispatch(
-          fetchAllMassage({
-            roomName: roomName,
-            keyword: `?page=${currentPage + 1}`,
-          })
-        );
-      }
+    if (scrollY === 0 && currentPage < totalPages) {
+      dispatch(
+        fetchAllMassage({
+          roomName: roomName,
+          keyword: `?page=${currentPage + 1}`,
+        })
+      );
+    } else if (scrollY === 0 && currentPage === totalPages) {
+      setNoMorePost(true);
     }
   }, [currentPage, totalPages, dispatch]);
 
@@ -160,6 +156,7 @@ const Chat = ({ roomName }) => {
         })
       );
       setNewMessage("");
+      scrollToBottom();
     }
   };
 
@@ -191,7 +188,9 @@ const Chat = ({ roomName }) => {
                   }`}
                 >
                   <p
-                    className={`flex max-w-[70%] break-words bg-secondary p-2 rounded-lg `}
+                    className={`flex max-w-[70%] break-words text-sm md:text-base ${
+                      msg.sender === userInfo.id ? "bg-primary" : "bg-secondary"
+                    } p-2 rounded-lg `}
                     style={{ wordBreak: "break-word" }}
                   >
                     {msg.message}
@@ -206,6 +205,7 @@ const Chat = ({ roomName }) => {
                 </em>
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
           <div className="flex sticky mx-auto bg-background/50 backdrop-blur bottom-0 gap-3 p-3 rounded-full">
             <Input

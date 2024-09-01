@@ -59,6 +59,7 @@ function App() {
         stacked
         position="top-right"
         autoClose={3000}
+        limit={5}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

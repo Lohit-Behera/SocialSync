@@ -82,7 +82,7 @@ function Posts({
           {post.type === "video" && (
             <VideoPlayer
               videoSrc={post.video}
-              hight="h-auto md:h-60 rounded-lg"
+              hight="h-auto md:min-h-60 rounded-lg "
               videoId={post.id}
               isActive={activeVideoId === post.id}
               setActiveVideoId={setActiveVideoId}
@@ -110,18 +110,17 @@ function Posts({
               {post.content}
             </p>
           </Link>
-          {post.type === "video" && (
+          {/* {post.type === "video" && (
             <div className="flex justify-end">
               <Button
                 className="text-xs md:text-sm"
                 size="sx"
                 onClick={() => navigate(`/post/${post.id}`)}
               >
-                <AlignJustify className="mr-2 h-3 md:h-4 w-3 md:w-4" />
-                Details
+                <AlignJustify className="h-3 md:h-4 w-3 md:w-4" />
               </Button>
             </div>
-          )}
+          )} */}
         </CardContent>
       </Card>
     </Suspense>
