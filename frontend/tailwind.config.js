@@ -73,11 +73,11 @@ module.exports = {
         'zoom-in-fade-out': {
           '0%': {
             opacity: 1,
-            transform: 'scale(0)'
+            transform: 'scale(1)'
           },
           '100%': {
             opacity: 0,
-            transform: 'scale(1)'
+            transform: 'scale(6)'
           }
         }
       },
