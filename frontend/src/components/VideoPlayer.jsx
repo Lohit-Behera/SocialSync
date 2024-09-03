@@ -9,6 +9,8 @@ import {
   RotateCw,
   Loader2,
   TriangleAlert,
+  VolumeX,
+  Volume2,
 } from "lucide-react";
 import CustomImage from "./CustomImage";
 import { baseUrl } from "@/features/Proxy";
@@ -44,6 +46,10 @@ function VideoPlayer({
   const [backwardAnimation, setBackwardAnimation] = useState(false);
   const [playAnimation, setPlayAnimation] = useState(false);
   const [pauseAnimation, setPauseAnimation] = useState(false);
+  const [muteAnimation, setMuteAnimation] = useState(false);
+  const [unmuteAnimation, setUnmuteAnimation] = useState(false);
+  const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
 
   // Toggles play/pause state of the video on click.
   const handleVideoClick = useCallback(() => {
@@ -104,10 +110,35 @@ function VideoPlayer({
         handleSetTime({ target: { value: currentTimeSec - 5 } });
         setBackwardAnimation(true);
         setTimeout(() => setBackwardAnimation(false), 500);
+      } else if (e.key === "m") {
+        handleToggleMute();
       }
     },
     [currentTimeSec, handleVideoClick, handleSetTime, handleToggleFullscreen]
   );
+
+  // Handles volume change
+  const handleVolumeChange = useCallback((e) => {
+    const newVolume = e.target.value;
+    setVolume(newVolume);
+    videoRef.current.volume = newVolume;
+    setIsMuted(newVolume === "0");
+  }, []);
+
+  // Handles volume toggle (mute/unmute)
+  const handleToggleMute = useCallback(() => {
+    if (isMuted) {
+      videoRef.current.volume = volume;
+      setIsMuted(false);
+      setMuteAnimation(true);
+      setTimeout(() => setMuteAnimation(false), 1000);
+    } else {
+      videoRef.current.volume = 0;
+      setIsMuted(true);
+      setUnmuteAnimation(true);
+      setTimeout(() => setUnmuteAnimation(false), 1000);
+    }
+  }, [isMuted, volume]);
 
   // Converts seconds to minutes and seconds.
   const sec2Min = (sec) => {
@@ -116,6 +147,14 @@ function VideoPlayer({
     const secRemain = Math.floor(sec % 60);
     return { min, sec: secRemain };
   };
+
+  // Exits fullscreen on escape.
+  useEffect(() => {
+    if (document.fullscreenElement && end) {
+      document.exitFullscreen();
+      setIsFullScreen(false);
+    }
+  }, [end]);
 
   // Sets the video duration.
   useEffect(() => {
@@ -284,6 +323,46 @@ function VideoPlayer({
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
+              <div className="mr-2 flex items-center relative group">
+                {isMuted ? (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <VolumeX
+                          className="w-4 md:w-6 h-4 md:h-6 hover:cursor-pointer"
+                          onClick={handleToggleMute}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Unmute</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Volume2
+                          className="w-4 md:w-6 h-4 md:h-6 hover:cursor-pointer"
+                          onClick={handleToggleMute}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Mute</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={volume}
+                  className="accent-primary absolute opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out ml-7 h-1 cursor-pointer focus:outline-none"
+                  onChange={handleVolumeChange}
+                />
+              </div>
             </div>
             <div className="mr-2">
               {isFullScreen ? (
@@ -333,7 +412,7 @@ function VideoPlayer({
         <div className="absolute inset-0 z-50 w-full h-full flex justify-center items-center pointer-events-none overflow-hidden">
           <div className="w-[50px] h-[50px] flex justify-center items-center animate-zoom-in-fade-out overflow-hidden">
             <span className="bg-black/70 text-white p-2 rounded-full overflow-hidden">
-              <p>+5s</p>
+              <span>+5s</span>
             </span>
           </div>
         </div>
@@ -344,7 +423,7 @@ function VideoPlayer({
         <div className="absolute inset-0 z-50 w-full h-full flex justify-center items-center pointer-events-none overflow-hidden">
           <div className="w-[50px] h-[50px] flex justify-center items-center animate-zoom-in-fade-out overflow-hidden">
             <span className="bg-black/70 text-white p-2 rounded-full overflow-hidden">
-              <p>-5s</p>
+              <span>-5s</span>
             </span>
           </div>
         </div>
@@ -370,6 +449,32 @@ function VideoPlayer({
             <span className="bg-black/70 text-white p-2 rounded-full overflow-hidden">
               <span>
                 <Pause strokeWidth={1} fill="#fff" color="#ffffff" />
+              </span>
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/*unmute animation */}
+      {muteAnimation && (
+        <div className="absolute inset-0 z-50 w-full h-full flex justify-center items-center pointer-events-none overflow-hidden">
+          <div className="w-[50px] h-[50px] flex justify-center items-center animate-zoom-in-fade-out overflow-hidden">
+            <span className="bg-black/70 text-white p-2 rounded-full overflow-hidden">
+              <span>
+                <Volume2 color="#ffffff" />
+              </span>
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* mute animation */}
+      {unmuteAnimation && (
+        <div className="absolute inset-0 z-50 w-full h-full flex justify-center items-center pointer-events-none overflow-hidden">
+          <div className="w-[50px] h-[50px] flex justify-center items-center animate-zoom-in-fade-out overflow-hidden">
+            <span className="bg-black/70 text-white p-2 rounded-full overflow-hidden">
+              <span>
+                <VolumeX color="#ffffff" />
               </span>
             </span>
           </div>
