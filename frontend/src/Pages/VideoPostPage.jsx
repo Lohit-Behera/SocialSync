@@ -11,7 +11,7 @@ import {
   resetFollow,
 } from "@/features/UserFollowSlice";
 import { Loader2 } from "lucide-react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import PostLoader from "@/components/Loader/PostLoader";
 
 const ServerErrorPage = lazy(() => import("./Error/ServerErrorPage"));
@@ -90,18 +90,14 @@ function VideoPostPage() {
     const followPromise = dispatch(fetchFollowUser(id)).unwrap();
 
     toast.promise(followPromise, {
-      pending: `${status} user...`,
-      success: {
-        render({ data }) {
-          setLoadingUser(null);
-          return `${data.message}`;
-        },
+      loading: `${status} user...`,
+      success: (data) => {
+        setLoadingUser(null);
+        return data.message;
       },
-      error: {
-        render() {
-          setLoadingUser(null);
-          return "Something went wrong";
-        },
+      error: (error) => {
+        setLoadingUser(null);
+        return "Something went wrong!";
       },
     });
   };

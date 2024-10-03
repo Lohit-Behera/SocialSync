@@ -6,7 +6,7 @@ import { fetchRegister, resetRegister } from "@/features/UserSlice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import WaterFall from "../assets/waterfalls.jpg";
 import Loader from "@/components/Loader/Loader";
 import { SquarePen } from "lucide-react";
@@ -71,12 +71,10 @@ function SignupPage() {
       toast.promise(signupPromise, {
         pending: "Creating account...",
         success: "Account created successfully",
-        error: {
-          render({ data }) {
-            return data === "User with this email already exists"
-              ? "User with this email already exists"
-              : "Failed to create account";
-          },
+        error: (error) => {
+          return error === "User with this email already exists"
+            ? error
+            : "Failed to create account";
         },
       });
     }

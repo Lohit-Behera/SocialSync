@@ -28,7 +28,7 @@ import {
 } from "@/features/PostRelatedSlice";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 import CommentLoader from "./Loader/CommentLoader";
 
@@ -96,7 +96,7 @@ function Comments({ id }) {
         })
       ).unwrap();
       toast.promise(commentPromise, {
-        pending: "Creating comment...",
+        loading: "Creating comment...",
         success: "Comment created successfully",
         error: "Something went wrong",
       });
@@ -121,7 +121,7 @@ function Comments({ id }) {
         })
       ).unwrap();
       toast.promise(commentEditPromise, {
-        pending: "Updating comment...",
+        loading: "Updating comment...",
         success: "Comment updated successfully",
         error: "Something went wrong",
       });
@@ -134,7 +134,7 @@ function Comments({ id }) {
       fetchDeleteComment(commentId)
     ).unwrap();
     toast.promise(commentDeletePromise, {
-      pending: "Deleting comment...",
+      loading: "Deleting comment...",
       success: "Comment deleted successfully",
       error: "Something went wrong",
     });

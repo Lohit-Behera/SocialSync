@@ -31,7 +31,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, Send, Pencil, Trash } from "lucide-react";
 import { fetchLike, resetLike } from "@/features/PostRelatedSlice";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import PostDetailsLoader from "@/components/Loader/PostDetailsLoader";
 
 const Comments = lazy(() => import("@/components/Comments"));
@@ -82,11 +82,9 @@ function PostDetails() {
       } else {
         const likePromise = dispatch(fetchLike(id));
         toast.promise(likePromise, {
-          pending: "Pending...",
-          success: {
-            render({ data }) {
-              return `${data.payload.message}`;
-            },
+          loading: "Pending...",
+          success: (data) => {
+            return data.payload.message;
           },
           error: "Something went wrong",
         });
@@ -101,7 +99,7 @@ function PostDetails() {
     if (userInfo) {
       const deletePromise = dispatch(fetchDeletePost(id)).unwrap();
       toast.promise(deletePromise, {
-        pending: "Deleting Post...",
+        loading: "Deleting Post...",
         success: "Post deleted successfully",
         error: "Something went wrong",
       });
@@ -186,6 +184,7 @@ function PostDetails() {
                     videoSrc={getPost.video}
                     thumbnailSrc={getPost.thumbnail}
                     hoverSet={true}
+                    doubleClick
                   />
                 )}
                 {getPost.type === "image" && (

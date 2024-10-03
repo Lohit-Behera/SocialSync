@@ -13,7 +13,7 @@ import {
 import { Loader2 } from "lucide-react";
 import PostLoader from "@/components/Loader/PostLoader";
 import ServerErrorPage from "./Error/ServerErrorPage";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 const Posts = lazy(() => import("@/components/Posts"));
 
 function HomePage() {
@@ -91,18 +91,13 @@ function HomePage() {
     const followPromise = dispatch(fetchFollowUser(id)).unwrap();
 
     toast.promise(followPromise, {
-      pending: `${status} user...`,
-      success: {
-        render({ data }) {
-          setLoadingUser(null);
-          return `${data.message}`;
-        },
+      loading: `${status} user...`,
+      success: (data) => {
+        return data.message;
       },
-      error: {
-        render() {
-          setLoadingUser(null);
-          return "Something went wrong";
-        },
+      error: () => {
+        setLoadingUser(null);
+        return "Something went wrong";
       },
     });
   };

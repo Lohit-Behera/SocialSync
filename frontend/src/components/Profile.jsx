@@ -26,7 +26,7 @@ import {
 } from "@/features/UserFollowSlice";
 import { fetchGetUserAllPost, resetGetUserAllPost } from "@/features/PostSlice";
 import { Loader2 } from "lucide-react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import ProfileLoader from "./Loader/ProfileLoader";
 import { fetchGetFollowerFollowingList } from "@/features/UserSlice";
 import { Skeleton } from "./ui/skeleton";
@@ -132,11 +132,9 @@ function Profile({ user = {} }) {
   const handleFollow = (id, status) => {
     const followPromise = dispatch(fetchFollowUser(id)).unwrap();
     toast.promise(followPromise, {
-      pending: `${status} user...`,
-      success: {
-        render({ data }) {
-          return `${data.message}`;
-        },
+      loading: `${status} user...`,
+      success: (data) => {
+        return data.message;
       },
       error: "Something went wrong",
     });

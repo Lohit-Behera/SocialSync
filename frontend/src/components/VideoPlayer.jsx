@@ -27,6 +27,7 @@ function VideoPlayer({
   height = "",
   glow = "50",
   hover = false,
+  doubleClick = false,
 }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -210,7 +211,9 @@ function VideoPlayer({
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       onKeyDown={handleKeys}
-      onDoubleClick={handleToggleFullscreen}
+      onDoubleClick={() => {
+        doubleClick && handleToggleFullscreen();
+      }}
     >
       {/* Thumbnail */}
       <CustomImage
@@ -235,7 +238,9 @@ function VideoPlayer({
           setShowThumbnail(true);
         }}
         onError={() => setError(true)}
-        onDoubleClick={handleToggleFullscreen}
+        onDoubleClick={() => {
+          doubleClick && handleToggleFullscreen();
+        }}
       >
         <source src={baseUrl + videoSrc} type="video/mp4" />
       </video>
@@ -510,8 +515,8 @@ function VideoPlayer({
         ref={canvasRef}
         className="w-full h-full absolute inset-0 z-0"
         style={{
-          filter: `blur(${glow + (isFullScreen ? 200 : 0)}px)`,
-          WebkitFilter: `blur(${glow + (isFullScreen ? 200 : 0)}px)`,
+          filter: `blur(${glow}px)`,
+          WebkitFilter: `blur(${glow}px)`,
         }}
       ></canvas>
     </div>

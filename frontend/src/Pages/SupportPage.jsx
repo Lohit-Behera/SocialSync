@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import Loader from "@/components/Loader/Loader";
 import ServerErrorPage from "./Error/ServerErrorPage";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 
 function SupportPage() {
@@ -47,7 +47,7 @@ function SupportPage() {
         fetchSupport({ name, email, subject, message })
       ).unwrap();
       toast.promise(supportPromise, {
-        pending: "Sending message...",
+        loading: "Sending message...",
         success: "Message sent successfully",
         error: "Failed to send message",
       });

@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import UpdateProfileLoader from "@/components/Loader/UpdateProfileLoader";
 import { CloudUpload, Pencil, RefreshCcw, X } from "lucide-react";
 import CustomImage from "@/components/CustomImage";
@@ -90,7 +90,7 @@ function UpdateProfilePage() {
         })
       ).unwrap();
       toast.promise(updatePromise, {
-        pending: "Updating profile...",
+        loading: "Updating profile...",
         success: "Profile updated successfully",
         error: "Failed to update profile",
       });
@@ -105,7 +105,7 @@ function UpdateProfilePage() {
       })
     ).unwrap();
     toast.promise(changePasswordPromise, {
-      pending: "Sending password change link...",
+      loading: "Sending password change link...",
       success: "Password change link sent successfully",
       error: "Failed to send password change link",
     });
@@ -114,7 +114,7 @@ function UpdateProfilePage() {
   const sendVerifyEmailHandler = () => {
     const sendVerifyEmailPromise = dispatch(fetchReSendVerifyEmail()).unwrap();
     toast.promise(sendVerifyEmailPromise, {
-      pending: "Sending verification email...",
+      loading: "Sending verification email...",
       success: "Verification email sent successfully",
       error: "Failed to send verification email",
     });

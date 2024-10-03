@@ -18,7 +18,7 @@ import {
   resetEditTextPost,
 } from "@/features/PostSlice";
 import EditPostLoader from "@/components/Loader/EditPostLoader";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 const VideoPlayer = lazy(() => import("@/components/VideoPlayer"));
 const DragNDrop = lazy(() => import("@/components/DragNDrop"));
@@ -78,7 +78,7 @@ function EditPost() {
         })
       ).unwrap();
       toast.promise(textPostPromise, {
-        pending: "Updating post...",
+        loading: "Updating post...",
         success: "Post updated successfully",
         error: "Something went wrong",
       });
@@ -93,7 +93,7 @@ function EditPost() {
         })
       ).unwrap();
       toast.promise(videoPostPromise, {
-        pending: "Updating post...",
+        loading: "Updating post...",
         success: "Post updated successfully",
         error: "Something went wrong",
       });
@@ -106,7 +106,7 @@ function EditPost() {
         })
       ).unwrap();
       toast.promise(imagePostPromise, {
-        pending: "Updating post...",
+        loading: "Updating post...",
         success: "Post updated successfully",
         error: "Something went wrong",
       });

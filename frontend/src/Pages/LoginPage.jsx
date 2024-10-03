@@ -10,7 +10,7 @@ import {
   fetchForgetPasswordSubmit,
   resetForgetPasswordSubmit,
 } from "@/features/UserSlice";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import Loader from "@/components/Loader/Loader";
 import WaterFall from "../assets/waterfalls.jpg";
 import { Link2, LogIn } from "lucide-react";
@@ -57,16 +57,12 @@ function LoginPage() {
         })
       ).unwrap();
       toast.promise(loginPromise, {
-        pending: "Logging in...",
+        loading: "Logging in...",
         success: "Logged in successfully",
-        error: {
-          render({ data }) {
-            return `${
-              data === "Request failed with status code 401"
-                ? "Invalid email or password"
-                : "Something went wrong"
-            }`;
-          },
+        error: (error) => {
+          return error === "Request failed with status code 401"
+            ? "Invalid email or password"
+            : "Something went wrong";
         },
       });
     }
@@ -85,12 +81,8 @@ function LoginPage() {
       toast.promise(forgetPasswordPromise, {
         pending: "Sending password reset link...",
         success: "Password reset link sent successfully",
-        error: {
-          render({ data }) {
-            return `${
-              data === "Email not found" ? data : "Something went wrong"
-            }`;
-          },
+        error: (error) => {
+          return error === "Email not found" ? error : "Something went wrong";
         },
       });
     }

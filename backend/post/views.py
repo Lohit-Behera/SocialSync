@@ -237,6 +237,7 @@ def delete_post(request, pk):
         if post.type == 'image':
             post.image.delete(save=False)
         elif post.type == 'video':
+            post.thumbnail.delete(save=False)
             post.video.delete(save=False)
         
         post.delete()

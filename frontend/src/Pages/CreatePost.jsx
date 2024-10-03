@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import DragNDrop from "@/components/DragNDrop";
 import CustomImage from "@/components/CustomImage";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { CloudUpload, RefreshCw } from "lucide-react";
 
 function CreatePost() {
@@ -62,7 +62,7 @@ function CreatePost() {
         })
       ).unwrap();
       toast.promise(textPostPromise, {
-        pending: "Creating post...",
+        loading: "Creating post...",
         success: "Post created successfully",
         error: "Something went wrong",
       });
@@ -83,7 +83,7 @@ function CreatePost() {
         })
       ).unwrap();
       toast.promise(imagePostPromise, {
-        pending: "Creating post...",
+        loading: "Creating post...",
         success: "Post created successfully",
         error: "Something went wrong",
       });
@@ -107,7 +107,7 @@ function CreatePost() {
         })
       ).unwrap();
       toast.promise(videoPostPromise, {
-        pending: "Creating post...",
+        loading: "Creating post...",
         success: "Post created successfully",
         error: "Something went wrong",
       });

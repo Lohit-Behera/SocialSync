@@ -12,7 +12,7 @@ import {
 } from "@/features/UserFollowSlice";
 import { Loader2 } from "lucide-react";
 import PostLoader from "@/components/Loader/PostLoader";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 const Posts = lazy(() => import("@/components/Posts"));
 const ServerErrorPage = lazy(() => import("./Error/ServerErrorPage"));
@@ -91,17 +91,13 @@ function ImagePostPage() {
 
     toast.promise(followPromise, {
       pending: `${status} user...`,
-      success: {
-        render({ data }) {
-          setLoadingUser(null);
-          return `${data.message}`;
-        },
+      success: (data) => {
+        setLoadingUser(null);
+        return data.message;
       },
-      error: {
-        render() {
-          setLoadingUser(null);
-          return "Something went wrong";
-        },
+      error: () => {
+        setLoadingUser(null);
+        return "Something went wrong";
       },
     });
   };

@@ -18,7 +18,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Loader2, Send } from "lucide-react";
 import { setWebSocketChatDisconnected } from "@/features/WebSocketSlice";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import MassageLoader from "./Loader/MassageLoader";
 import { socketUrl } from "@/features/Proxy";
 
@@ -144,7 +144,7 @@ const Chat = ({ roomName }) => {
 
   const sendMessage = () => {
     if (newMessage === "") {
-      toast.warn("Please enter a message");
+      toast.warning("Please enter a message");
     } else {
       const [senderId, receiverId] = roomName.split("_");
 

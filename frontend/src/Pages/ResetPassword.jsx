@@ -14,7 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import Loader from "@/components/Loader/Loader";
 
 const CustomPassword = lazy(() => import("@/components/CustomPassword"));
@@ -50,7 +50,7 @@ function ResetPassword() {
         })
       ).unwrap();
       toast.promise(changePasswordPromise, {
-        pending: "Changing password...",
+        loading: "Changing password...",
         success: "Password changed successfully",
         error: "Something went wrong",
       });
